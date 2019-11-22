@@ -72,16 +72,16 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 	y = y1;
 
 
-	d = 2 * dy - dx;
-	E = 2 * dy;
-	SE = 2 * (dy + dx);
+	d = 2 * dy - dx;//-200
+	E = 2 * dy;//-100 this should be positive i guess
+	SE = 2 * (dy + dx);//100 and this should be negative
 
 	SetPixel(hdc, x, y, color);
 
 	while (x < x2) {
 
 
-		if (d < 0) {
+		if (d > 0) {//so i've just used the complimntary condition
 			d += E;
 			++x;
 		}
@@ -133,9 +133,9 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 
 void MidPointDraw(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color) {
 	
-	if (x2 < x1) // make sure that x1 <= x2, the == situation is ok since it just wont draw anything
+	if (x2 < x1) // make sure that x1 <= x2, the == situation is ok
 	{
-		MidPointDraw(x2, y2, x1, y1);
+		MidPointDraw(x2, y2, x1, y1, hdc, color);
 		return;
 	}
 	//now  x1 <= x2
