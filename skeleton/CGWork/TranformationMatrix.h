@@ -25,6 +25,7 @@ public:
     TransformationMatrix operator+(const TransformationMatrix &other);
     TransformationMatrix operator-(const TransformationMatrix &other);
     TransformationMatrix operator*(const TransformationMatrix &other);
+    TransformationMatrix &translate(const Vector<T, TRANSLATION_SIZE> &translation);
 
     Vector<T, TRANSLATION_SIZE> getTranslation() const;
     Matrix<T, ROTATION_SIZE, ROTATION_SIZE> getRotation() const;
@@ -119,6 +120,16 @@ TransformationMatrix<T> TransformationMatrix<T>::operator*(const TransformationM
 }
 
 template<typename T>
+TransformationMatrix<T> &TransformationMatrix<T>::translate(const Vector<T, TRANSLATION_SIZE> &translation)
+{
+    auto new_translation = getTranslation();
+
+    new_translation += translation;
+
+    setTranslation(new_translation);
+}
+
+template<typename T>
 template<typename ...Args>
 TransformationMatrix<T>::TransformationMatrix(const T &first, Args... tail) :
     Matrix<T, TRANSFORMATION_SIZE, TRANSFORMATION_SIZE>(first, tail...)
@@ -130,9 +141,8 @@ TransformationMatrix<T>::TransformationMatrix(const T &first, Args... tail) :
 //TransformationMatrix<T> &TransformationMatrix<T>::rotateX(const T &angle_deg)
 //{
 //    T angle_rad = angle_deg * M_PI / 180.0;
-//    auto m = *this;
 
-//    auto asaf = m * TransformationMatrix(1, 0, 1, 0,
+//    auto res = m * TransformationMatrix(1, 0, 1, 0,
 //                                0, cos(angle_rad), sin(angle_rad), 0,
 //                                0, -sin(angle_rad), cos(angle_rad), 0,
 //                                0, 0, 0 ,1);
