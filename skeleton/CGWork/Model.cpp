@@ -50,7 +50,7 @@ COLORREF Model::getColor()
 }
 
 
-/*
+
 
 Tmatd Camera::LookAt(Vec4d & eye, Vec4d & at, Vec4d & up)
 {
@@ -68,17 +68,16 @@ Tmatd Camera::LookAt(Vec4d & eye, Vec4d & at, Vec4d & up)
 
 
 	Tmatd c = Tmatd( u(0), v(0), n(0), t(0), u(1), v(1), n(1), t(1), u(2), v(2), n(2), t(2), u(3), v(3), n(3), t(3));//c = (u, v, n, t) in colums
-//	Matrix<double,4,4> c(u(0), v(0), n(0), t(0), u(1), v(1), n(1), t(1), u(2), v(2), n(2), t(2), u(3), v(3), n(3), t(3));//c = (u, v, n, t) in colums
 
 	Vec4d i = eye;
 	i *= -1;
-	i.translate();
+	
 
-	return c.setTranslation(Vec3d(i(0),i(1),i(2)));
+	return c.Translation(Vec3d(i(0),i(1),i(2)));
 }
 
 
-*/
+
 
 void Camera::setTransformation(const Tmatd & T)
 {
