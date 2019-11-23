@@ -10,9 +10,10 @@ class Vector : public Matrix<T, elements, 1>
 {
 public:
     Vector() = default;
+    Vector(const Matrix<T, elements, 1> & other);
 
     template<typename ...Args>
-    explicit Vector(const T &first, Args... tail) : Matrix<T, elements, 1>(first, tail...) {}
+    explicit Vector(const T &first, Args... tail);
 
     template<typename ...Args>
     Vector &scale(const T &first, Args... tail);
@@ -28,6 +29,7 @@ public:
     Vector cross(const Vector &other);
     Vector operator+(const Vector &other);
     Vector operator-(const Vector &other);
+    Vector operator-();
 
 private: //methods
     template<typename ...Args>
@@ -43,6 +45,20 @@ private: //methods
 
 
 
+template<typename T, uint elements>
+template<typename ...Args>
+Vector<T, elements>::Vector(const T &first, Args... tail)
+    : Matrix<T, elements, 1>(first, tail...)
+{
+
+}
+
+template<typename T, uint elements>
+Vector<T, elements>::Vector(const Matrix<T, elements, 1> &other) :
+    Matrix<T, elements, 1> (other)
+{
+
+}
 
 template<typename T, uint elements>
 T &Vector<T, elements>::operator()(const uint &index)
@@ -85,27 +101,25 @@ T Vector<T, elements>::norm() const
 template<typename T, uint elements>
 Vector<T, elements> Vector<T, elements>::operator+(const Vector &other)
 {
-    Vector<T, elements> res;
+    auto res = this->Matrix<T, elements, 1>::operator+(other);
 
-    for(uint i = 0; i < elements; i++)
-    {
-        res(i) = (*this)(i) + other(i);
-    }
-
-    return res;
+    return Vector(res);
 }
 
 template<typename T, uint elements>
 Vector<T, elements> Vector<T, elements>::operator-(const Vector &other)
 {
-    Vector<T, elements> res;
+    auto res = this->Matrix<T, elements, 1>::operator-(other);
 
-    for(uint i = 0; i < elements; i++)
-    {
-        res(i) = (*this)(i) - other(i);
-    }
+    return Vector(res);
+}
 
-    return res;
+template<typename T, uint elements>
+Vector<T, elements> Vector<T, elements>::operator-()
+{
+    auto res = this->Matrix<T, elements, 1>::operator-();
+
+    return Vector(res);
 }
 
 template<typename T, uint elements>
@@ -200,8 +214,5 @@ void Vector<T, elements>::translateElements(const T &first, Args... tail)
 
 
 #endif // VECTOR_H
-
-
-
 
 

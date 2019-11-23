@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <memory>
 
 using uint = unsigned int;
 
@@ -19,8 +20,6 @@ public:
     Matrix &operator-=(const Matrix &other);
     Matrix &operator*=(const T &scalar);
     Matrix &operator/=(const T &scalar);
-    Matrix operator+(const Matrix &other);
-    Matrix operator-(const Matrix &other);
     T &operator()(const uint &row, const uint &col);
     const T &operator()(const uint &row, const uint &col) const;
     Matrix transpose() const;
@@ -29,8 +28,14 @@ public:
 
     template<uint num_of_cols>
     Matrix<T, rows, num_of_cols> operator*(const Matrix<T, cols, num_of_cols> &other);
+    Matrix<T, rows, cols> operator*(const T &scalar);
+    Matrix operator+(const Matrix &other);
+    Matrix operator-(const Matrix &other);
+    Matrix operator-();
 
     void print();
+
+    virtual ~Matrix() = default;
 
 private: //methods
     void init();
@@ -154,6 +159,22 @@ Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-(const Matrix<T, rows, col
 }
 
 template<typename T, uint rows, uint cols>
+Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-()
+{
+    Matrix<T, rows, cols> res;
+
+    for(uint row = 0; row < rows; row++)
+    {
+        for(uint col = 0; col < cols; col++)
+        {
+            res._data[row][col] = -1 * (*this)(row, col);
+        }
+    }
+
+    return res;
+}
+
+template<typename T, uint rows, uint cols>
 T &Matrix<T, rows, cols>::operator()(const uint &row, const uint &col)
 {
     if(row >= rows || col >= cols)
@@ -175,6 +196,22 @@ const T &Matrix<T, rows, cols>::operator()(const uint &row, const uint &col) con
     }
 
     return _data[row][col];
+}
+
+template<typename T, uint rows, uint cols>
+Matrix<T, rows, cols> Matrix<T, rows, cols>::operator*(const T &scalar)
+{
+    Matrix<T, rows, cols> res;
+
+    for(uint row = 0; row < rows; row++)
+    {
+        for(uint col = 0; col < cols; col++)
+        {
+            res(row, col) = (*this)(row, col) * scalar;
+        }
+    }
+
+    return res;
 }
 
 template<typename T, uint rows, uint cols>
@@ -272,6 +309,6 @@ Matrix<T, rows, num_of_cols> Matrix<T, rows, cols>::operator*(const Matrix<T, co
     return res;
 }
 
-
-
 #endif // MATRIX_H
+
+
