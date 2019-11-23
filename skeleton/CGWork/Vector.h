@@ -26,6 +26,8 @@ public:
     T norm() const;
     Vector &normalize();
     Vector cross(const Vector &other);
+    Vector operator+(const Vector &other);
+    Vector operator-(const Vector &other);
 
 private: //methods
     template<typename ...Args>
@@ -78,6 +80,32 @@ T Vector<T, elements>::norm() const
     }
 
     return sqrt(res);
+}
+
+template<typename T, uint elements>
+Vector<T, elements> Vector<T, elements>::operator+(const Vector &other)
+{
+    Vector<T, elements> res;
+
+    for(uint i = 0; i < elements; i++)
+    {
+        res(i) = (*this)(i) + other(i);
+    }
+
+    return res;
+}
+
+template<typename T, uint elements>
+Vector<T, elements> Vector<T, elements>::operator-(const Vector &other)
+{
+    Vector<T, elements> res;
+
+    for(uint i = 0; i < elements; i++)
+    {
+        res(i) = (*this)(i) - other(i);
+    }
+
+    return res;
 }
 
 template<typename T, uint elements>

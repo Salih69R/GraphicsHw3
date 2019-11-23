@@ -12,9 +12,19 @@ template<typename T>
 class TransformationMatrix : public Matrix<T, TRANSFORMATION_SIZE, TRANSFORMATION_SIZE>
 {
 public:
-    TransformationMatrix() = default;
+    template<typename ...Args>
+    explicit TransformationMatrix(const T &first, Args... tail);
+
+    TransformationMatrix();
     TransformationMatrix(const Matrix<T, ROTATION_SIZE, ROTATION_SIZE> &rotation,
                          Vector<T, TRANSLATION_SIZE> &translation);
+
+    TransformationMatrix &rotateX(const T &angle_deg);
+    TransformationMatrix &rotateY(const T &angle_deg);
+    TransformationMatrix &rotateZ(const T &angle_deg);
+    TransformationMatrix operator+(const TransformationMatrix &other);
+    TransformationMatrix operator-(const TransformationMatrix &other);
+    TransformationMatrix operator*(const TransformationMatrix &other);
 
     Vector<T, TRANSLATION_SIZE> getTranslation() const;
     Matrix<T, ROTATION_SIZE, ROTATION_SIZE> getRotation() const;
@@ -25,6 +35,16 @@ public:
 
 
 
+
+template<typename T>
+TransformationMatrix<T>::TransformationMatrix() :
+    Matrix<T, TRANSFORMATION_SIZE, TRANSFORMATION_SIZE> ()
+{
+    for(uint i = 0; i < TRANSFORMATION_SIZE; i++)
+    {
+        this->_data[i][i] = 1;
+    }
+}
 
 template<typename T>
 TransformationMatrix<T>::TransformationMatrix(const Matrix<T, ROTATION_SIZE, ROTATION_SIZE> &rotation,
@@ -46,6 +66,106 @@ TransformationMatrix<T>::TransformationMatrix(const Matrix<T, ROTATION_SIZE, ROT
 
     this->_data[TRANSFORMATION_SIZE - 1][TRANSFORMATION_SIZE - 1] = 1;
 }
+
+template<typename T>
+TransformationMatrix<T> TransformationMatrix<T>::operator+(const TransformationMatrix &other)
+{
+    TransformationMatrix res;
+
+    for(uint row = 0; row < TRANSFORMATION_SIZE; row++)
+    {
+        for(uint col = 0; col < TRANSFORMATION_SIZE; col++)
+        {
+            res._data[row][col] = (*this)(row, col) + other(row, col);
+        }
+    }
+
+    return res;
+}
+
+template<typename T>
+TransformationMatrix<T> TransformationMatrix<T>::operator-(const TransformationMatrix &other)
+{
+    TransformationMatrix res;
+
+    for(uint row = 0; row < TRANSFORMATION_SIZE; row++)
+    {
+        for(uint col = 0; col < TRANSFORMATION_SIZE; col++)
+        {
+            res._data[row][col] = (*this)(row, col) - other(row, col);
+        }
+    }
+
+    return res;
+}
+
+template<typename T>
+TransformationMatrix<T> TransformationMatrix<T>::operator*(const TransformationMatrix &other)
+{
+    TransformationMatrix res;
+
+    for (uint row = 0; row < TRANSFORMATION_SIZE; row++ )
+    {
+        for(uint col = 0; col < TRANSFORMATION_SIZE; col++)
+        {
+            for(uint i = 0; i < TRANSFORMATION_SIZE; i++)
+            {
+                res(row,col) += (*this)(row, i) * other(i, col);
+            }
+        }
+    }
+
+    return res;
+}
+
+template<typename T>
+template<typename ...Args>
+TransformationMatrix<T>::TransformationMatrix(const T &first, Args... tail) :
+    Matrix<T, TRANSFORMATION_SIZE, TRANSFORMATION_SIZE>(first, tail...)
+{
+
+}
+
+//template<typename T>
+//TransformationMatrix<T> &TransformationMatrix<T>::rotateX(const T &angle_deg)
+//{
+//    T angle_rad = angle_deg * M_PI / 180.0;
+//    auto m = *this;
+
+//    auto asaf = m * TransformationMatrix(1, 0, 1, 0,
+//                                0, cos(angle_rad), sin(angle_rad), 0,
+//                                0, -sin(angle_rad), cos(angle_rad), 0,
+//                                0, 0, 0 ,1);
+
+//    *this = asaf;
+//    return *this;
+//}
+
+//template<typename T>
+//TransformationMatrix<T> &TransformationMatrix<T>::rotateY(const T &angle_deg)
+//{
+//    T angle_rad = angle_deg * M_PI / 180.0;
+
+//    *this = *this * TransformationMatrix(cos(angle_rad), 0, -sin(angle_rad), 0,
+//                                0, 1, 0, 0,
+//                                sin(angle_rad), 0, cos(angle_rad), 0,
+//                                0, 0, 0 ,1);
+
+//    return *this;
+//}
+
+//template<typename T>
+//TransformationMatrix<T> &TransformationMatrix<T>::rotateZ(const T &angle_deg)
+//{
+//    T angle_rad = angle_deg * M_PI / 180.0;
+
+//    *this = *this * TransformationMatrix(cos(angle_rad), sin(angle_rad), 0, 0,
+//                                -sin(angle_rad), cos(angle_rad), 0, 0,
+//                                0, 0, 1, 0,
+//                                0, 0, 0 ,1);
+
+//    return *this;
+//}
 
 template<typename T>
 Matrix<T, ROTATION_SIZE, ROTATION_SIZE> TransformationMatrix<T>::getRotation() const
@@ -101,4 +221,3 @@ Vector<T, TRANSLATION_SIZE> TransformationMatrix<T>::getTranslation() const
 
 
 #endif // TRANFORMATIONMATRIX_H
-

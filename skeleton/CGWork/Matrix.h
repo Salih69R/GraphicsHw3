@@ -23,6 +23,7 @@ public:
     Matrix operator-(const Matrix &other);
     T &operator()(const uint &row, const uint &col);
     const T &operator()(const uint &row, const uint &col) const;
+    Matrix transpose() const;
     uint getNumOfRows() const {return rows;}
     uint getNumOfCols() const {return cols;}
 
@@ -127,7 +128,7 @@ Matrix<T, rows, cols> Matrix<T, rows, cols>::operator+(const Matrix<T, rows, col
 
     for(uint row = 0; row < rows; row++)
     {
-        for(auto col = 0; col < cols; col++)
+        for(uint col = 0; col < cols; col++)
         {
             res._data[row][col] = _data[row][col] + other._data[row][col];
         }
@@ -174,6 +175,22 @@ const T &Matrix<T, rows, cols>::operator()(const uint &row, const uint &col) con
     }
 
     return _data[row][col];
+}
+
+template<typename T, uint rows, uint cols>
+Matrix<T, rows, cols> Matrix<T, rows, cols>::transpose() const
+{
+    Matrix<T, rows, cols> res;
+
+    for(uint row = 0; row < rows; row++)
+    {
+        for(uint col = 0; col < cols; col++)
+        {
+            res(row, col) = (*this)(col, row);
+        }
+    }
+
+    return res;
 }
 
 template<typename T, uint rows, uint cols>
