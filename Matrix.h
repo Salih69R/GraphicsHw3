@@ -13,17 +13,18 @@ public:
     Matrix();
 
     template<typename ...Args>
-    Matrix(const T &first, Args... tail);
+    explicit Matrix(const T &first, Args... tail);
 
     Matrix &operator+=(const Matrix &other);
     Matrix &operator-=(const Matrix &other);
     Matrix &operator*=(const T &scalar);
-//    Matrix &operator*=(const Matrix &other);
+    Matrix &operator/=(const T &scalar);
     Matrix operator+(const Matrix &other);
     Matrix operator-(const Matrix &other);
-//    Vec3 operator*(const Vec3 &vec);
     T &operator()(const uint &row, const uint &col);
     const T &operator()(const uint &row, const uint &col) const;
+    uint getNumOfRows() const {return rows;}
+    uint getNumOfCols() const {return cols;}
 
     template<uint num_of_cols>
     Matrix<T, rows, num_of_cols> operator*(const Matrix<T, cols, num_of_cols> &other);
@@ -32,13 +33,13 @@ public:
 
 private: //methods
     void init();
-    void fillElements(const T & first);
+    void fillElements(const T &first);
 
     template<typename ...Args>
-    void fillElements(const T & first, Args... tail);
+    void fillElements(const T &first, Args... tail);
 
 
-private: //members
+protected: //members
     std::vector<std::vector<T>> _data;
 };
 
@@ -61,37 +62,62 @@ Matrix<T, rows, cols>::Matrix() :
 template<typename T, uint rows, uint cols>
 Matrix<T, rows, cols> &Matrix<T, rows, cols>::operator+=(const Matrix<T, rows, cols> &other)
 {
-    for(auto row(0); row < rows; row++)
+    for(uint row = 0; row < rows; row++)
     {
-        for(auto col(0); col < cols; col++)
+        for(uint col = 0; col < cols; col++)
         {
             _data[row][col] += other._data[row][col];
         }
     }
+
+    return *this;
 }
 
 template<typename T, uint rows, uint cols>
 Matrix<T, rows, cols> &Matrix<T, rows, cols>::operator-=(const Matrix<T, rows, cols> &other)
 {
-    for(auto row(0); row < rows; row++)
+    for(uint row = 0; row < rows; row++)
     {
-        for(auto col(0); col < cols; col++)
+        for(uint col = 0; col < cols; col++)
         {
             _data[row][col] -= other._data[row][col];
         }
     }
+
+    return *this;
 }
 
 template<typename T, uint rows, uint cols>
 Matrix<T, rows, cols> &Matrix<T, rows, cols>::operator*=(const T &scalar)
 {
-    for(auto row(0); row < rows; row++)
+    for(uint row = 0; row < rows; row++)
     {
-        for(auto col(0); col < cols; col++)
+        for(uint col = 0; col < cols; col++)
         {
             _data[row][col] *= scalar;
         }
     }
+
+    return *this;
+}
+
+template<typename T, uint rows, uint cols>
+Matrix<T, rows, cols> &Matrix<T, rows, cols>::operator/=(const T &scalar)
+{
+    if(scalar == 0)
+    {
+        std::cerr << "Matrix: cannot devide with zero" << std::endl;
+    }
+
+    for(uint row = 0; row < rows; row++)
+    {
+        for(uint col = 0; col < cols; col++)
+        {
+            _data[row][col] /= scalar;
+        }
+    }
+
+    return *this;
 }
 
 template<typename T, uint rows, uint cols>
@@ -99,9 +125,9 @@ Matrix<T, rows, cols> Matrix<T, rows, cols>::operator+(const Matrix<T, rows, col
 {
     Matrix<T, rows, cols> res;
 
-    for(auto row(0); row < rows; row++)
+    for(uint row = 0; row < rows; row++)
     {
-        for(auto col(0); col < cols; col++)
+        for(auto col = 0; col < cols; col++)
         {
             res._data[row][col] = _data[row][col] + other._data[row][col];
         }
@@ -115,9 +141,9 @@ Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-(const Matrix<T, rows, col
 {
     Matrix<T, rows, cols> res;
 
-    for(auto row(0); row < rows; row++)
+    for(uint row = 0; row < rows; row++)
     {
-        for(auto col(0); col < cols; col++)
+        for(uint col = 0; col < cols; col++)
         {
             res._data[row][col] = _data[row][col] - other._data[row][col];
         }
@@ -217,7 +243,7 @@ Matrix<T, rows, num_of_cols> Matrix<T, rows, cols>::operator*(const Matrix<T, co
 
     for (uint row = 0; row < rows; row++ )
     {
-        for(uint col = 0; col < cols; col++)
+        for(uint col = 0; col < num_of_cols; col++)
         {
             for(uint i = 0; i < cols; i++)
             {
