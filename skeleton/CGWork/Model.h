@@ -39,7 +39,7 @@ class Camera
 public:
 	void setTransformation(const Tmatd& T);//replaces
 	void setProjection(const Tmatd& T);//replaces
-	Tmatd LookAt(Vec4d& eye, Vec4d& at, Vec4d& up);
+	Tmatd LookAt(Vec3d& eye, Vec3d& at, Vec3d& up);
 	
 	/*
 	void Ortho(...);

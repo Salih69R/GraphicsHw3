@@ -52,28 +52,18 @@ COLORREF Model::getColor()
 
 
 
-Tmatd Camera::LookAt(Vec4d & eye, Vec4d & at, Vec4d & up)
+Tmatd Camera::LookAt(Vec3d & eye, Vec3d & at, Vec3d & up)
 {
-	Vec4d n = eye;
-	n -= at;
-	n.normalize();
+	Vec3d n = (eye - at).normalize();
+	Vec3d u = up.cross(n).normalize();
+	Vec3d v = n.cross(u).normalize();
 
-	Vec4d u = up;
-	u.cross(n).normalize();
-	
-	Vec4d v = n;
-	v.cross(u).normalize();
+	Tmatd c = Tmatd( u(0), v(0), n(0), 0.0, u(1), v(1), n(1), 0.0 , u(2), v(2), n(2), 0.0 , 0, 0, 0, 1);//c = (u, v, n, t) in colums
 
-	Vec4d t = Vec4d(0.0, 0.0, 0.0, 1.0);
+	Vec3d i = eye;
+	i *= -1;	
 
-
-	Tmatd c = Tmatd( u(0), v(0), n(0), t(0), u(1), v(1), n(1), t(1), u(2), v(2), n(2), t(2), u(3), v(3), n(3), t(3));//c = (u, v, n, t) in colums
-
-	Vec4d i = eye;
-	i *= -1;
-	
-
-	return c.Translation(Vec3d(i(0),i(1),i(2)));
+	return c.translate(i);
 }
 
 
