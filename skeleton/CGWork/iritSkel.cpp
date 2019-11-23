@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "iritSkel.h"
 #include <vector>
-#include "Line.h"
+#include "Model.h"
 /*****************************************************************************
 * Skeleton for an interface to a parser to read IRIT data files.			 *
 ******************************************************************************
@@ -34,7 +34,7 @@ IPFreeformConvStateStruct CGSkelFFCState = {
 //CGSkelProcessIritDataFiles(argv + 1, argc - 1);
 
 
-std::vector<Line> linesToDraw;
+std::vector<Model*> Models;
 
 /*****************************************************************************
 * DESCRIPTION:                                                               *
@@ -171,42 +171,41 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 				return false;
 			}
 
+			int numOfVertixes = 0;
 			/* Count number of vertices. */
-			for (PVertex = PPolygon -> PVertex -> Pnext, i = 1;
-				PVertex != PPolygon -> PVertex && PVertex != NULL;
-				PVertex = PVertex -> Pnext, i++);
+			for (PVertex = PPolygon->PVertex->Pnext, i = 1;
+				PVertex != PPolygon->PVertex && PVertex != NULL;
+				PVertex = PVertex->Pnext, i++) {
+				numOfVertixes = i;
+
+			}
+
+
 			/* use if(IP_HAS_PLANE_POLY(PPolygon)) to know whether a normal is defined for the polygon
 			   access the normal by the first 3 components of PPolygon->Plane */
+			
 			PVertex = PPolygon -> PVertex;
-			
-			
-			double x1 = -1, y1 = -1;
+
+			Model* curModel= new Model(color);
 			
 			do {			     /* Assume at least one edge in polygon! */
 				
-				auto x2 = PVertex->Coord[0];
-				auto y2 = PVertex->Coord[1];
+				auto x = PVertex->Coord[0];
+				auto y = PVertex->Coord[1];
+				auto z = PVertex->Coord[2];
 
 								 /* code handeling all vertex/normal/texture coords */
-				if (x1 != -1 && y1 != -1) {
-					linesToDraw.push_back(Line(x1, y1, x2, y2, color));
-					//AfxMessageBox(_T("Line added: x1 = %d , y1= %d,   x2= , y2= ",2,3));
-
-				}
-
-				//update last coords
-				x1 = x2;
-				y1 = y2;
-
-			
+	
+				curModel->addVertex(Vec3d(x,y,z));
+						
 				if(IP_HAS_NORMAL_VRTX(PVertex)) 
 				{
 				    int x = 0;
 				    ++x;
 				}
-
-
+				
 				PVertex = PVertex -> Pnext;
+				Models.push_back(curModel);
 			}
 			while (PVertex != PPolygon -> PVertex && PVertex != NULL);
 			/* Close the polygon. */

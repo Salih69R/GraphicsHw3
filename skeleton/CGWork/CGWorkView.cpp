@@ -27,7 +27,7 @@ static char THIS_FILE[] = __FILE__;
 
 #include "Draw.h"
 #include <vector>
-#include "Line.h"
+#include "Model.h"
 
 // Use this macro to display text messages in the status bar.
 #define STATUS_BAR_TEXT(str) (((CMainFrame*)GetParentFrame())->getStatusBar().SetWindowText(str))
@@ -36,7 +36,11 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CCGWorkView
 
-extern std::vector<Line> linesToDraw;
+
+
+extern std::vector<Model*> Models;
+
+
 
 
 
@@ -244,6 +248,8 @@ BOOL CCGWorkView::OnEraseBkgnd(CDC* pDC)
 
 
 
+
+
 /////////////////////////////////////////////////////////////////////////////
 // CCGWorkView drawing
 /////////////////////////////////////////////////////////////////////////////
@@ -259,8 +265,22 @@ void CCGWorkView::OnDraw(CDC* pDC)
 
 	GetClientRect(&r);
 	CDC *pDCToUse = /*m_pDC*/m_pDbDC;
-	
-	pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
+
+	for (Model* model : Models) {
+
+
+		for (int i = 0; i < model->getVertexes().size() - 1; i++) {
+			Vec3d point1 = model->getVertexes()[i];
+			Vec3d point2 = model->getVertexes()[i + 1];
+
+
+			//Salih: Testing stuff: x=(x+1)*w , y= (1-y)*h/2
+			MidPointDraw(  (point1(0)+1)*r.Width()/2  , (point1(1)+1)*r.Height()/2, (point2(0) + 1)*r.Width()/2, (point2(1)+1)*r.Height() / 2, pDC , model->getColor());
+		}
+
+
+	}
+	/*pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
 	
 	int numLines = 100;
 	double radius = r.right / 3.0;
@@ -278,20 +298,30 @@ void CCGWorkView::OnDraw(CDC* pDC)
 	}	
 
 
-
-
-	// all that was loaded is drawn here
-	for (Line n : linesToDraw) {
-		MidPointDraw(n.x1, n.y1, n.x2, n.y2, *pDCToUse, n.color);
-	}
-
 	if (pDCToUse != m_pDC) 
 	{
 		m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
 	}
+	
+	for (Model* model : Models) {
+		
+				
+		for (int i = 0; i < model->getVertexes().size() - 1; i++) {
+			Vec3d point1 = model->getVertexes()[i];
+			Vec3d point2 = model->getVertexes()[i+1];
 
 
-	theta += 5;	
+			//Salih: Testing stuff: x=(x+1)*w , y= (1-y)*h/2
+			//MidPointDraw(  (point1(0)+1)*r.Width()/2  , (point1(1)+1)*r.Height()/2, (point2(0) + 1)*r.Width()/2, (point2(1)+1)*r.Height() / 2, *pDCToUse , model->getColor());
+		}
+		
+
+	}
+
+	//MidPointDraw(355, 489, 355, 163, pDCToUse, RGB(0, 0, 0));
+	MidPointDraw(0, 0, 50, 50, pDCToUse, RGB(0, 0, 0));
+
+	theta += 5;	*/
 }
 
 
