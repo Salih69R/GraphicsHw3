@@ -1,40 +1,51 @@
-#include<vector>
-
-
 #ifndef MODEL_H
 #define MODEL_H
 
-
+#include "Matrices.h"
+#include <vector>
+#include <Windows.h>
 
 using std::vector;
 
+
+
 class Model
 {
-protected:
-	Model();
+	vector<Vec3d> vertexes; //in the objects world
+	COLORREF color;
+	double pos; //in the screen world
+	Tmatd mTransform;//mat4 mTransform;
+
+public:
+	Model(COLORREF col);
 	virtual ~Model();
-	void virtual draw() = 0;
-	//mat4 mTransform;
-	//Geometry T
+	void draw();//might need to be pure virual in case we'd want to draw differently for every Model type
+
+	void addVertex(Vec3d vertex);
+	void translate(const Vec3d &translation);
+	void scale(const float &scalar);
+	void rotate(const Mat3d &rotation);
+	const vector<Vec3d> getVertexes();
+	COLORREF getColor();
 };
 
 
 
-class Camera {
-
-	//mat4 cTranform;
-	//mat4 projection;
+class Camera 
+{
+	Tmatd cTranform;
+	Tmatd projection;
 
 public:
+	void setTransformation(const Tmatd& T);//replaces
+	void setProjection(const Tmatd& T);//replaces
+	Tmatd LookAt(Vec4d& eye, Vec4d& at, Vec4d& up);
+	
 	/*
-	void setTransformation(const mat4& T);
-	void setProjection(const mat4& T);
-	mat4 LookAt(vec4& eye, vec4& at, vec4& up);
 	void Ortho(...);
 	void Persspective(...);
 	...
 	*/
-
 };
 
 
@@ -57,11 +68,12 @@ public:
 	void SetObjectMatrix(mat4& oTransform, mat3& nTransform);
 	void SwapBuffers(); }
 	*/
+	
 };
 
 
 class Scene {
-	/*
+	
 vector<Model*> models;
 vector<Camera*> cameras;
 Renderer *m_renderer;
@@ -69,12 +81,12 @@ public:
 
 	Scene(Renderer *renderer);
 	void AddModel(Model* model);
-	void AddCamera(Model* model);
+	void AddCamera(Camera* camera);
 	Model* GetModel(int model_id);
-	…
+	
+	//…
 
-	void draw();
-	*/
+	void draw();//TODO: implement
 };
 
 

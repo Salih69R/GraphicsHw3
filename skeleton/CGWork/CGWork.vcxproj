@@ -193,7 +193,6 @@
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="iritSkel.cpp" />
     <ClCompile Include="LightDialog.cpp" />
-    <ClCompile Include="Line.cpp" />
     <ClCompile Include="MainFrm.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -204,8 +203,8 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</BrowseInformation>
     </ClCompile>
-    <ClCompile Include="Mat3.cpp" />
     <ClCompile Include="MaterialDlg.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="PngWrapper.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
@@ -220,7 +219,6 @@
       <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</BrowseInformation>
     </ClCompile>
     <ClCompile Include="Trasformations.cpp" />
-    <ClCompile Include="Vec3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CGWork.rc" />
@@ -233,10 +231,11 @@
     <ClInclude Include="iritSkel.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightDialog.h" />
-    <ClInclude Include="Line.h" />
     <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="Mat3.h" />
     <ClInclude Include="MaterialDlg.h" />
+    <ClInclude Include="Matrices.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="PngWrapper.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />
@@ -264,8 +263,9 @@
     <ClInclude Include="..\include\triv_lib.h" />
     <ClInclude Include="..\include\trng_lib.h" />
     <ClInclude Include="..\include\user_lib.h" />
+    <ClInclude Include="TranformationMatrix.h" />
     <ClInclude Include="Trasformations.h" />
-    <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\CGWork.ico" />

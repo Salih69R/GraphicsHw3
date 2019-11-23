@@ -3,7 +3,7 @@
 
 
 //assumes x1 < x2, y1 < y2,  0 < dy <= dx 
-void basicMidPointDraw1(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color) {
+void basicMidPointDraw1(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, E, NE;
@@ -13,7 +13,7 @@ void basicMidPointDraw1(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 	E = 2 * dy;
 	NE = 2 * (dy - dx);
 
-	SetPixel(hdc, x, y, color);
+	SetPixel(*hdc, x, y, color);
 
 	while (x < x2) {
 
@@ -27,12 +27,12 @@ void basicMidPointDraw1(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 			++x;
 			++y;
 		}
-		SetPixel(hdc, x, y, color);
+		SetPixel(*hdc, x, y, color);
 	}
 }
 
 //assumes x1 < x2, y1 < y2,           dy  > dx  >= 0
-void basicMidPointDraw2(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color) {
+void basicMidPointDraw2(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, N, NE;
@@ -42,7 +42,7 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 	N = 2 * dx;
 	NE = 2 * (dx - dy);
 
-	SetPixel(hdc, x, y, color);
+	SetPixel(*hdc, x, y, color);
 
 	while (y < y2) {
 
@@ -56,7 +56,7 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 			++x;
 			++y;
 		}
-		SetPixel(hdc, x, y, color);
+		SetPixel(*hdc, x, y, color);
 	}
 }
 
@@ -64,7 +64,7 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 
 
 //assumes x1 < x2, y1 > y2,       -dx < dy < 0 < dx 
-void basicMidPointDraw3(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color) {
+void basicMidPointDraw3(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, E, SE;
@@ -76,7 +76,7 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 	E = 2 * dy;//-100 this should be positive i guess
 	SE = 2 * (dy + dx);//100 and this should be negative
 
-	SetPixel(hdc, x, y, color);
+	SetPixel(*hdc, x, y, color);
 
 	while (x < x2) {
 
@@ -90,7 +90,7 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 			++x;
 			--y;
 		}
-		SetPixel(hdc, x, y, color);
+		SetPixel(*hdc, x, y, color);
 	}
 }
 
@@ -98,7 +98,7 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 
 
 //assumes x1 < x2, y1 > y2,           dy < -dx < 0 < dx < -dy
-void basicMidPointDraw4(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color) {
+void basicMidPointDraw4(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, S, SE;
@@ -110,7 +110,7 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 	S = 2 * dx;
 	SE = 2 * (dy + dx);
 
-	SetPixel(hdc, x, y, color);
+	SetPixel(*hdc, x, y, color);
 
 	while (y > y2) {
 
@@ -124,14 +124,15 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color)
 			++x;
 			--y;
 		}
-		SetPixel(hdc, x, y, color);
+		SetPixel(*hdc, x, y, color);
+		
 	}
 }
 
 
 
 
-void MidPointDraw(int x1, int y1, int x2, int y2, HDC hdc, COLORREF color) {
+void MidPointDraw(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
 	
 	if (x2 < x1) // make sure that x1 <= x2, the == situation is ok
 	{
