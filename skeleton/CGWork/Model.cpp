@@ -26,7 +26,7 @@ void Model::addVertex(Vec3d vertex)
 
 void Model::translate(const Vec3d & translation)
 {
-	mTransform.setTranslation(translation);
+	mTransform.translate(translation);
 }
 
 void Model::scale(const float & scalar)
