@@ -196,7 +196,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 
 								 /* code handeling all vertex/normal/texture coords */
 	
-				curModel->addVertex(Vec3d(x,y,z));
+				curModel->addVertex(x,y,z);
 						
 				if(IP_HAS_NORMAL_VRTX(PVertex)) 
 				{

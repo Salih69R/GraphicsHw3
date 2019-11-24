@@ -268,10 +268,21 @@ void CCGWorkView::OnDraw(CDC* pDC)
 
 	for (Model* model : Models) {
 
+		//TODO: fix translate, it does nothing(throws exception??)
+		//try transforming stuff around
+		//model->translate(Vec3d(300, 300, 0));
 
-		for (int i = 0; i < model->getVertexes().size() - 1; i++) {
-			Vec3d point1 = model->getVertexes()[i];
-			Vec3d point2 = model->getVertexes()[i + 1];
+		//TODO: fix rotate, kinda does something but surely not rotate
+		//model->rotateZ(30);
+
+
+		//yay works
+		model->scale(1.5);
+
+
+		for (unsigned i = 0; i < model->getModeledVertexes().size() - 1; i++) {
+			Vec4d point1 = model->getModeledVertexes()[i];
+			Vec4d point2 = model->getModeledVertexes()[i + 1];
 
 
 			//Salih: Testing stuff: x=(x+1)*w , y= (1-y)*h/2

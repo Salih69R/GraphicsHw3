@@ -11,7 +11,7 @@ using std::vector;
 
 class Model
 {
-	vector<Vec3d> vertexes; //in the objects world
+	vector<Vec4d> vertexes; //in the objects world
 	COLORREF color;
 	double pos; //in the screen world
 	Tmatd mTransform;//mat4 mTransform;
@@ -21,11 +21,20 @@ public:
 	virtual ~Model();
 	void draw();//might need to be pure virual in case we'd want to draw differently for every Model type
 
-	void addVertex(Vec3d vertex);
+	void addVertex(double x, double y, double z);
+
+
 	void translate(const Vec3d &translation);
+
+	//TODO: should we allow scale in various scales for every axis?
 	void scale(const float &scalar);
-	void rotate(const Mat3d &rotation);
-	const vector<Vec3d> getVertexes();
+
+	//rotate
+	void rotateX(const double angle_deg);
+	void rotateY(const double angle_deg);
+	void rotateZ(const double angle_deg);
+
+	const vector<Vec4d> getModeledVertexes();
 	COLORREF getColor();
 };
 
