@@ -19,29 +19,53 @@ void Model::draw()
 
 }
 
-void Model::addVertex(Vec3d vertex)
+void Model::addVertex(double x, double y, double z)
 {
-	vertexes.push_back(vertex);
+	//turn it to Vec4d because we need them to be ready for drawing
+	Vec4d ver(x, y, z, 0);
+
+	vertexes.push_back(ver);
 }
 
 void Model::translate(const Vec3d & translation)
 {
-	mTransform.setTranslation(translation);
+	mTransform.translate(translation);
 }
 
+
+//TODO: should we allow scale in various scales for every axis?
 void Model::scale(const float & scalar)
 {
 	mTransform *= scalar;
 }
 
-void Model::rotate(const Mat3d & rotation)
+void Model::rotateX(const double angle_deg)
 {
-	mTransform.setRotation(rotation);
+	mTransform.rotateX(angle_deg);
 }
 
-const vector<Vec3d> Model::getVertexes()
+void Model::rotateY(const double angle_deg)
 {
-	return vertexes;
+	mTransform.rotateY(angle_deg);
+}
+
+void Model::rotateZ(const double angle_deg)
+{
+	mTransform.rotateZ(angle_deg);
+}
+
+
+
+const vector<Vec4d> Model::getModeledVertexes()
+{
+	
+	vector<Vec4d> ret;
+
+	for (auto ver : vertexes) {
+		ret.push_back(mTransform * ver);
+	}
+	
+	return ret;
 }
 
 COLORREF Model::getColor()
