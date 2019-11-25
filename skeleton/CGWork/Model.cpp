@@ -160,17 +160,13 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	for (size_t i = 0; i < models.size(); i++)
-	{
-		delete models[i];
-	}
 	for (size_t i = 0; i < cameras.size(); i++)
 	{
 		delete cameras[i];
 	}
 }
 
-void Scene::AddModel(Model * model)
+void Scene::AddModel(const Model &model)
 {
 	models.push_back(model);
 }
@@ -183,7 +179,7 @@ void Scene::AddCamera(Camera * camera)
 
 Model& Scene::GetModel(int model_id)
 {
-	return *(models[model_id]);
+	return models[model_id];
 }
 
 Camera& Scene::GetCamera(int camera_id)
@@ -196,8 +192,8 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	double width_d = static_cast<double>(width);
 	double height_d = static_cast<double>(height);
 
-	uint x_res = static_cast<uint>(width_d / 2.0 * x + width_d / 2.0);
-	uint y_res = static_cast<uint>(-height_d / 2.0 * y + height_d / 2.0);
+	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0) );
+	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
 
 	return Vec2u(x_res, y_res);
 }
@@ -207,17 +203,20 @@ void Scene::draw(CDC * pDC, int width, int height)
 
 	Camera* cam = cameras[0];//we have only one camera
 
-	for (Model* model : models) {
+	for (auto &model : models) {
 
-		auto& vertexes = model->getModeledVertexes();
+		auto& vertexes = model.getModeledVertexes();
 
 		for (unsigned i = 0; i < vertexes.size() - 1; i++) {
 
 			Vec4d point1 = cam->toProjectionView(vertexes[i]);
 			Vec4d point2 = cam->toProjectionView(vertexes[i + 1]);
 
-			//Salih: Testing stuff: x=(x+1)*w , y= (1-y)*h/2
-			MidPointDraw((point1(0) + 1)* width / 2, (point1(1) + 1)* height / 2, (point2(0) + 1)* width / 2, (point2(1) + 1)* height / 2, pDC, model->getColor());
+			auto pixels_point1 = coordsToPixels(point1(0), point1(1), width, height);
+			auto pixels_point2 = coordsToPixels(point2(0), point2(1), width, height);
+
+			//MidPointDraw((point1(0) + 1)* width / 2, (point1(1) + 1)* height / 2, (point2(0) + 1)* width / 2, (point2(1) + 1)* height / 2, pDC, model->getColor());
+			MidPointDraw(pixels_point1(0), pixels_point1(1), pixels_point2(0), pixels_point2(1), pDC, model.getColor());
 		}
 
 	}

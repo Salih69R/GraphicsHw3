@@ -65,14 +65,14 @@ public:
 
 class Scene {
 	
-vector<Model*> models;
+vector<Model> models;
 vector<Camera*> cameras;
 
 public:
 
 	Scene();
 	~Scene();
-	void AddModel(Model* model);
+	void AddModel(const Model& model);
 	void AddCamera(Camera* camera);
 	Model& GetModel(int model_id);
 	Camera& GetCamera(int camera_id);

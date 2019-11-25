@@ -186,7 +186,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			
 			PVertex = PPolygon -> PVertex;
 
-			Model* curModel= new Model(color);
+			Model curModel= Model(color);
 			
 			do {			     /* Assume at least one edge in polygon! */
 				
@@ -196,7 +196,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 
 								 /* code handeling all vertex/normal/texture coords */
 	
-				curModel->addVertex(x,y,z);
+				curModel.addVertex(x,y,z);
 						
 				if(IP_HAS_NORMAL_VRTX(PVertex)) 
 				{
