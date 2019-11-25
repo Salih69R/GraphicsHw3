@@ -34,7 +34,7 @@ IPFreeformConvStateStruct CGSkelFFCState = {
 //CGSkelProcessIritDataFiles(argv + 1, argc - 1);
 
 
-std::vector<Model*> Models;
+extern Scene theScene;
 
 /*****************************************************************************
 * DESCRIPTION:                                                               *
@@ -205,7 +205,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 				}
 				
 				PVertex = PVertex -> Pnext;
-				Models.push_back(curModel);
+				theScene.AddModel(curModel);
 			}
 			while (PVertex != PPolygon -> PVertex && PVertex != NULL);
 			/* Close the polygon. */
