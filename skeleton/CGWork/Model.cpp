@@ -22,7 +22,7 @@ void Model::draw()
 void Model::addVertex(double x, double y, double z)
 {
 	//turn it to Vec4d because we need them to be ready for drawing
-	Vec4d ver(x, y, z, 0);
+	Vec4d ver(x, y, z, 1);
 
 	vertexes.push_back(ver);
 }
@@ -61,7 +61,7 @@ const vector<Vec4d> Model::getModeledVertexes()
 	
 	vector<Vec4d> ret;
 
-	for (auto ver : vertexes) {
+	for (auto &ver : vertexes) {
 		ret.push_back(mTransform * ver);
 	}
 	
