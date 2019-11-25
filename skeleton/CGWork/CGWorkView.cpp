@@ -25,7 +25,6 @@ static char THIS_FILE[] = __FILE__;
 // For Status Bar access
 #include "MainFrm.h"
 
-#include "Draw.h"
 #include <vector>
 #include "Model.h"
 
@@ -38,8 +37,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 
-extern std::vector<Model*> Models;
-
+Scene theScene;
 
 
 
@@ -164,9 +162,7 @@ int CCGWorkView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	InitializeCGWork();
 
-
-
-
+	   
 	return 0;
 }
 
@@ -266,21 +262,8 @@ void CCGWorkView::OnDraw(CDC* pDC)
 	GetClientRect(&r);
 	CDC *pDCToUse = /*m_pDC*/m_pDbDC;
 
-	for (Model* model : Models) {
+	theScene.draw(pDC, r.Width(), r.Height());
 
-
-
-		for (unsigned i = 0; i < model->getModeledVertexes().size() - 1; i++) {
-			Vec4d point1 = model->getModeledVertexes()[i];
-			Vec4d point2 = model->getModeledVertexes()[i + 1];
-
-
-			//Salih: Testing stuff: x=(x+1)*w , y= (1-y)*h/2
-			MidPointDraw(  (point1(0)+1)*r.Width()/2  , (point1(1)+1)*r.Height()/2, (point2(0) + 1)*r.Width()/2, (point2(1)+1)*r.Height() / 2, pDC , model->getColor());
-		}
-
-
-	}
 	/*pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
 	
 	int numLines = 100;

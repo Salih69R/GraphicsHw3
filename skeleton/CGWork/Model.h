@@ -3,7 +3,8 @@
 
 #include "Matrices.h"
 #include <vector>
-#include <Windows.h>
+#include <afxwin.h>
+#include "Draw.h"
 
 using std::vector;
 
@@ -40,62 +41,44 @@ public:
 
 
 
+//as it is, doesn't support "expanding" the already set cTransformaion and projection
 class Camera 
 {
 	Tmatd cTranform;
 	Tmatd projection;
 
 public:
+
+
+	Camera();//default Camera pos is 0,0,-5, def projection is orthographic with cube (10X10X10) from -5 to 5 in every axis
 	void setTransformation(const Tmatd& T);//replaces
 	void setProjection(const Tmatd& T);//replaces
-	Tmatd LookAt(Vec3d& eye, Vec3d& at, Vec3d& up);
-	
-	/*
-	void Ortho(...);
-	void Persspective(...);
-	...
+	void LookAt(Vec3d& eye, Vec3d& at, Vec3d& up);//replaces the mTransform
+	void Ortho(double left, double right, double top, double bottom, double near, double far);//replaces the projection 
+	Vec4d toProjectionView(Vec4d vertex);
+	/*TODO:
+	void Persspective(...); //replaces the projection 
 	*/
 };
 
-
-
-
-class Renderer {
-
-	/*
-
-	float *m_outBuffer; // 3*width*height
-	float *m_zbuffer; // width*height
-	int m_width, m_height;
-	void CreateBuffers(int width, int height);
-public:
-//construction
-	void Init();
-	void DrawTriangles(vector<vec3>* vertices)
-	void SetCameraTransform(mat4& cTransform);
-	void SetProjection(mat4& projection);
-	void SetObjectMatrix(mat4& oTransform, mat3& nTransform);
-	void SwapBuffers(); }
-	*/
-	
-};
 
 
 class Scene {
 	
 vector<Model*> models;
 vector<Camera*> cameras;
-Renderer *m_renderer;
+
 public:
 
-	Scene(Renderer *renderer);
+	Scene();
+	~Scene();
 	void AddModel(Model* model);
 	void AddCamera(Camera* camera);
-	Model* GetModel(int model_id);
+	Model& GetModel(int model_id);
+	Camera& GetCamera(int camera_id);
 	
-	//…
 
-	void draw();//TODO: implement
+	void draw(CDC * pDC, int width, int height);//TODO: implement
 };
 
 
