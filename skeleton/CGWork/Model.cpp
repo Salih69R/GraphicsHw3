@@ -191,6 +191,17 @@ Camera& Scene::GetCamera(int camera_id)
 	return *(cameras[camera_id]);
 }
 
+Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width, const uint &height)
+{
+	double width_d = static_cast<double>(width);
+	double height_d = static_cast<double>(height);
+
+	uint x_res = static_cast<uint>(width_d / 2.0 * x + width_d / 2.0);
+	uint y_res = static_cast<uint>(-height_d / 2.0 * y + height_d / 2.0);
+
+	return Vec2u(x_res, y_res);
+}
+
 void Scene::draw(CDC * pDC, int width, int height)
 {
 

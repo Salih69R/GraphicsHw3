@@ -209,6 +209,20 @@ TransformationMatrix<T> &TransformationMatrix<T>::translate(const T &translate_x
 }
 
 template<typename T>
+TransformationMatrix<T> &TransformationMatrix<T>::scale(const Vector<T, TRANSLATION_SIZE> &scale)
+{
+	TransformationMatrix<T> scale;
+	for (uint i = 0; i < TRANSLATION_SIZE; i++)
+	{
+		scale(i, i) = scale(i);
+	}
+
+	*this = scale * *this;
+
+	return *this;
+}
+
+template<typename T>
 TransformationMatrix<T> &TransformationMatrix<T>::setRotation(const Matrix<T, ROTATION_SIZE, ROTATION_SIZE> &new_rotation)
 {
     for(uint row = 0; row < ROTATION_SIZE; row++)
@@ -240,20 +254,6 @@ Vector<T, TRANSLATION_SIZE> TransformationMatrix<T>::getTranslation() const
     return Vector<T, TRANSLATION_SIZE>(this->_data[0][TRANSLATION_SIZE],
                                        this->_data[1][TRANSLATION_SIZE],
                                        this->_data[2][TRANSLATION_SIZE]);
-}
-
-template<typename T>
-TransformationMatrix<T> &scale(const Vector<T, TRANSLATION_SIZE> &scale)
-{
-	TransformationMatrix<T> scale;
-	for (uint i = 0; i < TRANSLATION_SIZE; i++)
-	{
-		scale(i, i) = scale(i);
-	}
-
-	*this = scale * *this;
-
-	return *this;
 }
 
 #endif // TRANFORMATIONMATRIX_H

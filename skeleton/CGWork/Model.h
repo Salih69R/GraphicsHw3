@@ -76,6 +76,7 @@ public:
 	void AddCamera(Camera* camera);
 	Model& GetModel(int model_id);
 	Camera& GetCamera(int camera_id);
+	Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height);
 	
 
 	void draw(CDC * pDC, int width, int height);//TODO: implement
