@@ -3,7 +3,7 @@
 
 #include "Matrix.h"
 #include "Vector.h"
-
+#define M_PI 3.14159265359
 static constexpr uint TRANSFORMATION_SIZE = 4;
 static constexpr uint ROTATION_SIZE = 3;
 static constexpr uint TRANSLATION_SIZE = 3;
@@ -127,9 +127,9 @@ TransformationMatrix<T> &TransformationMatrix<T>::translate(const Vector<T, TRAN
     TransformationMatrix<T> mat_translation;
     mat_translation.setTranslation(translation);
 
-    *this = *this * mat_translation;
+	*this = *this * mat_translation;
 
-    return *this;
+	return *this;
 }
 
 template<typename T>
