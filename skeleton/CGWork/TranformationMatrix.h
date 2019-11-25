@@ -27,6 +27,7 @@ public:
     TransformationMatrix &rotateZ(const T &angle_deg);
     TransformationMatrix &translate(const Vector<T, TRANSLATION_SIZE> &translation);
     TransformationMatrix &translate(const T &translate_x, const T &translate_y, const T &translate_z);
+	TransformationMatrix &scale(const Vector<T, TRANSLATION_SIZE> &scale);
 
     TransformationMatrix operator+(const TransformationMatrix &other);
     TransformationMatrix operator-(const TransformationMatrix &other);
@@ -202,7 +203,7 @@ TransformationMatrix<T> &TransformationMatrix<T>::translate(const T &translate_x
     TransformationMatrix<T> mat_translation;
     mat_translation.setTranslation(Vector<T, TRANSLATION_SIZE>(translate_x, translate_y, translate_z));
 
-    *this = *this * mat_translation;
+    *this = mat_translation * *this;
 
     return *this;
 }
@@ -241,7 +242,18 @@ Vector<T, TRANSLATION_SIZE> TransformationMatrix<T>::getTranslation() const
                                        this->_data[2][TRANSLATION_SIZE]);
 }
 
+template<typename T>
+TransformationMatrix<T> &scale(const Vector<T, TRANSLATION_SIZE> &scale)
+{
+	TransformationMatrix<T> scale;
+	for (uint i = 0; i < TRANSLATION_SIZE; i++)
+	{
+		scale(i, i) = scale(i);
+	}
 
+	*this = scale * *this;
 
+	return *this;
+}
 
 #endif // TRANFORMATIONMATRIX_H
