@@ -204,11 +204,11 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 				    ++x;
 				}
 				
-				PVertex = PVertex -> Pnext;
-				theScene.AddModel(curModel);
+				PVertex = PVertex -> Pnext;	
 			}
 			while (PVertex != PPolygon -> PVertex && PVertex != NULL);
-			/* Close the polygon. */
+			/* Close the polygon. */	
+			theScene.AddModel(curModel);
 	}
 	/* Close the object. */
 	return true;
