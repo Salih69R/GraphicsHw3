@@ -39,7 +39,7 @@ public:
 	std::vector<Mesh> &getMeshes() { return _meshes; }
 	
 
-	void draw(CDC * pDC, int width, int height);//TODO: implement
+	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals);//TODO: implement
 
 private:
 	std::vector<Mesh> _meshes;

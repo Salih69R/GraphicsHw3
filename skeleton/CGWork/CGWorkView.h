@@ -34,7 +34,9 @@ private:
 	int m_nAction;				// Rotate, Translate, Scale
 	int m_nView;				// Orthographic, perspective
 	bool m_bIsPerspective;			// is the view perspective
-	
+	bool m_bShowFaceNormals;		//should it draw the face normals,TODO: send this to the scene draw method
+	bool m_bShowVerNormals;		//should it draw the vertexes normals, TODO: send this to the scene draw method
+
 	CString m_strItdFileName;		// file name of IRIT data
 
 	int m_nLightShading;			// shading: Flat, Gouraud.
@@ -110,6 +112,10 @@ protected:
 	afx_msg void OnUpdateAxisY(CCmdUI* pCmdUI);
 	afx_msg void OnAxisZ();
 	afx_msg void OnUpdateAxisZ(CCmdUI* pCmdUI);
+	afx_msg void OnFaceNormals();
+	afx_msg void OnUpdateFaceNormals(CCmdUI* pCmdUI);
+	afx_msg void OnVerNormals();
+	afx_msg void OnUpdateVerNormals(CCmdUI* pCmdUI);
 	afx_msg void OnLightShadingFlat();
 	afx_msg void OnUpdateLightShadingFlat(CCmdUI* pCmdUI);
 	afx_msg void OnLightShadingGouraud();

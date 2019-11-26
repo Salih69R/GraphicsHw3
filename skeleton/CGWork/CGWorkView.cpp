@@ -65,6 +65,10 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_UPDATE_COMMAND_UI(ID_AXIS_Y, OnUpdateAxisY)
 	ON_COMMAND(ID_AXIS_Z, OnAxisZ)
 	ON_UPDATE_COMMAND_UI(ID_AXIS_Z, OnUpdateAxisZ)
+	ON_COMMAND(ID_FACE_NORMALS, OnFaceNormals)
+	ON_UPDATE_COMMAND_UI(ID_FACE_NORMALS, OnUpdateFaceNormals)
+	ON_COMMAND(ID_SHOW_VER_NORMALS, OnVerNormals)
+	ON_UPDATE_COMMAND_UI(ID_SHOW_VER_NORMALS, OnUpdateVerNormals)
 	ON_COMMAND(ID_LIGHT_SHADING_FLAT, OnLightShadingFlat)
 	ON_UPDATE_COMMAND_UI(ID_LIGHT_SHADING_FLAT, OnUpdateLightShadingFlat)
 	ON_COMMAND(ID_LIGHT_SHADING_GOURAUD, OnLightShadingGouraud)
@@ -162,6 +166,7 @@ int CCGWorkView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	InitializeCGWork();
 
+	m_bShowFaceNormals = m_bShowVerNormals = false;
 	   
 	return 0;
 }
@@ -264,7 +269,7 @@ void CCGWorkView::OnDraw(CDC* pDC)
 
 	pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
 	m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
-	scene.draw(pDC, r.Width(), r.Height());
+	scene.draw(pDC, r.Width(), r.Height(), m_bShowFaceNormals, m_bShowVerNormals);
 
 	/*pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
 	
@@ -474,6 +479,28 @@ void CCGWorkView::OnAxisZ()
 void CCGWorkView::OnUpdateAxisZ(CCmdUI* pCmdUI) 
 {
 	pCmdUI->SetCheck(m_nAxis == ID_AXIS_Z);
+}
+
+
+void CCGWorkView::OnFaceNormals()
+{
+	m_bShowFaceNormals = !m_bShowFaceNormals;
+}
+
+void CCGWorkView::OnUpdateFaceNormals(CCmdUI * pCmdUI)
+{
+
+	pCmdUI->SetCheck(m_bShowFaceNormals == true);
+}
+
+void CCGWorkView::OnVerNormals()
+{
+	m_bShowVerNormals = !m_bShowVerNormals;
+}
+
+void CCGWorkView::OnUpdateVerNormals(CCmdUI * pCmdUI)
+{
+	pCmdUI->SetCheck(m_bShowVerNormals == true);
 }
 
 

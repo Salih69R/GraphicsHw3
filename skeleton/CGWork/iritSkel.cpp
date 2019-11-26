@@ -185,13 +185,28 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 
 			}
 
-
 			/* use if(IP_HAS_PLANE_POLY(PPolygon)) to know whether a normal is defined for the polygon
 			   access the normal by the first 3 components of PPolygon->Plane */
-			
-			PVertex = PPolygon -> PVertex;
 
+			PVertex = PPolygon -> PVertex;
 			Poly polygon;
+
+			if (IP_HAS_PLANE_POLY(PPolygon)) {//set the normal to the polygon
+				
+				//get it from the coef equation
+				polygon.SetFaceNormal(PPolygon->Plane[0], PPolygon->Plane[1], PPolygon->Plane[2]);
+			}
+			else {//has 3 vertexes at least
+				IPVertexStruct* first = PVertex;
+				IPVertexStruct* second = first->Pnext;
+				IPVertexStruct* third = second->Pnext;
+
+				Vec4d f(first->Coord[0], first->Coord[1], first->Coord[2], 1.0);
+				Vec4d s(second->Coord[0], second->Coord[1], second->Coord[2], 1.0);
+				Vec4d t(third->Coord[0], third->Coord[1], third->Coord[2], 1.0);
+				polygon.CalcSetFaceNormal(f, s, t);
+			}
+			
 			
 			do {			     /* Assume at least one edge in polygon! */
 				
@@ -202,7 +217,10 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 								 /* code handeling all vertex/normal/texture coords */
 	
 				polygon.addVertex(Vec4d(x, y, z, 1.0));
-						
+				
+				
+
+
 				if(IP_HAS_NORMAL_VRTX(PVertex)) 
 				{
 				    int x = 0;
@@ -216,7 +234,6 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			mesh.addPolygon(polygon);		
 	}
 	/* Close the object. */
-	mesh.setColor(RGB(255, 0, 0));
 	scene.addMesh(mesh);
 
 	return true;

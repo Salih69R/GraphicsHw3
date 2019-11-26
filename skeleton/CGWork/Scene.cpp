@@ -88,7 +88,7 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	return Vec2u(x_res, y_res);
 }
 
-void Scene::draw(CDC * pDC, int width, int height)
+void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals,bool showVerNormals)
 {
 
 	for (auto &mesh : _meshes) {
@@ -100,6 +100,18 @@ void Scene::draw(CDC * pDC, int width, int height)
 			{
 				Vec4d p1 = mesh.getModel() * vertexes[i];
 				Vec4d p2 = mesh.getModel() * vertexes[i + 1];
+
+				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getColor());
+				if (showVerNormals) {
+					//TODO: show vertices normals code
+				}
+			}
+			if (showFaceNormals) {
+				Vec4d p1 = mesh.getModel() * polygon.getAveragePosition();
+				Vec4d p2 = mesh.getModel() * polygon.getFaceNormal();
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
