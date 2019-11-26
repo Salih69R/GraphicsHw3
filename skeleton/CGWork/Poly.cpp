@@ -9,4 +9,6 @@ Poly::Poly() :
 Poly &Poly::addVertex(const Vec4d &vertex)
 {
 	_vertices.emplace_back(vertex);
+
+	return *this;
 }

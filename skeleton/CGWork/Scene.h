@@ -5,41 +5,7 @@
 #include <vector>
 #include <afxwin.h>
 #include "Draw.h"
-
-using std::vector;
-
-
-
-class Model
-{
-	vector<Vec4d> vertexes; //in the objects world
-	COLORREF color;
-	double pos; //in the screen world
-	Tmatd mTransform;//mat4 mTransform;
-
-public:
-	Model(COLORREF col);
-	virtual ~Model();
-	void draw();//might need to be pure virual in case we'd want to draw differently for every Model type
-
-	void addVertex(double x, double y, double z);
-
-
-	void translate(const Vec3d &translation);
-
-	//TODO: should we allow scale in various scales for every axis?
-	void scale(const float &scalar);
-
-	//rotate
-	void rotateX(const double angle_deg);
-	void rotateY(const double angle_deg);
-	void rotateZ(const double angle_deg);
-
-	const vector<Vec4d> getModeledVertexes();
-	COLORREF getColor();
-};
-
-
+#include "Mesh.h"
 
 //as it is, doesn't support "expanding" the already set cTransformaion and projection
 class Camera 
@@ -64,22 +30,19 @@ public:
 
 
 class Scene {
-	
-vector<Model> models;
-vector<Camera*> cameras;
-
 public:
 
 	Scene();
-	~Scene();
-	void AddModel(const Model& model);
-	void AddCamera(Camera* camera);
-	Model& GetModel(int model_id);
-	Camera& GetCamera(int camera_id);
+	~Scene() = default;
+	void addMesh(const Mesh& model);
 	Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height);
+	std::vector<Mesh> &getMeshes() { return _meshes; }
 	
 
 	void draw(CDC * pDC, int width, int height);//TODO: implement
+
+private:
+	std::vector<Mesh> _meshes;
 };
 
 

@@ -61,6 +61,9 @@ private:
 // Implementation
 public:
 	virtual ~CCGWorkView();
+	void rotate(const int &angle);
+	void translate(const int &dist);
+	void scale(const int &scaling);
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -117,6 +120,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 #ifndef _DEBUG  // debug version in CGWorkView.cpp

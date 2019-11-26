@@ -27,9 +27,9 @@ public:
     T norm() const;
     Vector &normalize();
     Vector cross(const Vector &other);
-    Vector operator+(const Vector &other);
-    Vector operator-(const Vector &other);
-    Vector operator-();
+    Vector operator+(const Vector &other) const;
+    Vector operator-(const Vector &other) const;
+    Vector operator-() const;
 
 private: //methods
     template<typename ...Args>
@@ -99,7 +99,7 @@ T Vector<T, elements>::norm() const
 }
 
 template<typename T, uint elements>
-Vector<T, elements> Vector<T, elements>::operator+(const Vector &other)
+Vector<T, elements> Vector<T, elements>::operator+(const Vector &other) const
 {
     auto res = this->Matrix<T, elements, 1>::operator+(other);
 
@@ -107,7 +107,7 @@ Vector<T, elements> Vector<T, elements>::operator+(const Vector &other)
 }
 
 template<typename T, uint elements>
-Vector<T, elements> Vector<T, elements>::operator-(const Vector &other)
+Vector<T, elements> Vector<T, elements>::operator-(const Vector &other) const
 {
     auto res = this->Matrix<T, elements, 1>::operator-(other);
 
@@ -115,7 +115,7 @@ Vector<T, elements> Vector<T, elements>::operator-(const Vector &other)
 }
 
 template<typename T, uint elements>
-Vector<T, elements> Vector<T, elements>::operator-()
+Vector<T, elements> Vector<T, elements>::operator-() const
 {
     auto res = this->Matrix<T, elements, 1>::operator-();
 

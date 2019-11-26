@@ -26,7 +26,7 @@ static char THIS_FILE[] = __FILE__;
 #include "MainFrm.h"
 
 #include <vector>
-#include "Model.h"
+#include "Scene.h"
 
 // Use this macro to display text messages in the status bar.
 #define STATUS_BAR_TEXT(str) (((CMainFrame*)GetParentFrame())->getStatusBar().SetWindowText(str))
@@ -37,9 +37,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 
-Scene theScene;
-
-
+Scene scene;
 
 
 IMPLEMENT_DYNCREATE(CCGWorkView, CView)
@@ -74,6 +72,8 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_COMMAND(ID_LIGHT_CONSTANTS, OnLightConstants)
 	//}}AFX_MSG_MAP
 	ON_WM_TIMER()
+	ON_WM_LBUTTONDBLCLK()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -262,7 +262,9 @@ void CCGWorkView::OnDraw(CDC* pDC)
 	GetClientRect(&r);
 	CDC *pDCToUse = /*m_pDC*/m_pDbDC;
 
-	theScene.draw(pDC, r.Width(), r.Height());
+	pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
+	m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
+	scene.draw(pDC, r.Width(), r.Height());
 
 	/*pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
 	
@@ -535,4 +537,98 @@ void CCGWorkView::OnTimer(UINT_PTR nIDEvent)
 	CView::OnTimer(nIDEvent);
 	if (nIDEvent == 1)
 		Invalidate();
+}
+
+void CCGWorkView::rotate(const int &angle)
+{
+	double factor = 0.1f;
+
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getMeshes()[0].rotateX(angle * factor);
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getMeshes()[0].rotateY(angle * factor);
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getMeshes()[0].rotateZ(angle * factor);
+	}
+}
+
+void CCGWorkView::translate(const int &dist)
+{
+	double factor = 0.05f;
+
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getMeshes()[0].translate(Vec3d(dist * factor, 0.0, 0.0));
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getMeshes()[0].translate(Vec3d(0.0, dist * factor, 0.0));
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getMeshes()[0].translate(Vec3d(0.0, 0.0, dist * factor));
+	}
+}
+
+void CCGWorkView::scale(const int &scaling)
+{
+	if (scaling == 0)
+	{
+		return;
+	}
+
+	double factor = 1.1f;
+
+	if (scaling < 0)
+	{
+		factor = 1 / factor;
+	}
+
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getMeshes()[0].scale(Vec3d(factor, 1.0, 1.0));
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getMeshes()[0].scale(Vec3d(1.0, factor, 1.0));
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getMeshes()[0].scale(Vec3d(1.0, 1.0, factor));
+	}
+}
+
+void CCGWorkView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	static uint last_x = 0;
+	uint curr_x = point.x;
+
+	int dx = static_cast<int>(curr_x - last_x);
+
+	if (nFlags == MK_LBUTTON)
+	{
+		if (m_nAction == ID_ACTION_ROTATE)
+		{
+			rotate(dx);
+		}
+		else if (m_nAction == ID_ACTION_TRANSLATE)
+		{
+			translate(dx);
+		}
+		else if (m_nAction == ID_ACTION_SCALE)
+		{
+			scale(dx);
+		}
+	}
+
+	last_x = curr_x;
+
+	CView::OnMouseMove(nFlags, point);
 }

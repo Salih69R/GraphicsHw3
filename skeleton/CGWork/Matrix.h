@@ -27,11 +27,11 @@ public:
     uint getNumOfCols() const {return cols;}
 
     template<uint num_of_cols>
-    Matrix<T, rows, num_of_cols> operator*(const Matrix<T, cols, num_of_cols> &other);
-    Matrix<T, rows, cols> operator*(const T &scalar);
-    Matrix operator+(const Matrix &other);
-    Matrix operator-(const Matrix &other);
-    Matrix operator-();
+    Matrix<T, rows, num_of_cols> operator*(const Matrix<T, cols, num_of_cols> &other) const;
+    Matrix<T, rows, cols> operator*(const T &scalar) const;
+    Matrix operator+(const Matrix &other) const;
+    Matrix operator-(const Matrix &other) const;
+    Matrix operator-() const;
 
     void print();
 
@@ -127,7 +127,7 @@ Matrix<T, rows, cols> &Matrix<T, rows, cols>::operator/=(const T &scalar)
 }
 
 template<typename T, uint rows, uint cols>
-Matrix<T, rows, cols> Matrix<T, rows, cols>::operator+(const Matrix<T, rows, cols> &other)
+Matrix<T, rows, cols> Matrix<T, rows, cols>::operator+(const Matrix<T, rows, cols> &other) const
 {
     Matrix<T, rows, cols> res;
 
@@ -143,7 +143,7 @@ Matrix<T, rows, cols> Matrix<T, rows, cols>::operator+(const Matrix<T, rows, col
 }
 
 template<typename T, uint rows, uint cols>
-Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-(const Matrix<T, rows, cols> &other)
+Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-(const Matrix<T, rows, cols> &other) const
 {
     Matrix<T, rows, cols> res;
 
@@ -159,7 +159,7 @@ Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-(const Matrix<T, rows, col
 }
 
 template<typename T, uint rows, uint cols>
-Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-()
+Matrix<T, rows, cols> Matrix<T, rows, cols>::operator-() const
 {
     Matrix<T, rows, cols> res;
 
@@ -199,7 +199,7 @@ const T &Matrix<T, rows, cols>::operator()(const uint &row, const uint &col) con
 }
 
 template<typename T, uint rows, uint cols>
-Matrix<T, rows, cols> Matrix<T, rows, cols>::operator*(const T &scalar)
+Matrix<T, rows, cols> Matrix<T, rows, cols>::operator*(const T &scalar) const
 {
     Matrix<T, rows, cols> res;
 
@@ -291,7 +291,7 @@ void Matrix<T, rows, cols>::fillElements(const T & first, Args... tail)
 
 template<typename T, uint rows, uint cols>
 template<uint num_of_cols>
-Matrix<T, rows, num_of_cols> Matrix<T, rows, cols>::operator*(const Matrix<T, cols, num_of_cols> &other)
+Matrix<T, rows, num_of_cols> Matrix<T, rows, cols>::operator*(const Matrix<T, cols, num_of_cols> &other) const
 {
     Matrix<T, rows, num_of_cols> res;
 

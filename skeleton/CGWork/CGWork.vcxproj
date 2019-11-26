@@ -205,7 +205,7 @@
     </ClCompile>
     <ClCompile Include="MaterialDlg.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="PngWrapper.cpp" />
     <ClCompile Include="Poly.cpp" />
     <ClCompile Include="StdAfx.cpp">
@@ -238,7 +238,7 @@
     <ClInclude Include="Matrices.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="PngWrapper.h" />
     <ClInclude Include="Poly.h" />
     <ClInclude Include="Resource.h" />

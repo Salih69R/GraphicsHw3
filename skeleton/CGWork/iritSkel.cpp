@@ -1,7 +1,9 @@
+#include <vector>
+
 #include "stdafx.h"
 #include "iritSkel.h"
-#include <vector>
-#include "Model.h"
+#include "Mesh.h"
+#include "Scene.h"
 /*****************************************************************************
 * Skeleton for an interface to a parser to read IRIT data files.			 *
 ******************************************************************************
@@ -34,7 +36,7 @@ IPFreeformConvStateStruct CGSkelFFCState = {
 //CGSkelProcessIritDataFiles(argv + 1, argc - 1);
 
 
-extern Scene theScene;
+extern Scene scene;
 
 /*****************************************************************************
 * DESCRIPTION:                                                               *
@@ -164,6 +166,9 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			Attrs = AttrTraceAttributes(Attrs, NULL);
 		}
 	}
+
+	Mesh mesh;
+
 	for (PPolygon = PObj -> U.Pl; PPolygon != NULL;	PPolygon = PPolygon -> Pnext) 
 	{
 			if (PPolygon -> PVertex == NULL) {
@@ -186,7 +191,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			
 			PVertex = PPolygon -> PVertex;
 
-			Model curModel= Model(color);
+			Poly polygon;
 			
 			do {			     /* Assume at least one edge in polygon! */
 				
@@ -196,7 +201,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 
 								 /* code handeling all vertex/normal/texture coords */
 	
-				curModel.addVertex(x,y,z);
+				polygon.addVertex(Vec4d(x, y, z, 1.0));
 						
 				if(IP_HAS_NORMAL_VRTX(PVertex)) 
 				{
@@ -208,9 +213,12 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			}
 			while (PVertex != PPolygon -> PVertex && PVertex != NULL);
 			/* Close the polygon. */	
-			theScene.AddModel(curModel);
+			mesh.addPolygon(polygon);		
 	}
 	/* Close the object. */
+	mesh.setColor(RGB(255, 0, 0));
+	scene.addMesh(mesh);
+
 	return true;
 }
 

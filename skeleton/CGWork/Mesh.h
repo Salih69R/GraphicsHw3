@@ -2,7 +2,6 @@
 
 #include <afxwin.h>
 
-
 #include "Poly.h"
 
 class Mesh
@@ -18,6 +17,7 @@ public:
 	const std::vector<Poly> getPolygons() const { return _polygons; }
 	const Tmatd getModel() const { return _model; }
 	const COLORREF getColor() const { return _color; }
+	Mesh &setColor(const COLORREF &color) { _color = color; return *this; }
 
 	~Mesh() = default;
 

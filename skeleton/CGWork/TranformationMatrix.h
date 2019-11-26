@@ -33,7 +33,7 @@ public:
     TransformationMatrix operator-(const TransformationMatrix &other);
     TransformationMatrix operator-();
     TransformationMatrix operator*(const TransformationMatrix &other);
-    Vector<T, TRANSFORMATION_SIZE> operator*(const Vector<T, TRANSFORMATION_SIZE> &vec);
+    Vector<T, TRANSFORMATION_SIZE> operator*(const Vector<T, TRANSFORMATION_SIZE> &vec) const;
 
 private:
     TransformationMatrix &setTranslation(const Vector<T, TRANSLATION_SIZE> &new_translation);
@@ -115,7 +115,7 @@ TransformationMatrix<T> TransformationMatrix<T>::operator*(const TransformationM
 }
 
 template<typename T>
-Vector<T, TRANSFORMATION_SIZE> TransformationMatrix<T>::operator*(const Vector<T, TRANSFORMATION_SIZE> &vec)
+Vector<T, TRANSFORMATION_SIZE> TransformationMatrix<T>::operator*(const Vector<T, TRANSFORMATION_SIZE> &vec) const
 {
     auto res = this->Matrix<T, 4, 4>::operator*(vec);
 
@@ -211,13 +211,13 @@ TransformationMatrix<T> &TransformationMatrix<T>::translate(const T &translate_x
 template<typename T>
 TransformationMatrix<T> &TransformationMatrix<T>::scale(const Vector<T, TRANSLATION_SIZE> &scale)
 {
-	TransformationMatrix<T> scale;
+	TransformationMatrix<T> mat_scale;
 	for (uint i = 0; i < TRANSLATION_SIZE; i++)
 	{
-		scale(i, i) = scale(i);
+		mat_scale(i, i) = scale(i);
 	}
 
-	*this = scale * *this;
+	*this = mat_scale * *this;
 
 	return *this;
 }
