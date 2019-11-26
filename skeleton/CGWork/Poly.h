@@ -4,13 +4,13 @@
 
 #include "Matrices.h"
 
-class Polygon
+class Poly
 {
 public:
-	Polygon() = default;
-	Polygon &addVertex(const Vec4d &vertex);
+	Poly();
+	Poly &addVertex(const Vec4d &vertex);
 	const std::vector<Vec4d> getVertices() const { return _vertices; }
-	~Polygon() = default;
+	~Poly() = default;
 
 private:
 	std::vector<Vec4d> _vertices;
