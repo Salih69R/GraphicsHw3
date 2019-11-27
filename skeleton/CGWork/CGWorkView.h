@@ -36,6 +36,9 @@ private:
 	bool m_bIsPerspective;			// is the view perspective
 	bool m_bShowFaceNormals;		//should it draw the face normals,TODO: send this to the scene draw method
 	bool m_bShowVerNormals;		//should it draw the vertexes normals, TODO: send this to the scene draw method
+	bool m_bshowGivenFNormal;//default is false, if false && m_bShowFaceNormals is true then show calculated face normals
+	bool m_bshowGivenVNormal;//default is false if false && m_bShowVerNormals is true then show calculated vertex normals
+
 
 	CString m_strItdFileName;		// file name of IRIT data
 
@@ -116,6 +119,10 @@ protected:
 	afx_msg void OnUpdateFaceNormals(CCmdUI* pCmdUI);
 	afx_msg void OnVerNormals();
 	afx_msg void OnUpdateVerNormals(CCmdUI* pCmdUI);
+	afx_msg void OnFaceNormalsCalc();
+	afx_msg void OnUpdateFaceNormalsCalc(CCmdUI * pCmdUI);
+	afx_msg void OnVerNormalsCalc();
+	afx_msg void OnUpdateVerNormalsCalc(CCmdUI * pCmdUI);
 	afx_msg void OnLightShadingFlat();
 	afx_msg void OnUpdateLightShadingFlat(CCmdUI* pCmdUI);
 	afx_msg void OnLightShadingGouraud();

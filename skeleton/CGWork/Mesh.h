@@ -6,16 +6,16 @@
 
 
 class VertexAndNormal {
-private:
+public:
 	
 	Vec4d _vertex, _givenNormal, _calculatedNormal;
 	std::vector<Poly> _polygonsTouching;
 
-public:
+
 	/*the fact the givenNormal(3) is 0 flags that it still has not gotten any given normal, 
 	and so if we come to draw the given normal and the 4th value is still 0, we print the calculated one instead*/
 	VertexAndNormal():_givenNormal(0,0,0,0), _polygonsTouching(){}
-	friend class Mesh;
+	
 	friend bool operator==(const VertexAndNormal& first, const VertexAndNormal& other) {
 		return (first._vertex(0) == other._vertex(0)) && (first._vertex(1) == other._vertex(1)) && (first._vertex(2) == other._vertex(2) && (first._vertex(3) == other._vertex(3)));
 	}
@@ -43,8 +43,10 @@ public:
 	Mesh &rotateZ(const double angle_deg);
 	Mesh &translate(const Vec3d &translation);
 	Mesh &scale(const Vec3d &scale);
-	const std::vector<Poly> getPolygons() const { return _polygons; }
+	const std::vector<Poly>& getPolygons() const { return _polygons; }
 	const Tmatd getModel() const;
+	const std::vector<VertexAndNormal>& getVeritxes() const { return _vers; }
+
 
 	const COLORREF getColor() const { return _color; }
 	const COLORREF getFNColor() const { return _fNormalColor; }
@@ -64,8 +66,7 @@ private:
 	COLORREF _color;
 	COLORREF _fNormalColor;
 	COLORREF _vNormalColor;
-	bool  _showGivenFNormal;//default is false
-	bool  _showGivenVNormal;//default is false
+
 
 	//used for bounding box and fixing the starting pos
 	double _maxX;

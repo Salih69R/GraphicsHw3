@@ -10,10 +10,11 @@ public:
 	Poly();
 	Poly &addVertex(const Vec4d &vertex);
 
-	void SetFaceNormal(double x, double y, double z);
-	void CalcSetFaceNormal(const Vec4d & vertex1, const Vec4d & vertex2, const Vec4d & vertex3);
+	void SetGivenFaceNormal(double x, double y, double z);
+	void CalcSetFaceNormal();
 	const Vec4d getAveragePosition() const;
-	const Vec4d getFaceNormal() const;
+	const Vec4d getCalcFaceNormal() const;
+	const Vec4d getGivenFaceNormal() const;
 	const std::vector<Vec4d> getVertices() const { return _vertices; }
 	~Poly() = default;
 
@@ -22,6 +23,7 @@ public:
 private:
 	std::vector<Vec4d> _vertices;
 	Vec4d _fnormal;
+	Vec4d _fGivenNormal;
 
 	//used for bounding box
 	double _maxX;

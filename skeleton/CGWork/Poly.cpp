@@ -36,17 +36,18 @@ Poly &Poly::addVertex(const Vec4d &vertex)
 
 
 
-void Poly::SetFaceNormal(double x, double y, double z)
+void Poly::SetGivenFaceNormal(double x, double y, double z)
 {
-	_fnormal = Vec4d(x, y, z, 1.0);
-	_fnormal.normalize();
+	_fGivenNormal = Vec4d(x, y, z, 0);
+	_fGivenNormal.normalize();
+	_fGivenNormal(3) = 1.0;//the 1 on the end also flags that it has been given, otherwise (0) falgs that it hasn't
 }
 
 
-void Poly::CalcSetFaceNormal(const Vec4d & vertex1, const Vec4d & vertex2, const Vec4d & vertex3)
+void Poly::CalcSetFaceNormal()
 {
-	Vec4d u = vertex2 - vertex1;
-	Vec4d v = vertex3 - vertex2;
+	Vec4d u = _vertices[1] - _vertices[0];
+	Vec4d v = _vertices[2] - _vertices[1];
 
 	_fnormal = u.cross(v);
 	_fnormal.normalize();
@@ -68,12 +69,21 @@ const Vec4d Poly::getAveragePosition() const
 
 
 
-const Vec4d Poly::getFaceNormal() const
+const Vec4d Poly::getCalcFaceNormal() const
 {
 	Vec4d avg = getAveragePosition();
+	Tmatd pos;
+	pos.translate(avg(0), avg(1), avg(2));
 
-	//Tmatd pos;
-	//pos.translate(avg(0),avg(1),avg(2));
 
-	return avg + _fnormal;
+	return pos * _fnormal;
+}
+
+const Vec4d Poly::getGivenFaceNormal() const
+{
+	Vec4d avg = getAveragePosition();
+	Tmatd pos;
+	pos.translate(avg(0), avg(1), avg(2));
+
+	return pos * _fGivenNormal;
 }

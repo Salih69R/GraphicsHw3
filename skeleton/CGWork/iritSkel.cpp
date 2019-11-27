@@ -194,18 +194,11 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			if (IP_HAS_PLANE_POLY(PPolygon)) {//set the normal to the polygon
 				
 				//get it from the coef equation
-				polygon.SetFaceNormal(PPolygon->Plane[0], PPolygon->Plane[1], PPolygon->Plane[2]);
+				polygon.SetGivenFaceNormal(PPolygon->Plane[0], PPolygon->Plane[1], PPolygon->Plane[2]);
 			}
-			else {//has 3 vertexes at least
-				IPVertexStruct* first = PVertex;
-				IPVertexStruct* second = first->Pnext;
-				IPVertexStruct* third = second->Pnext;
-
-				Vec4d f(first->Coord[0], first->Coord[1], first->Coord[2], 1.0);
-				Vec4d s(second->Coord[0], second->Coord[1], second->Coord[2], 1.0);
-				Vec4d t(third->Coord[0], third->Coord[1], third->Coord[2], 1.0);
-				polygon.CalcSetFaceNormal(f, s, t);
-			}
+			
+				
+			
 			
 			
 			do {			     /* Assume at least one edge in polygon! */
@@ -229,14 +222,12 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 					Vec4d nor(PVertex->Normal[0], PVertex->Normal[1], PVertex->Normal[2], 1.0);
 					mesh.addGivenNormal(vertex, nor);
 				}
-				else {
-					
 
-				}
 				PVertex = PVertex -> Pnext;	
 			}
 			while (PVertex != PPolygon -> PVertex && PVertex != NULL);
 			/* Close the polygon. */	
+			polygon.CalcSetFaceNormal();
 			mesh.addPolygon(polygon);		
 	}
 	/* Close the object. */

@@ -69,6 +69,12 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_UPDATE_COMMAND_UI(ID_FACE_NORMALS, OnUpdateFaceNormals)
 	ON_COMMAND(ID_SHOW_VER_NORMALS, OnVerNormals)
 	ON_UPDATE_COMMAND_UI(ID_SHOW_VER_NORMALS, OnUpdateVerNormals)
+
+	ON_COMMAND(ID_FACE_NORMALS_CALCULATED, OnFaceNormalsCalc)
+	ON_UPDATE_COMMAND_UI(ID_FACE_NORMALS_CALCULATED, OnUpdateFaceNormalsCalc)
+	ON_COMMAND(ID_VERTEX_NORMALS_CALCULATED, OnVerNormalsCalc)
+	ON_UPDATE_COMMAND_UI(ID_VERTEX_NORMALS_CALCULATED, OnUpdateVerNormalsCalc)
+
 	ON_COMMAND(ID_LIGHT_SHADING_FLAT, OnLightShadingFlat)
 	ON_UPDATE_COMMAND_UI(ID_LIGHT_SHADING_FLAT, OnUpdateLightShadingFlat)
 	ON_COMMAND(ID_LIGHT_SHADING_GOURAUD, OnLightShadingGouraud)
@@ -167,6 +173,7 @@ int CCGWorkView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	InitializeCGWork();
 
 	m_bShowFaceNormals = m_bShowVerNormals = false;
+	m_bshowGivenFNormal = m_bshowGivenVNormal = true;//beccause they look cooler
 	   
 	return 0;
 }
@@ -269,7 +276,7 @@ void CCGWorkView::OnDraw(CDC* pDC)
 
 	pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
 
-	scene.draw(pDCToUse, r.Width(), r.Height(), m_bShowFaceNormals, m_bShowVerNormals);
+	scene.draw(pDCToUse, r.Width(), r.Height(), m_bShowFaceNormals, m_bShowVerNormals, m_bshowGivenFNormal, m_bshowGivenVNormal);
 	m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
 	
 
@@ -504,6 +511,30 @@ void CCGWorkView::OnVerNormals()
 void CCGWorkView::OnUpdateVerNormals(CCmdUI * pCmdUI)
 {
 	pCmdUI->SetCheck(m_bShowVerNormals == true);
+}
+
+
+
+//handles choosing what type of normals(faces and vertecis) should we show (doesn't handle if we show or not
+void CCGWorkView::OnFaceNormalsCalc()
+{
+	m_bshowGivenFNormal = !m_bshowGivenFNormal;
+}
+
+void CCGWorkView::OnUpdateFaceNormalsCalc(CCmdUI * pCmdUI)
+{
+	pCmdUI->SetCheck(m_bshowGivenFNormal == true);
+}
+
+
+void CCGWorkView::OnVerNormalsCalc()
+{
+	m_bshowGivenVNormal = !m_bshowGivenVNormal;
+}
+
+void CCGWorkView::OnUpdateVerNormalsCalc(CCmdUI * pCmdUI)
+{
+	pCmdUI->SetCheck(m_bshowGivenVNormal == true);
 }
 
 
