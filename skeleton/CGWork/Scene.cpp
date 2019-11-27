@@ -88,7 +88,8 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	return Vec2u(x_res, y_res);
 }
 
-void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals,bool showVerNormals)
+
+void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals)
 {
 
 	for (auto &mesh : _meshes) {

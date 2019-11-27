@@ -15,9 +15,10 @@ public:
 	Mesh &translate(const Vec3d &translation);
 	Mesh &scale(const Vec3d &scale);
 	const std::vector<Poly> getPolygons() const { return _polygons; }
-	const Tmatd getModel() const { return _model; }
+	const Tmatd getModel() const;
 	const COLORREF getColor() const { return _color; }
 	Mesh &setColor(const COLORREF &color) { _color = color; return *this; }
+	Vec4d getPos() { return Vec4d(_pos(0), _pos(1), _pos(2), 1.0); }
 
 	~Mesh() = default;
 
@@ -26,4 +27,12 @@ private:
 	Vec3d _pos;
 	Tmatd _model;
 	COLORREF _color;
+	
+	//used for bounding box and fixing the starting pos
+	double _maxX;
+	double _maxY;
+	double _maxZ;
+	double _minX;
+	double _minY;
+	double _minZ;
 };

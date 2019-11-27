@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Matrices.h"
-
+extern class Mesh;
 class Poly
 {
 public:
@@ -17,9 +17,19 @@ public:
 	const std::vector<Vec4d> getVertices() const { return _vertices; }
 	~Poly() = default;
 
+
+	friend class Mesh;//because why not
 private:
 	std::vector<Vec4d> _vertices;
-	std::vector<Vec4d> _vnormals;
+	std::vector<Vec4d> _vnormals;//TODO: implement functionality
 	Vec4d _fnormal;
+
+	//used for bounding box
+	double _maxX;
+	double _maxY;
+	double _maxZ;
+	double _minX;
+	double _minY;
+	double _minZ;
 };
 

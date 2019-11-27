@@ -268,8 +268,11 @@ void CCGWorkView::OnDraw(CDC* pDC)
 	CDC *pDCToUse = /*m_pDC*/m_pDbDC;
 
 	pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
+
+	scene.draw(pDCToUse, r.Width(), r.Height(), m_bShowFaceNormals, m_bShowVerNormals);
 	m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
-	scene.draw(pDC, r.Width(), r.Height(), m_bShowFaceNormals, m_bShowVerNormals);
+	
+
 
 	/*pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
 	
