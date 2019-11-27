@@ -135,7 +135,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
 					p2 = mesh.getModel() * vers[i]._givenNormal;
 				else 
-					p2 = mesh.getModel() * vers[i]._calculatedNormal;
+					p2 = mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);

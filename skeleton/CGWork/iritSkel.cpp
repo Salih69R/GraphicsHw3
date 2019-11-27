@@ -228,8 +228,10 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			while (PVertex != PPolygon -> PVertex && PVertex != NULL);
 			/* Close the polygon. */	
 			polygon.CalcSetFaceNormal();
+			
 			mesh.addPolygon(polygon);		
 	}
+	mesh.calcVNormals();
 	/* Close the object. */
 	scene.addMesh(mesh);
 

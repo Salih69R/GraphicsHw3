@@ -36,7 +36,7 @@ public:
 	Mesh &addGivenNormal(Vec4d& vertex, Vec4d& normal);
 
 
-	Mesh &calcVNormals(double x, double y, double z);
+	Mesh &calcVNormals();
 	Mesh &addPolygon(const Poly &polygon);
 	Mesh &rotateX(const double angle_deg);
 	Mesh &rotateY(const double angle_deg);

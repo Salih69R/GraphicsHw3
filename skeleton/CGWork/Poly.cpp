@@ -38,7 +38,7 @@ Poly &Poly::addVertex(const Vec4d &vertex)
 
 void Poly::SetGivenFaceNormal(double x, double y, double z)
 {
-	_fGivenNormal = Vec4d(x, y, z, 0);
+	_fGivenNormal = Vec4d(-x, -y, -z, 0);
 	_fGivenNormal.normalize();
 	_fGivenNormal(3) = 1.0;//the 1 on the end also flags that it has been given, otherwise (0) falgs that it hasn't
 }
@@ -46,11 +46,19 @@ void Poly::SetGivenFaceNormal(double x, double y, double z)
 
 void Poly::CalcSetFaceNormal()
 {
-	Vec4d u = _vertices[1] - _vertices[0];
-	Vec4d v = _vertices[2] - _vertices[1];
+	Vec3d p1(_vertices[0](0), _vertices[0](1), _vertices[0](2));
+	Vec3d p2(_vertices[1](0), _vertices[1](1), _vertices[1](2));
+	Vec3d p3(_vertices[2](0), _vertices[2](1), _vertices[2](2));
 
-	_fnormal = u.cross(v);
-	_fnormal.normalize();
+
+
+	Vec3d u = p3 - p1;
+	Vec3d v = p2 - p1;
+
+	Vec3d res = u.cross(v);
+	res.normalize();
+	_fnormal = Vec4d(res(0),res(1),res(2),1);
+
 }
 
 const Vec4d Poly::getAveragePosition() const

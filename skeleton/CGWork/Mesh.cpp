@@ -93,6 +93,30 @@ Mesh & Mesh::addGivenNormal(Vec4d & vertex, Vec4d & normal)
 
 
 
+Mesh & Mesh::calcVNormals()
+{
+	// TODO: insert return statement here
+	for (size_t i = 0; i < _vers.size(); i++)
+	{
+		auto ver = _vers[i];
+		Vec4d avg(0,0,0,0);
+		
+		for (auto pol : ver._polygonsTouching)
+		{
+			avg += pol._fnormal;
+		}
+		avg /= ver._polygonsTouching.size();
+		avg(3) = 0;
+		avg.normalize();
+		avg(3) = 1;
+		_vers[i]._calculatedNormal = avg;
+
+
+	}
+
+	return *this;
+}
+
 Mesh &Mesh::addPolygon(const Poly &polygon)
 {
 	_polygons.emplace_back(polygon);
