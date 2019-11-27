@@ -1,6 +1,6 @@
 #include "Scene.h"
 
-
+#define DEF_BOUNDING_BOX_SCREEN_RATION 3
 
 void Camera::LookAt(Vec3d & eye, Vec3d & at, Vec3d & up)
 {
@@ -58,14 +58,6 @@ void Camera::setProjection(const Tmatd & T)
 
 
 
-
-
-
-
-
-
-
-
 Scene::Scene() :
 	_meshes()
 {
@@ -82,8 +74,18 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	double width_d = static_cast<double>(width);
 	double height_d = static_cast<double>(height);
 
-	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0) );
+
+
+	uint x_res = static_cast<uint>( (width_d / 2.0)  + x * (width_d / (2 * DEF_BOUNDING_BOX_SCREEN_RATION)));
+	uint y_res = static_cast<uint>( (height_d / 2.0)  - y * (height_d / (2 * DEF_BOUNDING_BOX_SCREEN_RATION)));
+
+
+	/*
+	
+	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
 	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
+
+	*/
 
 	return Vec2u(x_res, y_res);
 }
@@ -93,6 +95,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 {
 
 	for (auto &mesh : _meshes) {
+		auto p =mesh.getPos();//testing
 		for (const auto &polygon : mesh.getPolygons())
 		{
 			auto& vertexes = polygon.getVertices();

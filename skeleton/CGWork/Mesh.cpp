@@ -48,11 +48,23 @@ Mesh &Mesh::addPolygon(const Poly &polygon)
 const Tmatd Mesh::getModel() const
 {
 	Tmatd posmat;
-	posmat.translate(_pos);
+	posmat.translate(_pos*-1);
 
-	Tmatd ret = _model;
+	//m is max dimension the mesh takes
+	int m = (_maxX - _pos(0));
+	if ((_maxY - _pos(1)) > m)
+		m = (_maxY - _pos(1));
+	if ((_maxZ - _pos(2)) > m)
+		m = (_maxZ - _pos(2));
 
-	return ret * posmat;
+	Tmatd norm;
+	if(m != 0)
+		norm.scale(Vec3d(1 / m,1/m,1/m));
+
+
+	Tmatd mod = _model;
+
+	return mod * norm *  posmat;
 }
 
 
