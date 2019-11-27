@@ -94,8 +94,8 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals)
 {
 
+
 	for (auto &mesh : _meshes) {
-		auto p =mesh.getPos();//testing
 		for (const auto &polygon : mesh.getPolygons())
 		{
 			auto& vertexes = polygon.getVertices();

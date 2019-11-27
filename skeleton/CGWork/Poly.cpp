@@ -44,16 +44,23 @@ void Poly::SetFaceNormal(double x, double y, double z)
 
 void Poly::CalcSetFaceNormal(const Vec4d & vertex1, const Vec4d & vertex2, const Vec4d & vertex3)
 {
-	Vec4d u = vertex3 - vertex1;
-	Vec4d v = vertex2 - vertex1;
+	Vec4d u = vertex2 - vertex1;
+	Vec4d v = vertex3 - vertex2;
 
 	_fnormal = u.cross(v);
+	_fnormal.normalize();
 }
 
 const Vec4d Poly::getAveragePosition() const
 {
-	Vec4d avg = _vertices[0] + _vertices[1] + _vertices[2];
-	avg /= 3;
+	Vec4d avg = _vertices[0];
+	
+	for (size_t i = 1; i < _vertices.size(); i++)
+	{
+		avg += _vertices[i];
+	}
+	
+	avg /= _vertices.size();
 
 	return avg;
 }
