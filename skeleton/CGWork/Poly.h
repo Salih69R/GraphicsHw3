@@ -21,7 +21,6 @@ public:
 	friend class Mesh;//because why not
 private:
 	std::vector<Vec4d> _vertices;
-	std::vector<Vec4d> _vnormals;//TODO: implement functionality
 	Vec4d _fnormal;
 
 	//used for bounding box

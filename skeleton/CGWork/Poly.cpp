@@ -1,7 +1,7 @@
 #include "Poly.h"
 
 Poly::Poly() :
-	_vertices() , _vnormals()
+	_vertices() 
 {
 
 }
@@ -39,6 +39,7 @@ Poly &Poly::addVertex(const Vec4d &vertex)
 void Poly::SetFaceNormal(double x, double y, double z)
 {
 	_fnormal = Vec4d(x, y, z, 1.0);
+	_fnormal.normalize();
 }
 
 

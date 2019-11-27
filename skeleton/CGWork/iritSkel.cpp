@@ -216,17 +216,23 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 
 								 /* code handeling all vertex/normal/texture coords */
 	
-				polygon.addVertex(Vec4d(x, y, z, 1.0));
+				Vec4d vertex(x, y, z, 1.0);
+				polygon.addVertex(vertex);
 				
 				
 
 
 				if(IP_HAS_NORMAL_VRTX(PVertex)) 
 				{
-				    int x = 0;
-				    ++x;
+				    
+					//PVertex->Normal= double[3]
+					Vec4d nor(PVertex->Normal[0], PVertex->Normal[1], PVertex->Normal[2], 1.0);
+					mesh.addGivenNormal(vertex, nor);
 				}
-				
+				else {
+					
+
+				}
 				PVertex = PVertex -> Pnext;	
 			}
 			while (PVertex != PPolygon -> PVertex && PVertex != NULL);
