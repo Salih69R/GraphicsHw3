@@ -6,7 +6,9 @@ Mesh::Mesh() :
 	_polygons(),
 	_pos(0.0, 0.0, 0.0),
 	_model(),
-	_color(RGB(0, 0, 0))
+	_color(RGB(0, 0, 0)),
+	_fNormalColor(RGB(90, 55, 110)),//cool purple
+	_vNormalColor(RGB(90, 215, 200))//cool cyan blue
 {
 
 }

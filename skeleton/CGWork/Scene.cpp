@@ -120,7 +120,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getColor());
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getFNColor());
 			}
 		}
 	}
