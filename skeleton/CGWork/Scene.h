@@ -20,7 +20,6 @@ public:
 	void setTransformation(const Tmatd& T);//replaces
 	void setProjection(const Tmatd& T);//replaces
 	void LookAt(Vec3d& eye, Vec3d& at, Vec3d& up);//replaces the mTransform
-	void Ortho(double left, double right, double top, double bottom, double near, double far);//replaces the projection 
 	Vec4d toProjectionView(Vec4d vertex);
 	/*TODO:
 	void Persspective(...); //replaces the projection 
@@ -45,6 +44,7 @@ public:
 private:
 	std::vector<Mesh> _meshes;
 	Tmatd _view;
+	Tmatd _projection;
 };
 
 

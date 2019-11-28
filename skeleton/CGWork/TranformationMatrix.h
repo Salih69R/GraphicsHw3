@@ -19,6 +19,8 @@ public:
     TransformationMatrix(const Matrix<T, ROTATION_SIZE, ROTATION_SIZE> &rotation,
                          Vector<T, TRANSLATION_SIZE> &translation);
     TransformationMatrix(const Matrix<T, TRANSFORMATION_SIZE, TRANSFORMATION_SIZE> &other);
+	static TransformationMatrix ortho(const T &left, const T &right,
+		const T &bottom, const T &top, const T &near, const T &far);
 
     Vector<T, TRANSLATION_SIZE> getTranslation() const;
     Matrix<T, ROTATION_SIZE, ROTATION_SIZE> getRotation() const;
@@ -254,6 +256,16 @@ Vector<T, TRANSLATION_SIZE> TransformationMatrix<T>::getTranslation() const
     return Vector<T, TRANSLATION_SIZE>(this->_data[0][TRANSLATION_SIZE],
                                        this->_data[1][TRANSLATION_SIZE],
                                        this->_data[2][TRANSLATION_SIZE]);
+}
+
+template<typename T>
+TransformationMatrix<T> TransformationMatrix<T>::ortho(const T &left, const T &right,
+	const T &bottom, const T &top, const T &near, const T &far)
+{
+	return TransformationMatrix<T>(2 / (right - left), 0, 0, -(right + left) / (right - left),
+		0, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom),
+		0, 0, 2 / (far - near), (far + near) / (far - near),
+		0, 0, 0, 1);
 }
 
 #endif // TRANFORMATIONMATRIX_H
