@@ -43,6 +43,7 @@ public:
 
 private:
 	std::vector<Mesh> _meshes;
+	Tmatd _view;
 };
 
 

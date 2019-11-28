@@ -59,7 +59,8 @@ void Camera::setProjection(const Tmatd & T)
 
 
 Scene::Scene() :
-	_meshes()
+	_meshes(),
+	_view()
 {
 
 }
@@ -93,8 +94,6 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 
 void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals)
 {
-
-
 	for (auto &mesh : _meshes) {
 		for (const auto &polygon : mesh.getPolygons())
 		{
@@ -102,8 +101,8 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 
 			for (unsigned i = 0; i < vertexes.size() - 1; i++)
 			{
-				Vec4d p1 = mesh.getModel() * vertexes[i];
-				Vec4d p2 = mesh.getModel() * vertexes[i + 1];
+				Vec4d p1 = _view * mesh.getModel() * vertexes[i];
+				Vec4d p2 = _view * mesh.getModel() * vertexes[i + 1];
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
