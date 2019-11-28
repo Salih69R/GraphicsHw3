@@ -55,6 +55,7 @@ public:
 		_color = color; _fNormalColor = face_normal_color; _vNormalColor = vertex_normal_color; return *this;
 	}
 	Vec4d getPos() { return Vec4d(_pos(0), _pos(1), _pos(2), 1.0); }
+	Mesh &setColor(const COLORREF &color) { _color = color; return *this; }
 
 	~Mesh() = default;
 
