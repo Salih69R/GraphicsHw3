@@ -84,6 +84,10 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_WM_TIMER()
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_MOUSEMOVE()
+	ON_COMMAND(ID_COORDINATESYSTEM_VIEW, &CCGWorkView::OnCoordinatesystemView)
+	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_VIEW, &CCGWorkView::OnUpdateCoordinatesystemView)
+	ON_COMMAND(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnCoordinatesystemModel)
+	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnUpdateCoordinatesystemModel)
 END_MESSAGE_MAP()
 
 
@@ -117,6 +121,8 @@ CCGWorkView::CCGWorkView()
 	m_lights[LIGHT_ID_1].enabled=true;
 	m_pDbBitMap = NULL;
 	m_pDbDC = NULL;
+
+	_curr_coordinate_system = CoordinateSystem::VIEW;
 }
 
 CCGWorkView::~CCGWorkView()
@@ -548,47 +554,47 @@ void CCGWorkView::OnUpdateVerNormalsCalc(CCmdUI * pCmdUI)
 
 // LIGHT SHADING HANDLERS ///////////////////////////////////////////
 
-void CCGWorkView::OnLightShadingFlat() 
+void CCGWorkView::OnLightShadingFlat()
 {
 	m_nLightShading = ID_LIGHT_SHADING_FLAT;
 }
 
-void CCGWorkView::OnUpdateLightShadingFlat(CCmdUI* pCmdUI) 
+void CCGWorkView::OnUpdateLightShadingFlat(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(m_nLightShading == ID_LIGHT_SHADING_FLAT);
 }
 
 
-void CCGWorkView::OnLightShadingGouraud() 
+void CCGWorkView::OnLightShadingGouraud()
 {
 	m_nLightShading = ID_LIGHT_SHADING_GOURAUD;
 }
 
-void CCGWorkView::OnUpdateLightShadingGouraud(CCmdUI* pCmdUI) 
+void CCGWorkView::OnUpdateLightShadingGouraud(CCmdUI* pCmdUI)
 {
 	pCmdUI->SetCheck(m_nLightShading == ID_LIGHT_SHADING_GOURAUD);
 }
 
 // LIGHT SETUP HANDLER ///////////////////////////////////////////
 
-void CCGWorkView::OnLightConstants() 
+void CCGWorkView::OnLightConstants()
 {
 	CLightDialog dlg;
 
-	for (int id=LIGHT_ID_1;id<MAX_LIGHT;id++)
-	{	    
-	    dlg.SetDialogData((LightID)id,m_lights[id]);
-	}
-	dlg.SetDialogData(LIGHT_ID_AMBIENT,m_ambientLight);
-
-	if (dlg.DoModal() == IDOK) 
+	for (int id = LIGHT_ID_1; id < MAX_LIGHT; id++)
 	{
-	    for (int id=LIGHT_ID_1;id<MAX_LIGHT;id++)
-	    {
-		m_lights[id] = dlg.GetDialogData((LightID)id);
-	    }
-	    m_ambientLight = dlg.GetDialogData(LIGHT_ID_AMBIENT);
-	}	
+		dlg.SetDialogData((LightID)id, m_lights[id]);
+	}
+	dlg.SetDialogData(LIGHT_ID_AMBIENT, m_ambientLight);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		for (int id = LIGHT_ID_1; id < MAX_LIGHT; id++)
+		{
+			m_lights[id] = dlg.GetDialogData((LightID)id);
+		}
+		m_ambientLight = dlg.GetDialogData(LIGHT_ID_AMBIENT);
+	}
 	Invalidate();
 }
 
@@ -604,17 +610,13 @@ void CCGWorkView::rotate(const int &angle)
 {
 	double factor = 0.1f;
 
-	if (m_nAxis == ID_AXIS_X)
+	if (_curr_coordinate_system == CoordinateSystem::VIEW)
 	{
-		scene.getMeshes()[0].rotateX(angle * factor);
+		rotateView(angle * factor);
 	}
-	else if (m_nAxis == ID_AXIS_Y)
+	else if (_curr_coordinate_system == CoordinateSystem::MODEL)
 	{
-		scene.getMeshes()[0].rotateY(angle * factor);
-	}
-	else if (m_nAxis == ID_AXIS_Z)
-	{
-		scene.getMeshes()[0].rotateZ(angle * factor);
+		rotateModel(angle * factor);
 	}
 }
 
@@ -622,17 +624,13 @@ void CCGWorkView::translate(const int &dist)
 {
 	double factor = 0.05f;
 
-	if (m_nAxis == ID_AXIS_X)
+	if (_curr_coordinate_system == CoordinateSystem::VIEW)
 	{
-		scene.getMeshes()[0].translate(Vec3d(dist * factor, 0.0, 0.0));
+		translateView(dist * factor);
 	}
-	else if (m_nAxis == ID_AXIS_Y)
+	else if(_curr_coordinate_system == CoordinateSystem::MODEL)
 	{
-		scene.getMeshes()[0].translate(Vec3d(0.0, dist * factor, 0.0));
-	}
-	else if (m_nAxis == ID_AXIS_Z)
-	{
-		scene.getMeshes()[0].translate(Vec3d(0.0, 0.0, dist * factor));
+		translateModel(dist * factor);
 	}
 }
 
@@ -650,17 +648,109 @@ void CCGWorkView::scale(const int &scaling)
 		factor = 1 / factor;
 	}
 
+	if (_curr_coordinate_system == CoordinateSystem::VIEW)
+	{
+		scaleView(scaling * factor);
+	}
+	else if (_curr_coordinate_system == CoordinateSystem::MODEL)
+	{
+		scaleModel(scaling * factor);
+	}
+}
+
+void CCGWorkView::rotateModel(const double &val)
+{
 	if (m_nAxis == ID_AXIS_X)
 	{
-		scene.getMeshes()[0].scale(Vec3d(factor, 1.0, 1.0));
+		scene.getMeshes()[0].rotateX(val);
 	}
 	else if (m_nAxis == ID_AXIS_Y)
 	{
-		scene.getMeshes()[0].scale(Vec3d(1.0, factor, 1.0));
+		scene.getMeshes()[0].rotateY(val);
 	}
 	else if (m_nAxis == ID_AXIS_Z)
 	{
-		scene.getMeshes()[0].scale(Vec3d(1.0, 1.0, factor));
+		scene.getMeshes()[0].rotateZ(val);
+	}
+}
+
+void CCGWorkView::translateModel(const double &val)
+{
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getMeshes()[0].translate(Vec3d(val, 0.0, 0.0));
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getMeshes()[0].translate(Vec3d(0.0, val, 0.0));
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getMeshes()[0].translate(Vec3d(0.0, 0.0, val));
+	}
+}
+
+void CCGWorkView::scaleModel(const double &val)
+{
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getMeshes()[0].scale(Vec3d(val, 1.0, 1.0));
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getMeshes()[0].scale(Vec3d(1.0, val, 1.0));
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getMeshes()[0].scale(Vec3d(1.0, 1.0, val));
+	}
+}
+
+void CCGWorkView::rotateView(const double &val)
+{
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getView().rotateX(val);
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getView().rotateY(val);
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getView().rotateZ(val);
+	}
+}
+
+void CCGWorkView::translateView(const double &val)
+{
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getView().translate(Vec3d(val, 0.0, 0.0));
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getView().translate(Vec3d(0.0, val, 0.0));
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getView().translate(Vec3d(0.0, 0.0, val));
+	}
+}
+
+void CCGWorkView::scaleView(const double &val)
+{
+	if (m_nAxis == ID_AXIS_X)
+	{
+		scene.getView().scale(Vec3d(val, 1.0, 1.0));
+	}
+	else if (m_nAxis == ID_AXIS_Y)
+	{
+		scene.getView().scale(Vec3d(1.0, val, 1.0));
+	}
+	else if (m_nAxis == ID_AXIS_Z)
+	{
+		scene.getView().scale(Vec3d(1.0, 1.0, val));
 	}
 }
 
@@ -692,4 +782,28 @@ void CCGWorkView::OnMouseMove(UINT nFlags, CPoint point)
 	last_x = curr_x;
 
 	CView::OnMouseMove(nFlags, point);
+}
+
+
+void CCGWorkView::OnCoordinatesystemView()
+{
+	_curr_coordinate_system = CoordinateSystem::VIEW;
+}
+
+
+void CCGWorkView::OnUpdateCoordinatesystemView(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_curr_coordinate_system == CoordinateSystem::VIEW);
+}
+
+
+void CCGWorkView::OnCoordinatesystemModel()
+{
+	_curr_coordinate_system = CoordinateSystem::MODEL;
+}
+
+
+void CCGWorkView::OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(_curr_coordinate_system == CoordinateSystem::MODEL);
 }

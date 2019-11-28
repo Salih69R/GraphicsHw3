@@ -77,16 +77,16 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 
 
 
-	uint x_res = static_cast<uint>( (width_d / 2.0)  + x * (width_d / (2 * DEF_BOUNDING_BOX_SCREEN_RATION)));
-	uint y_res = static_cast<uint>( (height_d / 2.0)  - y * (height_d / (2 * DEF_BOUNDING_BOX_SCREEN_RATION)));
+	//uint x_res = static_cast<uint>( (width_d / 2.0)  + x * (width_d / (2 * DEF_BOUNDING_BOX_SCREEN_RATION)));
+	//uint y_res = static_cast<uint>( (height_d / 2.0)  - y * (height_d / (2 * DEF_BOUNDING_BOX_SCREEN_RATION)));
 
 
-	/*
+	
 	
 	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
 	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
 
-	*/
+	
 
 	return Vec2u(x_res, y_res);
 }

@@ -220,7 +220,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</BrowseInformation>
     </ClCompile>
-    <ClCompile Include="Trasformations.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CGWork.rc" />
@@ -268,7 +267,6 @@
     <ClInclude Include="..\include\trng_lib.h" />
     <ClInclude Include="..\include\user_lib.h" />
     <ClInclude Include="TranformationMatrix.h" />
-    <ClInclude Include="Trasformations.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>

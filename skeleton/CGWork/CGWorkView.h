@@ -52,6 +52,14 @@ private:
 	LightParams m_lights[MAX_LIGHT];	//configurable lights array
 	LightParams m_ambientLight;		//ambient light (only RGB is used)
 
+	enum class CoordinateSystem
+	{
+		MODEL,
+		VIEW
+	};
+
+	CoordinateSystem _curr_coordinate_system;
+
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -69,6 +77,12 @@ public:
 	void rotate(const int &angle);
 	void translate(const int &dist);
 	void scale(const int &scaling);
+	void rotateView(const double &val);
+	void translateView(const double &val);
+	void scaleView(const double &val);
+	void rotateModel(const double &val);
+	void translateModel(const double &val);
+	void scaleModel(const double &val);
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -134,6 +148,10 @@ protected:
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnCoordinatesystemView();
+	afx_msg void OnUpdateCoordinatesystemView(CCmdUI *pCmdUI);
+	afx_msg void OnCoordinatesystemModel();
+	afx_msg void OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // debug version in CGWorkView.cpp

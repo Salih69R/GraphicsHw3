@@ -48,9 +48,6 @@
     <ClCompile Include="Draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Trasformations.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -173,9 +170,6 @@
       <Filter>Header Files\irit</Filter>
     </ClInclude>
     <ClInclude Include="Draw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Trasformations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Matrices.h">

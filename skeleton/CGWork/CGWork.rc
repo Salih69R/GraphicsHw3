@@ -115,6 +115,11 @@ BEGIN
     BEGIN
         MENUITEM "&About CGWork...",            ID_APP_ABOUT
     END
+    POPUP "coordinate system"
+    BEGIN
+        MENUITEM "view",                        ID_COORDINATESYSTEM_VIEW, CHECKED
+        MENUITEM "model",                       ID_COORDINATESYSTEM_MODEL
+    END
 END
 
 

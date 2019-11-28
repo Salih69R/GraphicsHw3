@@ -37,6 +37,7 @@ public:
 	void addMesh(const Mesh& model);
 	Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height);
 	std::vector<Mesh> &getMeshes() { return _meshes; }
+	Tmatd &getView() { return _view; }
 	
 
 	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals);//TODO: implement
