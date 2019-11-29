@@ -1,32 +1,13 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include "Matrices.h"
-#include <vector>
+
 #include <afxwin.h>
+#include <vector>
+
 #include "Draw.h"
 #include "Mesh.h"
-
-//as it is, doesn't support "expanding" the already set cTransformaion and projection
-class Camera 
-{
-	Tmatd cTranform;
-	Tmatd projection;
-
-public:
-
-
-	Camera();//default Camera pos is 0,0,-5, def projection is orthographic with cube (10X10X10) from -5 to 5 in every axis
-	void setTransformation(const Tmatd& T);//replaces
-	void setProjection(const Tmatd& T);//replaces
-	void LookAt(Vec3d& eye, Vec3d& at, Vec3d& up);//replaces the mTransform
-	Vec4d toProjectionView(Vec4d vertex);
-	/*TODO:
-	void Persspective(...); //replaces the projection 
-	*/
-};
-
-
+#include "Matrices.h"
 
 class Scene {
 public:
@@ -35,9 +16,9 @@ public:
 	~Scene() = default;
 	void addMesh(const Mesh& model);
 	Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height);
+	Scene &lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up);
 	std::vector<Mesh> &getMeshes() { return _meshes; }
 	Tmatd &getView() { return _view; }
-	
 
 	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals);//TODO: implement
 
