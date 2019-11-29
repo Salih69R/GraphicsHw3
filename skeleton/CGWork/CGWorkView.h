@@ -79,9 +79,11 @@ public:
 	void rotate(const int &angle);
 	void translate(const int &dist);
 	void scale(const int &scaling);
+
 	void rotateView(const double &val);
 	void translateView(const double &val);
 	void scaleView(const double &val);
+
 	void rotateModel(const double &val);
 	void translateModel(const double &val);
 	void scaleModel(const double &val);
