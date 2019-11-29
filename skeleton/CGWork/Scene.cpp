@@ -65,8 +65,19 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	double width_d = static_cast<double>(width);
 	double height_d = static_cast<double>(height);
 
-	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
-	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
+	uint x_res = 0;
+	if((width_d / 2.0) * (x + 1.0) > 0)
+		x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
+
+
+	uint y_res = 0;
+	if((height_d / 2.0) * (1.0 - y) > 0)
+		y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
+
+	if (x_res > width)
+		x_res = width;
+	if (y_res > height)
+		y_res = height;
 
 	return Vec2u(x_res, y_res);
 }
