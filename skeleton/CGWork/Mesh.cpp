@@ -2,13 +2,15 @@
 #include <algorithm>
 
 
-Mesh::Mesh() :
+//init all colors to same color
+Mesh::Mesh(COLORREF col) :
 	_polygons(),
 	_pos(0.0, 0.0, 0.0),
 	_model(),
-	_color(RGB(0, 0, 0)),
-	_fNormalColor(RGB(90, 55, 110)),//cool purple
-	_vNormalColor(RGB(90, 215, 200))//cool cyan blue
+	_color(col),
+	_fNormalColor(col),
+	_vNormalColor(col),
+	_BBColor(col)
 {
 
 }
@@ -147,6 +149,41 @@ const Tmatd Mesh::getModel() const
 
 	return _model;
 }
+
+
+std::vector<std::pair<Vec4d, Vec4d>> Mesh::getBoundingBoxLines()
+{
+
+	Vec4d p1(_maxX, _maxY, _maxZ);
+	Vec4d p2(_maxX, _maxY, _minZ);
+	Vec4d p3(_minX, _maxY, _minZ);
+	Vec4d p4(_minX, _maxY, _maxZ);
+	Vec4d p5(_maxX, _minY, _maxZ);
+	Vec4d p6(_minX, _minY, _maxZ);
+	Vec4d p7(_minX, _minY, _minZ);
+	Vec4d p8(_maxX, _minY, _minZ);
+
+
+	std::pair<Vec4d, Vec4d> l1(p1, p2), l2(p2, p3), l3(p3, p4), l4(p4, p1), l5(p5, p6), l6(p6, p7), l7(p7, p8), l8(p8, p5), l9(p1, p5), l10(p2, p8), l11(p3, p7), l12(p4, p6);
+
+	std::vector<std::pair<Vec4d, Vec4d>> container;
+
+	container.push_back(l1);
+	container.push_back(l2);
+	container.push_back(l3);
+	container.push_back(l4);
+	container.push_back(l5);
+	container.push_back(l6);
+	container.push_back(l7);
+	container.push_back(l8);
+	container.push_back(l9);
+	container.push_back(l10);
+	container.push_back(l11);
+	container.push_back(l12);
+
+	return container;
+}
+
 
 
 Mesh &Mesh::rotateX(const double angle_deg)

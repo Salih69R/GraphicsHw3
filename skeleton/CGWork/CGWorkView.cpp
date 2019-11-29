@@ -180,7 +180,8 @@ int CCGWorkView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_bShowFaceNormals = m_bShowVerNormals = false;
 	m_bshowGivenFNormal = m_bshowGivenVNormal = true;//beccause they look cooler
-	   
+	m_lMouseSensitivity = 1;//TODO: add a dialog that controls this(and controls colors and other stuff to be controlled)
+	m_nActiveMesh = -1;//all are active
 	return 0;
 }
 
