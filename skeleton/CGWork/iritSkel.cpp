@@ -167,7 +167,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 		}
 	}
 
-	Mesh mesh;
+	Mesh mesh(color);
 
 	for (PPolygon = PObj -> U.Pl; PPolygon != NULL;	PPolygon = PPolygon -> Pnext) 
 	{

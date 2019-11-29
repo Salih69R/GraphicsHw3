@@ -38,6 +38,8 @@ private:
 	bool m_bShowVerNormals;		//should it draw the vertexes normals, TODO: send this to the scene draw method
 	bool m_bshowGivenFNormal;//default is false, if false && m_bShowFaceNormals is true then show calculated face normals
 	bool m_bshowGivenVNormal;//default is false if false && m_bShowVerNormals is true then show calculated vertex normals
+	int m_nActiveMesh; //the id of the mesh to apply the transformation to ,initiated to -1(means all Meshs are active) TODO: implement changing this value
+	double m_lMouseSensitivity;		//controls tthe mouse sensitivity, TODO: add dialog to update this
 
 
 	CString m_strItdFileName;		// file name of IRIT data
@@ -77,9 +79,11 @@ public:
 	void rotate(const int &angle);
 	void translate(const int &dist);
 	void scale(const int &scaling);
+
 	void rotateView(const double &val);
 	void translateView(const double &val);
 	void scaleView(const double &val);
+
 	void rotateModel(const double &val);
 	void translateModel(const double &val);
 	void scaleModel(const double &val);

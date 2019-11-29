@@ -180,7 +180,8 @@ int CCGWorkView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_bShowFaceNormals = m_bShowVerNormals = false;
 	m_bshowGivenFNormal = m_bshowGivenVNormal = true;//beccause they look cooler
-	   
+	m_lMouseSensitivity = 1;//TODO: add a dialog that controls this(and controls colors and other stuff to be controlled)
+	m_nActiveMesh = -1;//all are active
 	return 0;
 }
 
@@ -663,34 +664,90 @@ void CCGWorkView::scale(const int &scaling)
 
 void CCGWorkView::rotateModel(const double &val)
 {
+	auto& meshs = scene.getMeshes();
 	if (m_nAxis == ID_AXIS_X)
 	{
-		scene.getMeshes()[0].rotateX(val);
+		if (m_nActiveMesh == -1)//do it for all meshs
+			for (size_t i = 0; i < meshs.size(); i++)
+			{
+				meshs[i].rotateX(val);
+			}
+
+		else {
+			meshs[m_nActiveMesh].rotateX(val);
+		}
+
 	}
 	else if (m_nAxis == ID_AXIS_Y)
 	{
-		scene.getMeshes()[0].rotateY(val);
+		if (m_nActiveMesh == -1)//do it for all meshs
+			for (size_t i = 0; i < meshs.size(); i++)
+			{
+				meshs[i].rotateY(val);
+			}
+
+		else {
+			meshs[m_nActiveMesh].rotateY(val);
+		}
 	}
 	else if (m_nAxis == ID_AXIS_Z)
 	{
-		scene.getMeshes()[0].rotateZ(val);
+		if (m_nActiveMesh == -1)//do it for all meshs
+			for (size_t i = 0; i < meshs.size(); i++)
+			{
+				meshs[i].rotateZ(val);
+			}
+
+		else {
+			meshs[m_nActiveMesh].rotateZ(val);
+		}
+
 	}
 }
 
-void CCGWorkView::translateModel(const double &val)
-{
+	void CCGWorkView::translateModel(const double &val) {
+
+
+	auto& meshs = scene.getMeshes();
+
 	if (m_nAxis == ID_AXIS_X)
 	{
-		scene.getMeshes()[0].translate(Vec3d(val, 0.0, 0.0));
+		if (m_nActiveMesh == -1)//do it for all meshs
+			for (size_t i = 0; i < meshs.size(); i++)
+			{
+				meshs[i].translate(Vec3d(val, 0.0, 0.0));
+			}
+
+		else {
+			meshs[m_nActiveMesh].translate(Vec3d(val, 0.0, 0.0));
+		}
 	}
 	else if (m_nAxis == ID_AXIS_Y)
 	{
-		scene.getMeshes()[0].translate(Vec3d(0.0, val, 0.0));
+
+		if (m_nActiveMesh == -1)//do it for all meshs
+			for (size_t i = 0; i < meshs.size(); i++)
+			{
+				meshs[i].translate(Vec3d(0.0, val, 0.0));
+			}
+
+		else {
+			meshs[m_nActiveMesh].translate(Vec3d(0.0, val, 0.0));
+		}
 	}
 	else if (m_nAxis == ID_AXIS_Z)
 	{
-		scene.getMeshes()[0].translate(Vec3d(0.0, 0.0, val));
+		if (m_nActiveMesh == -1)//do it for all meshs
+			for (size_t i = 0; i < meshs.size(); i++)
+			{
+				meshs[i].translate(Vec3d(0.0, 0.0, val));
+			}
+
+		else {
+			meshs[m_nActiveMesh].translate(Vec3d(0.0, 0.0, val));
+		}
 	}
+
 }
 
 void CCGWorkView::scaleModel(const double &val)

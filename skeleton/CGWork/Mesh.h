@@ -27,7 +27,7 @@ public:
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(COLORREF col);
 	Mesh &addVertex(const VertexAndNormal &vertex);
 	Mesh &addVertexes(const std::vector<Vec4d>& vertexes, const Poly &polyHoldingThem);
 
@@ -51,11 +51,15 @@ public:
 	const COLORREF getColor() const { return _color; }
 	const COLORREF getFNColor() const { return _fNormalColor; }
 	const COLORREF getVNColor() const { return _vNormalColor; }
-	Mesh &setColors(const COLORREF &color, const COLORREF &face_normal_color, const COLORREF &vertex_normal_color) { 
-		_color = color; _fNormalColor = face_normal_color; _vNormalColor = vertex_normal_color; return *this;
+	const COLORREF getBBColor() const { return _BBColor; }	Mesh &setColors(const COLORREF &color, const COLORREF &face_normal_color, const COLORREF &vertex_normal_color, const COLORREF bounding_box_color) {
+		_color = color; _fNormalColor = face_normal_color; _vNormalColor = vertex_normal_color; _BBColor = bounding_box_color; return *this;
+
 	}
 	Vec4d getPos() { return Vec4d(_pos(0), _pos(1), _pos(2), 1.0); }
 	Mesh &setColor(const COLORREF &color) { _color = color; return *this; }
+	
+	//returns std::vector with size 12, has 12 lines (pairs of vertexes) of the bounding box
+	std::vector<std::pair<Vec4d, Vec4d>> getBoundingBoxLines();
 
 	~Mesh() = default;
 
@@ -67,6 +71,8 @@ private:
 	COLORREF _color;
 	COLORREF _fNormalColor;
 	COLORREF _vNormalColor;
+	COLORREF _BBColor;//bounding box color
+
 
 
 	//used for bounding box and fixing the starting pos

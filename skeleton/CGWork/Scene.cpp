@@ -22,8 +22,19 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	double width_d = static_cast<double>(width);
 	double height_d = static_cast<double>(height);
 
-	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
-	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
+	uint x_res = 0;
+	if((width_d / 2.0) * (x + 1.0) > 0)
+		x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
+
+
+	uint y_res = 0;
+	if((height_d / 2.0) * (1.0 - y) > 0)
+		y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
+
+	if (x_res > width)
+		x_res = width;
+	if (y_res > height)
+		y_res = height;
 
 	return Vec2u(x_res, y_res);
 }
@@ -76,12 +87,12 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 
 			}
 			if (showFaceNormals) {
-				Vec4d p1 = mesh.getModel() * polygon.getAveragePosition();
+				Vec4d p1 = _projection * _view *mesh.getModel() * polygon.getAveragePosition();
 				Vec4d p2;
 				if(givenFaceNormals && polygon.getGivenFaceNormal()(3)==1)//we flag _fGivenNormal(3)=0 (by default) if there isn't one
-					p2 = mesh.getModel() * polygon.getGivenFaceNormal();
+					p2 = _projection * _view *mesh.getModel() * polygon.getGivenFaceNormal();
 				else
-					p2 = mesh.getModel() * polygon.getCalcFaceNormal();
+					p2 = _projection * _view *mesh.getModel() * polygon.getCalcFaceNormal();
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
@@ -93,13 +104,13 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 			//TODO: show vertices normals code
 			std::vector<VertexAndNormal> vers = mesh.getVeritxes();
 			for (unsigned i = 0; i < vers.size(); i++) {
-				Vec4d p1 = mesh.getModel() * vers[i]._vertex;
+				Vec4d p1 = _projection * _view *mesh.getModel() * vers[i]._vertex;
 				Vec4d p2;
 				
 				if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
-					p2 = mesh.getModel() * vers[i]._givenNormal;
+					p2 = _projection * _view *mesh.getModel() * vers[i]._givenNormal;
 				else 
-					p2 = mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
+					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
