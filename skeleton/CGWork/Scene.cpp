@@ -113,12 +113,12 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 
 			}
 			if (showFaceNormals) {
-				Vec4d p1 = mesh.getModel() * polygon.getAveragePosition();
+				Vec4d p1 = _projection * _view *mesh.getModel() * polygon.getAveragePosition();
 				Vec4d p2;
 				if(givenFaceNormals && polygon.getGivenFaceNormal()(3)==1)//we flag _fGivenNormal(3)=0 (by default) if there isn't one
-					p2 = mesh.getModel() * polygon.getGivenFaceNormal();
+					p2 = _projection * _view *mesh.getModel() * polygon.getGivenFaceNormal();
 				else
-					p2 = mesh.getModel() * polygon.getCalcFaceNormal();
+					p2 = _projection * _view *mesh.getModel() * polygon.getCalcFaceNormal();
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
@@ -130,13 +130,13 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 			//TODO: show vertices normals code
 			std::vector<VertexAndNormal> vers = mesh.getVeritxes();
 			for (unsigned i = 0; i < vers.size(); i++) {
-				Vec4d p1 = mesh.getModel() * vers[i]._vertex;
+				Vec4d p1 = _projection * _view *mesh.getModel() * vers[i]._vertex;
 				Vec4d p2;
 				
 				if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
-					p2 = mesh.getModel() * vers[i]._givenNormal;
+					p2 = _projection * _view *mesh.getModel() * vers[i]._givenNormal;
 				else 
-					p2 = mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
+					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
