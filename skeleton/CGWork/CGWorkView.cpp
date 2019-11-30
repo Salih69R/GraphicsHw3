@@ -281,7 +281,7 @@ void CCGWorkView::OnDraw(CDC* pDC)
 	GetClientRect(&r);
 	CDC *pDCToUse = /*m_pDC*/m_pDbDC;
 
-	pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
+	pDCToUse->FillSolidRect(&r, scene.getBackgroundColor());
 
 	auto w = r.Width();
 	auto h = r.Height();

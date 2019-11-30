@@ -22,6 +22,8 @@ public:
 	Scene &setInitialized(const bool &new_val) { _is_initialized = new_val; return *this; }
 	bool isInitialized() const { return _is_initialized; }
 	Scene &setProjection(const Tmatd &projection) { _projection = projection; return *this; }
+	COLORREF getBackgroundColor() const { return _background_color; }
+	Scene setBackgroundColor(const COLORREF &color) { _background_color = color; return *this; }
 
 	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals);//TODO: implement
 
@@ -30,6 +32,7 @@ private:
 	Tmatd _view;
 	Tmatd _projection;
 	bool _is_initialized;
+	COLORREF _background_color;
 };
 
 
