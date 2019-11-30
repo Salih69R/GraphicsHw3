@@ -105,6 +105,9 @@ BEGIN
         POPUP "colors"
         BEGIN
             MENUITEM "background",                  ID_COLORS_BACKGROUND
+            MENUITEM "face normals",                ID_COLORS_FACENORMALS
+            MENUITEM "vertices normals",            ID_COLORS_VERTICESNORMALS
+            MENUITEM "bounding box normals",        ID_COLORS_B
         END
     END
     POPUP "&Light"
