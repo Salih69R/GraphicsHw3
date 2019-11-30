@@ -14,7 +14,7 @@ public:
 
 	/*the fact the givenNormal(3) is 0 flags that it still has not gotten any given normal, 
 	and so if we come to draw the given normal and the 4th value is still 0, we print the calculated one instead*/
-	VertexAndNormal():_givenNormal(0,0,0,0), _polygonsTouching(){}
+	VertexAndNormal():_givenNormal(0,0,0,0), _calculatedNormal(0,0,0,0), _polygonsTouching(){}
 	
 	friend bool operator==(const VertexAndNormal& first, const VertexAndNormal& other) {
 		return (first._vertex(0) == other._vertex(0)) && (first._vertex(1) == other._vertex(1)) && (first._vertex(2) == other._vertex(2) && (first._vertex(3) == other._vertex(3)));
@@ -27,7 +27,7 @@ public:
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(COLORREF col);
 	Mesh &addVertex(const VertexAndNormal &vertex);
 	Mesh &addVertexes(const std::vector<Vec4d>& vertexes, const Poly &polyHoldingThem);
 
@@ -51,11 +51,15 @@ public:
 	const COLORREF getColor() const { return _color; }
 	const COLORREF getFNColor() const { return _fNormalColor; }
 	const COLORREF getVNColor() const { return _vNormalColor; }
-	Mesh &setColors(const COLORREF &color, const COLORREF &face_normal_color, const COLORREF &vertex_normal_color) { 
-		_color = color; _fNormalColor = face_normal_color; _vNormalColor = vertex_normal_color; return *this;
+	const COLORREF getBBColor() const { return _BBColor; }	Mesh &setColors(const COLORREF &color, const COLORREF &face_normal_color, const COLORREF &vertex_normal_color, const COLORREF bounding_box_color) {
+		_color = color; _fNormalColor = face_normal_color; _vNormalColor = vertex_normal_color; _BBColor = bounding_box_color; return *this;
+
 	}
 	Vec4d getPos() { return Vec4d(_pos(0), _pos(1), _pos(2), 1.0); }
 	Mesh &setColor(const COLORREF &color) { _color = color; return *this; }
+	
+	//returns std::vector with size 12, has 12 lines (pairs of vertexes) of the bounding box
+	std::vector<std::pair<Vec4d, Vec4d>> getBoundingBoxLines();
 
 	~Mesh() = default;
 
@@ -67,6 +71,8 @@ private:
 	COLORREF _color;
 	COLORREF _fNormalColor;
 	COLORREF _vNormalColor;
+	COLORREF _BBColor;//bounding box color
+
 
 
 	//used for bounding box and fixing the starting pos
