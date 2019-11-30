@@ -15,6 +15,7 @@
 
 
 #include "Light.h"
+#include "MouseSensetivityDialog.h"
 
 class CCGWorkView : public CView
 {
@@ -39,7 +40,9 @@ private:
 	bool m_bshowGivenFNormal;//default is false, if false && m_bShowFaceNormals is true then show calculated face normals
 	bool m_bshowGivenVNormal;//default is false if false && m_bShowVerNormals is true then show calculated vertex normals
 	int m_nActiveMesh; //the id of the mesh to apply the transformation to ,initiated to -1(means all Meshs are active) TODO: implement changing this value
-	double m_lMouseSensitivity;		//controls tthe mouse sensitivity, TODO: add dialog to update this
+	double m_RotationSensitivity;		
+	double m_TranslationSensitivity;
+	double m_ScaleSensitivity;
 
 
 	CString m_strItdFileName;		// file name of IRIT data
@@ -61,6 +64,7 @@ private:
 	};
 
 	CoordinateSystem _curr_coordinate_system;
+	MouseSensetivityDialog _mouse_sensetivity_dialog;
 
 
 // Overrides
@@ -157,6 +161,7 @@ public:
 	afx_msg void OnCoordinatesystemModel();
 	afx_msg void OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI);
 	afx_msg void OnColorsBackground();
+	afx_msg void OnOptionsMousesensitivity();
 };
 
 #ifndef _DEBUG  // debug version in CGWorkView.cpp

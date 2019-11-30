@@ -89,7 +89,7 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_COMMAND(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnCoordinatesystemModel)
 	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnUpdateCoordinatesystemModel)
 	ON_COMMAND(ID_COLORS_BACKGROUND, &CCGWorkView::OnColorsBackground)
-	ON_UPDATE_COMMAND_UI(ID_COLORS_BACKGROUND, &CCGWorkView::OnUpdateColorsBackground)
+	ON_COMMAND(ID_OPTIONS_MOUSESENSITIVITY, &CCGWorkView::OnOptionsMousesensitivity)
 END_MESSAGE_MAP()
 
 
@@ -104,7 +104,8 @@ void auxSolidCone(GLdouble radius, GLdouble height) {
 /////////////////////////////////////////////////////////////////////////////
 // CCGWorkView construction/destruction
 
-CCGWorkView::CCGWorkView()
+CCGWorkView::CCGWorkView() :
+	_mouse_sensetivity_dialog(this)
 {
 	// Set default values
 	m_nAxis = ID_AXIS_X;
@@ -125,6 +126,9 @@ CCGWorkView::CCGWorkView()
 	m_pDbDC = NULL;
 
 	_curr_coordinate_system = CoordinateSystem::VIEW;
+	m_RotationSensitivity = _mouse_sensetivity_dialog.getRotationSensetivity();
+	m_TranslationSensitivity = _mouse_sensetivity_dialog.getTranslationSensetivity();
+	m_ScaleSensitivity = _mouse_sensetivity_dialog.getScaleSensetivity();
 }
 
 CCGWorkView::~CCGWorkView()
@@ -182,7 +186,6 @@ int CCGWorkView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_bShowFaceNormals = m_bShowVerNormals = false;
 	m_bshowGivenFNormal = m_bshowGivenVNormal = true;//beccause they look cooler
-	m_lMouseSensitivity = 1;//TODO: add a dialog that controls this(and controls colors and other stuff to be controlled)
 	m_nActiveMesh = -1;//all are active
 	return 0;
 }
@@ -418,7 +421,7 @@ void CCGWorkView::OnViewPerspective()
 {
 	m_nView = ID_VIEW_PERSPECTIVE;
 	m_bIsPerspective = true;
-	Tmatd projection = TransformationMatrix<double>::perspective(45, 1240.0 / 630.0, 0.1, 100);
+	Tmatd projection = TransformationMatrix<double>::perspective(45, m_AspectRatio, 0.1, 100);
 	scene.setProjection(projection);
 	Invalidate();
 }
@@ -619,29 +622,25 @@ void CCGWorkView::OnTimer(UINT_PTR nIDEvent)
 
 void CCGWorkView::rotate(const int &angle)
 {
-	double factor = 0.1f;
-
 	if (_curr_coordinate_system == CoordinateSystem::VIEW)
 	{
-		rotateView(angle * factor);
+		rotateView(angle * m_RotationSensitivity);
 	}
 	else if (_curr_coordinate_system == CoordinateSystem::MODEL)
 	{
-		rotateModel(angle * factor);
+		rotateModel(angle * m_RotationSensitivity);
 	}
 }
 
 void CCGWorkView::translate(const int &dist)
 {
-	double factor = 0.05f;
-
 	if (_curr_coordinate_system == CoordinateSystem::VIEW)
 	{
-		translateView(dist * factor);
+		translateView(dist * m_TranslationSensitivity);
 	}
 	else if(_curr_coordinate_system == CoordinateSystem::MODEL)
 	{
-		translateModel(dist * factor);
+		translateModel(dist * m_TranslationSensitivity);
 	}
 }
 
@@ -652,7 +651,7 @@ void CCGWorkView::scale(const int &scaling)
 		return;
 	}
 
-	double factor = 1.1f * m_lMouseSensitivity; 
+	double factor = 1.1f * m_ScaleSensitivity; 
 	if (scaling < 0)
 	{
 		factor = 1 / factor;
@@ -889,3 +888,13 @@ void CCGWorkView::OnColorsBackground()
 	RedrawWindow();
 }
 
+
+void CCGWorkView::OnOptionsMousesensitivity()
+{
+	if (_mouse_sensetivity_dialog.DoModal() == IDOK)
+	{
+		m_RotationSensitivity = _mouse_sensetivity_dialog.getRotationSensetivity();
+		m_TranslationSensitivity = _mouse_sensetivity_dialog.getTranslationSensetivity();
+		m_ScaleSensitivity = _mouse_sensetivity_dialog.getScaleSensetivity();
+	}
+}
