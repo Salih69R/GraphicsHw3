@@ -49,12 +49,22 @@ public:
 
 
 	const COLORREF getColor() const { return _color; }
-	const COLORREF getFNColor() const { return _fNormalColor; }
-	const COLORREF getVNColor() const { return _vNormalColor; }
-	const COLORREF getBBColor() const { return _BBColor; }	Mesh &setColors(const COLORREF &color, const COLORREF &face_normal_color, const COLORREF &vertex_normal_color, const COLORREF bounding_box_color) {
-		_color = color; _fNormalColor = face_normal_color; _vNormalColor = vertex_normal_color; _BBColor = bounding_box_color; return *this;
-
+	Mesh& setColor(const COLORREF &color) { 
+		_color = color;  return *this;
 	}
+	const COLORREF getFNColor() const { return _fNormalColor; }
+	Mesh& setFNColor(const COLORREF &color) {
+		_fNormalColor = color;  return *this;
+	}
+	const COLORREF getVNColor() const { return _vNormalColor; }
+	Mesh& setVNColor(const COLORREF &color) {
+		_vNormalColor = color;  return *this;
+	}
+	const COLORREF getBBColor() const { return _BBColor; }	
+	Mesh& setBBColor(const COLORREF &color) {
+		_BBColor = color;  return *this;
+	}
+
 	Vec4d getPos() { return Vec4d(_pos(0), _pos(1), _pos(2), 1.0); }
 	Mesh &setColor(const COLORREF &color) { _color = color; return *this; }
 	
