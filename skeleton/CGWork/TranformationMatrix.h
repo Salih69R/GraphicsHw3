@@ -3,7 +3,7 @@
 
 #include "Matrix.h"
 #include "Vector.h"
-#define M_PI 3.14159265359
+
 static constexpr uint TRANSFORMATION_SIZE = 4;
 static constexpr uint ROTATION_SIZE = 3;
 static constexpr uint TRANSLATION_SIZE = 3;
@@ -20,7 +20,8 @@ public:
                          Vector<T, TRANSLATION_SIZE> &translation);
     TransformationMatrix(const Matrix<T, TRANSFORMATION_SIZE, TRANSFORMATION_SIZE> &other);
 	static TransformationMatrix ortho(const T &left, const T &right,
-		const T &bottom, const T &top, const T &near, const T &far);
+		const T &bottom, const T &top, const T &near_plane, const T &far_plane);
+	static TransformationMatrix perspective(const T &fov_angle, const T &aspect_ratio, const T &near_plane, const T &far_plane);
 
     Vector<T, TRANSLATION_SIZE> getTranslation() const;
     Matrix<T, ROTATION_SIZE, ROTATION_SIZE> getRotation() const;
@@ -146,7 +147,7 @@ TransformationMatrix<T>::TransformationMatrix(const T &first, Args... tail) :
 template<typename T>
 TransformationMatrix<T> &TransformationMatrix<T>::rotateX(const T &angle_deg)
 {
-    T angle_rad = angle_deg * M_PI / 180.0;
+    T angle_rad = angle_deg * consts::PI / 180.0;
 
     *this = TransformationMatrix(1, 0, 0, 0,
                                 0, cos(angle_rad), sin(angle_rad), 0,
@@ -159,7 +160,7 @@ TransformationMatrix<T> &TransformationMatrix<T>::rotateX(const T &angle_deg)
 template<typename T>
 TransformationMatrix<T> &TransformationMatrix<T>::rotateY(const T &angle_deg)
 {
-    T angle_rad = angle_deg * M_PI / 180.0;
+    T angle_rad = angle_deg * consts::PI / 180.0;
 
     *this = TransformationMatrix(cos(angle_rad), 0, -sin(angle_rad), 0,
                                 0, 1, 0, 0,
@@ -172,7 +173,7 @@ TransformationMatrix<T> &TransformationMatrix<T>::rotateY(const T &angle_deg)
 template<typename T>
 TransformationMatrix<T> &TransformationMatrix<T>::rotateZ(const T &angle_deg)
 {
-    T angle_rad = angle_deg * M_PI / 180.0;
+    T angle_rad = angle_deg * consts::PI / 180.0;
 
 
     *this = TransformationMatrix(cos(angle_rad), sin(angle_rad), 0, 0,
@@ -260,12 +261,27 @@ Vector<T, TRANSLATION_SIZE> TransformationMatrix<T>::getTranslation() const
 
 template<typename T>
 TransformationMatrix<T> TransformationMatrix<T>::ortho(const T &left, const T &right,
-	const T &bottom, const T &top, const T &near, const T &far)
+	const T &bottom, const T &top, const T &near_plane, const T &far_plane)
 {
 	return TransformationMatrix<T>(2 / (right - left), 0, 0, -(right + left) / (right - left),
 		0, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom),
-		0, 0, 2 / (far - near), (far + near) / (far - near),
+		0, 0, 2 / (far_plane - near_plane), (far_plane + near_plane) / (far_plane - near_plane),
 		0, 0, 0, 1);
 }
 
+template<typename T>
+TransformationMatrix<T> TransformationMatrix<T>::perspective(const T &fov_angle, const T &aspect_ratio,
+	const T &near_plane, const T &far_plane)
+{
+	T half_fov_Angle = fov_angle / T(2);
+	T top = tan(half_fov_Angle * consts::PI / 180.0) * near_plane;
+	T bottom = -top;
+	T right = top * aspect_ratio;
+	T left = -right;
+
+	return TransformationMatrix<T>((T(2) * near_plane) / (right - left), 0, 0, near_plane * (right + left) / (left - right),
+		0, (T(2) * near_plane) / (top - bottom), 0, near_plane * (top + bottom) / (bottom - top),
+		0, 0, (far_plane + near_plane) / (near_plane - far_plane), (T(2) * far_plane * near_plane) / (near_plane - far_plane),
+		0, 0, -1, 0);
+}
 #endif // TRANFORMATIONMATRIX_H

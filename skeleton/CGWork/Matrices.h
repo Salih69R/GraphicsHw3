@@ -5,6 +5,12 @@
 #include "Vector.h"
 #include "TranformationMatrix.h"
 
+
+namespace consts
+{
+	const double PI = 3.14159265358979323846;
+}
+
 using Mat2d = Matrix<double, 2, 2>;
 using Mat3d = Matrix<double, 3, 3>;
 using Mat2f = Matrix<float, 2, 2>;

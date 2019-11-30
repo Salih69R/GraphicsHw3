@@ -2,57 +2,14 @@
 
 #define DEF_BOUNDING_BOX_SCREEN_RATION 3
 
-void Camera::LookAt(Vec3d & eye, Vec3d & at, Vec3d & up)
-{
-	Vec3d n = (eye - at).normalize();
-	Vec3d u = up.cross(n).normalize();
-	Vec3d v = n.cross(u).normalize();
-
-	Tmatd c = Tmatd( u(0), v(0), n(0), 0.0, u(1), v(1), n(1), 0.0 , u(2), v(2), n(2), 0.0 , 0, 0, 0, 1);//c = (u, v, n, t) in colums
-
-	Vec3d i = eye;
-	i *= -1;	
-
-	cTranform = c.translate(i);
-}
-
-Vec4d Camera::toProjectionView(Vec4d vertex)
-{
-	return projection * (cTranform * vertex);
-}
-
-Camera::Camera()
-{
-	
-	cTranform.translate(0, 0, -5);//default is I
-}
-
-void Camera::setTransformation(const Tmatd & T)
-{
-	cTranform = T;
-}
-
-void Camera::setProjection(const Tmatd & T)
-{
-	projection = T;
-}
-
-
-
-
-
-
-
-
-
-
-
 Scene::Scene() :
 	_meshes(),
 	_view(),
 	_projection()
 {
-	_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
+	//_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
+	lookAt(Vec3d(0.0, 0.0, 3.0), Vec3d(0.0, 0.0, 2.0), Vec3d(0.0, 1.0, 0.0));
+	_projection = TransformationMatrix<double>::perspective(45, 1240.0 / 630.0, 0.1, 100);
 }
 
 void Scene::addMesh(const Mesh &model)
@@ -72,6 +29,20 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	return Vec2u(x_res, y_res);
 }
 
+Scene &Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
+{
+	Vec3d n = (eye - at).normalize();
+	Vec3d u = up.cross(n).normalize();
+	Vec3d v = n.cross(u).normalize();
+
+	_view = Tmatd(u(0), v(0), n(0), -eye(0),
+		u(1), v(1), n(1), -eye(1),
+		u(2), v(2), n(2), -eye(2),
+		0, 0, 0, 1);
+
+	return *this;
+}
+
 
 void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals)
 {
@@ -85,6 +56,9 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 			{
 				Vec4d p1 = _projection * _view * mesh.getModel() * vertexes[i];
 				Vec4d p2 = _projection * _view * mesh.getModel() * vertexes[i + 1];
+
+				p1 /= p1(3);
+				p2 /= p2(3);
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);

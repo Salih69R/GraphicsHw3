@@ -26,7 +26,7 @@ public:
     T dot(const Vector &other);
     T norm() const;
     Vector &normalize();
-    Vector cross(const Vector &other);
+    Vector cross(const Vector &other) const;
     Vector operator+(const Vector &other) const;
     Vector operator-(const Vector &other) const;
     Vector operator-() const;
@@ -135,7 +135,7 @@ void Vector<T, elements>::translateElements(const T &first)
 }
 
 template<typename T, uint elements>
-Vector<T, elements> Vector<T, elements>::cross(const Vector &other)
+Vector<T, elements> Vector<T, elements>::cross(const Vector &other) const
 {
     if(elements != 3)
     {
