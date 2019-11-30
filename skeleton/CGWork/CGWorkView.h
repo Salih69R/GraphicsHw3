@@ -156,6 +156,7 @@ public:
 	afx_msg void OnUpdateCoordinatesystemView(CCmdUI *pCmdUI);
 	afx_msg void OnCoordinatesystemModel();
 	afx_msg void OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI);
+	afx_msg void OnColorsBackground();
 };
 
 #ifndef _DEBUG  // debug version in CGWorkView.cpp

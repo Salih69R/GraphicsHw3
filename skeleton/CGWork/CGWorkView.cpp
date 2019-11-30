@@ -88,6 +88,8 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_VIEW, &CCGWorkView::OnUpdateCoordinatesystemView)
 	ON_COMMAND(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnCoordinatesystemModel)
 	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnUpdateCoordinatesystemModel)
+	ON_COMMAND(ID_COLORS_BACKGROUND, &CCGWorkView::OnColorsBackground)
+	ON_UPDATE_COMMAND_UI(ID_COLORS_BACKGROUND, &CCGWorkView::OnUpdateColorsBackground)
 END_MESSAGE_MAP()
 
 
@@ -281,7 +283,7 @@ void CCGWorkView::OnDraw(CDC* pDC)
 	GetClientRect(&r);
 	CDC *pDCToUse = /*m_pDC*/m_pDbDC;
 
-	pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
+	pDCToUse->FillSolidRect(&r, scene.getBackgroundColor());
 
 	auto w = r.Width();
 	auto h = r.Height();
@@ -874,3 +876,16 @@ void CCGWorkView::OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(_curr_coordinate_system == CoordinateSystem::MODEL);
 }
+
+
+void CCGWorkView::OnColorsBackground()
+{
+	CColorDialog color_dialog;
+	if (color_dialog.DoModal() == IDOK)
+	{
+		COLORREF color = color_dialog.GetColor();
+		scene.setBackgroundColor(color);
+	}
+	RedrawWindow();
+}
+
