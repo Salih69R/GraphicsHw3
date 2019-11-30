@@ -8,31 +8,12 @@ void cpyPixel(CDC* dcdest, CDC* dcsrc, int x, int y, int x1, int y1) {
 }
 //m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
 
-void setPix(CDC* dc, int x, int y, COLORREF color) {
+bool isOutOfBount(int x, int y, int w, int h) {
 
-
-	CBitmap MyBmp;
-
-
-	MyBmp.CreateCompatibleBitmap(dc, 1, 1);
-
-	dc->SelectObject(&MyBmp);
-
-
-	MyBmp.SetBitmapBits(1, &color);//not sure this sets it the right way
-
-	//still need to actaully draw it in x y
-
-
-
-
-
+	return x < 0 || y < 0 || x > w || y > h;
 }
-
-
-
 //assumes x1 < x2, y1 < y2,  0 < dy <= dx 
-void basicMidPointDraw1(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
+void basicMidPointDraw1(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color, int w, int h) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, E, NE;
@@ -42,7 +23,8 @@ void basicMidPointDraw1(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 	E = 2 * dy;
 	NE = 2 * (dy - dx);
 
-	SetPixel(*hdc, x, y, color);
+	//if(!isOutOfBount(x,y,w,h))
+		SetPixel(*hdc, x, y, color);
 
 
 
@@ -58,12 +40,13 @@ void basicMidPointDraw1(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 			++x;
 			++y;
 		}
-		cpyPixel(hdc, hdc, x, y, x1, y1);
+		if (!isOutOfBount(x, y, w, h))
+			cpyPixel(hdc, hdc, x, y, x1, y1);
 	}
 }
 
 //assumes x1 < x2, y1 < y2,           dy  > dx  >= 0
-void basicMidPointDraw2(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
+void basicMidPointDraw2(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color, int w, int h) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, N, NE;
@@ -73,7 +56,8 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 	N = 2 * dx;
 	NE = 2 * (dx - dy);
 
-	SetPixel(*hdc, x, y, color);
+	//if (!isOutOfBount(x, y, w, h))
+		SetPixel(*hdc, x, y, color);
 
 	while (y < y2) {
 
@@ -87,7 +71,8 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 			++x;
 			++y;
 		}
-		cpyPixel(hdc, hdc, x, y, x1, y1);
+		if (!isOutOfBount(x, y, w, h))
+			cpyPixel(hdc, hdc, x, y, x1, y1);
 	}
 }
 
@@ -95,7 +80,7 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 
 
 //assumes x1 < x2, y1 > y2,       -dx < dy < 0 < dx 
-void basicMidPointDraw3(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
+void basicMidPointDraw3(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color, int w, int h) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, E, SE;
@@ -107,7 +92,8 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 	E = 2 * dy;//-100 this should be positive i guess
 	SE = 2 * (dy + dx);//100 and this should be negative
 
-	SetPixel(*hdc, x, y, color);
+	//if (!isOutOfBount(x, y, w, h))
+		SetPixel(*hdc, x, y, color);
 
 	while (x < x2) {
 
@@ -121,7 +107,8 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 			++x;
 			--y;
 		}
-		cpyPixel(hdc, hdc, x, y, x1, y1);
+		if (!isOutOfBount(x, y, w, h))
+			cpyPixel(hdc, hdc, x, y, x1, y1);
 	}
 }
 
@@ -129,7 +116,7 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 
 
 //assumes x1 < x2, y1 > y2,           dy < -dx < 0 < dx < -dy
-void basicMidPointDraw4(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
+void basicMidPointDraw4(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color, int w, int h) {
 
 	int dx = x2 - x1, dy = y2 - y1;
 	int x, y, d, S, SE;
@@ -142,7 +129,8 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 	S = 2 * dx;
 	SE = 2 * (dy + dx);
 
-	SetPixel(*hdc, x, y, color);
+	//if (!isOutOfBount(x, y, w, h))
+		SetPixel(*hdc, x, y, color);
 
 	while (y > y2) {
 
@@ -156,37 +144,77 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color
 			++x;
 			--y;
 		}
-		cpyPixel(hdc, hdc, x, y, x1, y1);
+		if (!isOutOfBount(x, y, w, h))
+			cpyPixel(hdc, hdc, x, y, x1, y1);
 
 	}
 }
 
 
-
-
-void MidPointDraw(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color) {
+void MidPointDraw(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color, int width, int height) {
 
 	if (x2 < x1) // make sure that x1 <= x2, the == situation is ok
 	{
-		MidPointDraw(x2, y2, x1, y1, hdc, color);
+		MidPointDraw(x2, y2, x1, y1, hdc, color, width, height);
 		return;
 	}
 	//now  x1 <= x2
+	if ((x1 < 0 && x2 < 0) || (y1 < 0 && y2 < 0) || (x1 > width && x2 >width) || (y1 > height && y2 >height) )
+		return;
+
+
+	//take care of cases the are going out of screen bound
+	double dx = x2 - x1, dy = y2 - y1;
+	if (x1 < 0)
+	{
+		if(dx!=0)
+			MidPointDraw(0, y2 - (x2 * (dy / dx)), x2, y2, hdc, color, width, height);
+		return;
+	}
+	if (y1 < 0) {
+
+		if (dy != 0)
+			MidPointDraw(x2 - (y2*(dx / dy)), 0, x2, y2, hdc, color,  width,  height);
+		return;
+	}
+
+	if (y2 < 0) {
+
+		if (dy != 0)
+			MidPointDraw(x1, y1, x1 - y1 * (dx / dy), 0, hdc, color,  width,  height);
+		return;
+	}
+	if (y1 > height) {
+
+		if (dy != 0)
+			MidPointDraw( x2 + (height - y2 - 1) * (dx / dy) , height -1, x2, y2, hdc, color, width, height);
+		return;
+	}
+	if (y2 > height) {
+
+		if (dy != 0)
+			MidPointDraw(x1, y1, x1 + (height - y1) * (dx / dy) -1 , height, hdc, color, width, height);
+		return;
+	}
+
+	//TODO: implement for situations : x2>width?
+	
+
 
 	if (y1 <= y2) {
 		if (y2 - y1 <= x2 - x1)
-			basicMidPointDraw1(x1, y1, x2, y2, hdc, color);
+			basicMidPointDraw1(x1, y1, x2, y2, hdc, color, width , height);
 		else
-			basicMidPointDraw2(x1, y1, x2, y2, hdc, color);
+			basicMidPointDraw2(x1, y1, x2, y2, hdc, color, width, height);
 		return;
 	}
 
 	//now  x1 <= x2 && y1 > y2
 
 	if (x1 - x2 < y2 - y1)
-		basicMidPointDraw3(x1, y1, x2, y2, hdc, color); //-dx < dy < 0 < dx
+		basicMidPointDraw3(x1, y1, x2, y2, hdc, color, width, height); //-dx < dy < 0 < dx
 	else
-		basicMidPointDraw4(x1, y1, x2, y2, hdc, color); //dy < -dx < 0 < dx < -dy
+		basicMidPointDraw4(x1, y1, x2, y2, hdc, color, width, height); //dy < -dx < 0 < dx < -dy
 	return;
 }
 

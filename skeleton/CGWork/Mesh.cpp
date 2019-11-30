@@ -89,6 +89,9 @@ Mesh & Mesh::addGivenNormal(Vec4d & vertex, Vec4d & normal)
 		
 	}
 
+	v._givenNormal(3) = 0;
+	v._givenNormal.normalize();
+	v._givenNormal(3) = 1;
 	return *this;
 }
 

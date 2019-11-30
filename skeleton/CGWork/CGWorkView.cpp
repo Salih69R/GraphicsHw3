@@ -645,8 +645,7 @@ void CCGWorkView::scale(const int &scaling)
 		return;
 	}
 
-	double factor = 1.1f;
-
+	double factor = 1.1f * m_lMouseSensitivity; 
 	if (scaling < 0)
 	{
 		factor = 1 / factor;
@@ -654,11 +653,11 @@ void CCGWorkView::scale(const int &scaling)
 
 	if (_curr_coordinate_system == CoordinateSystem::VIEW)
 	{
-		scaleView(scaling * factor);
+		scaleView(factor);
 	}
 	else if (_curr_coordinate_system == CoordinateSystem::MODEL)
 	{
-		scaleModel(scaling * factor);
+		scaleModel(factor);
 	}
 }
 

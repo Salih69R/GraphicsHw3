@@ -14,7 +14,7 @@ public:
 
 	/*the fact the givenNormal(3) is 0 flags that it still has not gotten any given normal, 
 	and so if we come to draw the given normal and the 4th value is still 0, we print the calculated one instead*/
-	VertexAndNormal():_givenNormal(0,0,0,0), _polygonsTouching(){}
+	VertexAndNormal():_givenNormal(0,0,0,0), _calculatedNormal(0,0,0,0), _polygonsTouching(){}
 	
 	friend bool operator==(const VertexAndNormal& first, const VertexAndNormal& other) {
 		return (first._vertex(0) == other._vertex(0)) && (first._vertex(1) == other._vertex(1)) && (first._vertex(2) == other._vertex(2) && (first._vertex(3) == other._vertex(3)));

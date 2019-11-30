@@ -65,19 +65,9 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	double width_d = static_cast<double>(width);
 	double height_d = static_cast<double>(height);
 
-	uint x_res = 0;
-	if((width_d / 2.0) * (x + 1.0) > 0)
-		x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
+	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
+	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
 
-
-	uint y_res = 0;
-	if((height_d / 2.0) * (1.0 - y) > 0)
-		y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
-
-	if (x_res > width)
-		x_res = width;
-	if (y_res > height)
-		y_res = height;
 
 	return Vec2u(x_res, y_res);
 }
@@ -104,11 +94,11 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 					first_vertex_px = px1;
 				}
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getColor());
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getColor(), width, height);
 
 				if (i == vertexes.size() - 2)
 				{
-					MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), pDC, mesh.getColor());
+					MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), pDC, mesh.getColor(), width, height);
 				}
 
 			}
@@ -123,7 +113,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getFNColor());
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getFNColor(), width, height);
 			}
 		}
 		if (showVerNormals) {
@@ -136,12 +126,12 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
 					p2 = _projection * _view *mesh.getModel() * vers[i]._givenNormal;
 				else 
-					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
+					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal/* + vers[i]._vertex*/);
 
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getVNColor());
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getVNColor(), width, height);
 			}
 
 
