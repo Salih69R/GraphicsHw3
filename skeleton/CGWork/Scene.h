@@ -21,6 +21,7 @@ public:
 	Tmatd &getView() { return _view; }
 	Scene &setInitialized(const bool &new_val) { _is_initialized = new_val; return *this; }
 	bool isInitialized() const { return _is_initialized; }
+	Scene &setProjection(const Tmatd &projection) { _projection = projection; return *this; }
 
 	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals);//TODO: implement
 

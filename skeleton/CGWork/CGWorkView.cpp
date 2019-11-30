@@ -402,6 +402,8 @@ void CCGWorkView::OnViewOrthographic()
 {
 	m_nView = ID_VIEW_ORTHOGRAPHIC;
 	m_bIsPerspective = false;
+	Tmatd projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
+	scene.setProjection(projection);
 	Invalidate();		// redraw using the new view.
 }
 

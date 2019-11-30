@@ -112,8 +112,6 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 
 				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getVNColor(), width, height);
 			}
-
-
 		}
 	}
 
