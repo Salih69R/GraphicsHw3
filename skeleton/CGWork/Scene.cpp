@@ -49,6 +49,8 @@ Scene &Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 }
 
 
+
+
 void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
 {
 	for (auto &mesh : _meshes) {
@@ -145,14 +147,65 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 
 	}
 
-
-
-
-
-
 	if (!_is_initialized)
 	{
 		_is_initialized = true;
 	}
+}
+
+
+
+
+Scene & Scene::setWireFrameColor(const COLORREF & color, int mesh_Id)
+{
+	if (mesh_Id == -1)
+		for (auto& mesh : _meshes)
+			mesh.setColor(color);
+	else
+		if (mesh_Id < _meshes.size())
+			_meshes[mesh_Id].setColor(color);
+
+	return *this;
+}
+
+
+Scene & Scene::setFaceNormalsColor(const COLORREF & color, int mesh_Id)
+{
+	if (mesh_Id == -1)
+		for (auto& mesh : _meshes)
+			mesh.setFNColor(color);
+	else
+		if (mesh_Id < _meshes.size())
+			_meshes[mesh_Id].setFNColor(color);
+
+	return *this;
+}
+
+
+
+Scene & Scene::setVerticesNormalsColor(const COLORREF & color, int mesh_Id)
+{
+	if (mesh_Id == -1)
+		for (auto& mesh : _meshes)
+			mesh.setVNColor(color);
+	else
+		if (mesh_Id < _meshes.size())
+			_meshes[mesh_Id].setVNColor(color);
+
+	return *this;
+}
+
+
+
+Scene & Scene::setBoundingBoxColor(const COLORREF & color, int mesh_Id)
+{
+	if (mesh_Id == -1)
+		for (auto& mesh : _meshes)
+			mesh.setBBColor(color);
+	else
+		if (mesh_Id < _meshes.size())
+			_meshes[mesh_Id].setBBColor(color);
+
+	return *this;
 }
 

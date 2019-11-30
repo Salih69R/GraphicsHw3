@@ -78,8 +78,8 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_COMMAND(ID_VERTEX_NORMALS_CALCULATED, OnVerNormalsCalc)
 	ON_UPDATE_COMMAND_UI(ID_VERTEX_NORMALS_CALCULATED, OnUpdateVerNormalsCalc)
 	//bounding box
-	ON_COMMAND(ID_SHOW_VER_NORMALS, OnShowBoundingBox)
-	ON_UPDATE_COMMAND_UI(ID_SHOW_VER_NORMALS, OnUpdateShowBoundingBox)
+	ON_COMMAND(ID_SHOW_BOUNDING_BOX, OnShowBoundingBox)
+	ON_UPDATE_COMMAND_UI(ID_SHOW_BOUNDING_BOX, OnUpdateShowBoundingBox)
 
 
 
@@ -106,7 +106,13 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_VIEW, &CCGWorkView::OnUpdateCoordinatesystemView)
 	ON_COMMAND(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnCoordinatesystemModel)
 	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnUpdateCoordinatesystemModel)
+	ON_COMMAND(ID_COLORS_WIREFRAMES, &CCGWorkView::OnColorsWireFrame)
 	ON_COMMAND(ID_COLORS_BACKGROUND, &CCGWorkView::OnColorsBackground)
+	ON_COMMAND(ID_COLORS_FACENORMALS, &CCGWorkView::OnColorsFaceNormals)
+	ON_COMMAND(ID_COLORS_VERTICESNORMALS, &CCGWorkView::OnColorsVerticesNormals)
+	ON_COMMAND(ID_COLORS_BOUNDINGBOX, &CCGWorkView::OnColorsBoundingBox)
+
+
 	ON_COMMAND(ID_OPTIONS_MOUSESENSITIVITY, &CCGWorkView::OnOptionsMousesensitivity)
 	ON_COMMAND(ID_OPTIONS_PERSPECTIVECONTROL, &CCGWorkView::OnOptionsPerspectivecontrol)
 	ON_COMMAND(ID_OPTIONS_POLYGONFINENESSTOLERANCE, &CCGWorkView::OnOptionsPolygonfinenesstolerance)
@@ -207,7 +213,8 @@ int CCGWorkView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	InitializeCGWork();
 
-	m_bShowFaceNormals = m_bShowVerNormals = false;
+
+	m_bShowBoundingBox = m_bShowFaceNormals = m_bShowVerNormals = false;
 	m_bshowGivenFNormal = m_bshowGivenVNormal = true;//beccause they look cooler
 	m_nActiveMesh = -1;//all are active
 	return 0;
@@ -908,6 +915,22 @@ void CCGWorkView::OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI)
 }
 
 
+
+
+
+
+
+void CCGWorkView::OnColorsWireFrame()
+{
+	CColorDialog color_dialog;
+	if (color_dialog.DoModal() == IDOK)
+	{
+		COLORREF color = color_dialog.GetColor();
+		scene.setWireFrameColor(color, m_nActiveMesh);
+	}
+	RedrawWindow();
+}
+
 void CCGWorkView::OnColorsBackground()
 {
 	CColorDialog color_dialog;
@@ -918,6 +941,42 @@ void CCGWorkView::OnColorsBackground()
 	}
 	RedrawWindow();
 }
+
+
+void CCGWorkView::OnColorsFaceNormals()
+{
+	CColorDialog color_dialog;
+	if (color_dialog.DoModal() == IDOK)
+	{
+		COLORREF color = color_dialog.GetColor();
+		scene.setFaceNormalsColor(color, m_nActiveMesh);
+	}
+	RedrawWindow();
+}
+
+
+void CCGWorkView::OnColorsVerticesNormals()
+{
+	CColorDialog color_dialog;
+	if (color_dialog.DoModal() == IDOK)
+	{
+		COLORREF color = color_dialog.GetColor();
+		scene.setVerticesNormalsColor(color, m_nActiveMesh);
+	}
+	RedrawWindow();
+}
+
+void CCGWorkView::OnColorsBoundingBox()
+{
+	CColorDialog color_dialog;
+	if (color_dialog.DoModal() == IDOK)
+	{
+		COLORREF color = color_dialog.GetColor();
+		scene.setBoundingBoxColor(color, m_nActiveMesh);
+	}
+	RedrawWindow();
+}
+
 
 
 void CCGWorkView::OnOptionsMousesensitivity()

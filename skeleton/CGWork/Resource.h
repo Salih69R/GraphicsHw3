@@ -72,13 +72,16 @@
 #define ID_COLORS_FACENORMALS           32810
 #define ID_COLORS_VERTICESNORMALS       32811
 #define ID_COLORS_B                     32812
+#define ID_SHOW_BOUNDING_BOX            32813
+#define ID_COLORS_BOUNDINGBOX           32814
+#define ID_COLORS_WIREFRAMES            32815
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        146
-#define _APS_NEXT_COMMAND_VALUE         32813
+#define _APS_NEXT_COMMAND_VALUE         32816
 #define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

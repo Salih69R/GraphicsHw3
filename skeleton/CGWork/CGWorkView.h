@@ -167,7 +167,17 @@ public:
 	afx_msg void OnUpdateCoordinatesystemView(CCmdUI *pCmdUI);
 	afx_msg void OnCoordinatesystemModel();
 	afx_msg void OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI);
+
+	//ID_COLORS_WIREFRAMES
+
+	afx_msg void OnColorsWireFrame();
 	afx_msg void OnColorsBackground();
+	afx_msg void OnColorsFaceNormals();
+	afx_msg void OnColorsVerticesNormals();
+	afx_msg void OnColorsBoundingBox();
+	
+
+
 	afx_msg void OnOptionsMousesensitivity();
 	afx_msg void OnOptionsPerspectivecontrol();
 	afx_msg void OnOptionsPolygonfinenesstolerance();

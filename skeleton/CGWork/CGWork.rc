@@ -58,6 +58,7 @@ BEGIN
     BUTTON      ID_AXIS_X
     BUTTON      ID_AXIS_Y
     BUTTON      ID_AXIS_Z
+    BUTTON      ID_SHOW_BOUNDING_BOX
     BUTTON      ID_FACE_NORMALS
     BUTTON      ID_SHOW_VER_NORMALS
     BUTTON      ID_FACE_NORMALS_CALCULATED
@@ -104,10 +105,11 @@ BEGIN
         MENUITEM "polygon fineness tolerance...", ID_OPTIONS_POLYGONFINENESSTOLERANCE
         POPUP "colors"
         BEGIN
+            MENUITEM "wireframes",                  ID_COLORS_WIREFRAMES
             MENUITEM "background",                  ID_COLORS_BACKGROUND
             MENUITEM "face normals",                ID_COLORS_FACENORMALS
             MENUITEM "vertices normals",            ID_COLORS_VERTICESNORMALS
-            MENUITEM "bounding box normals",        ID_COLORS_B
+            MENUITEM "bounding box normals",        ID_COLORS_BOUNDINGBOX
         END
     END
     POPUP "&Light"

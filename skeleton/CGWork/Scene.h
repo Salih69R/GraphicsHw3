@@ -22,8 +22,16 @@ public:
 	Scene &setInitialized(const bool &new_val) { _is_initialized = new_val; return *this; }
 	bool isInitialized() const { return _is_initialized; }
 	Scene &setProjection(const Tmatd &projection) { _projection = projection; return *this; }
+
 	COLORREF getBackgroundColor() const { return _background_color; }
-	Scene setBackgroundColor(const COLORREF &color) { _background_color = color; return *this; }
+	Scene& setBackgroundColor(const COLORREF &color) { _background_color = color; return *this; }
+
+	Scene& setWireFrameColor(const COLORREF &color, int mesh_Id);
+	Scene& setFaceNormalsColor(const COLORREF &color, int mesh_Id);//to all the meshes if mesh_Id = -1
+	Scene& setVerticesNormalsColor(const COLORREF &color, int mesh_Id);//to all the meshes if mesh_Id = -1
+	Scene& setBoundingBoxColor(const COLORREF &color, int mesh_Id);//to all the meshes if mesh_Id = -1
+
+
 
 	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
 private:
