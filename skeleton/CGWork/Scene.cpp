@@ -8,9 +8,8 @@ Scene::Scene() :
 	_projection(),
 	_is_initialized(false)
 {
-	//_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
-	lookAt(Vec3d(0.0, 0.0, 3.0), Vec3d(0.0, 0.0, 2.0), Vec3d(0.0, 1.0, 0.0));
-	_projection = TransformationMatrix<double>::perspective(45, 1240.0 / 630.0, 0.1, 100);
+	_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
+	//lookAt(Vec3d(0.0, 0.0, 3.0), Vec3d(0.0, 0.0, 2.0), Vec3d(0.0, 1.0, 0.0));
 }
 
 void Scene::addMesh(const Mesh &model)

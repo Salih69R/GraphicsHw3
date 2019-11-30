@@ -416,6 +416,8 @@ void CCGWorkView::OnViewPerspective()
 {
 	m_nView = ID_VIEW_PERSPECTIVE;
 	m_bIsPerspective = true;
+	Tmatd projection = TransformationMatrix<double>::perspective(45, 1240.0 / 630.0, 0.1, 100);
+	scene.setProjection(projection);
 	Invalidate();
 }
 
