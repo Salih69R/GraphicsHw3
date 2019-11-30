@@ -27,7 +27,7 @@ public:
 class Mesh
 {
 public:
-	Mesh(COLORREF col);
+	Mesh(COLORREF col, char* str);
 	Mesh &addVertex(const VertexAndNormal &vertex);
 	Mesh &addVertexes(const std::vector<Vec4d>& vertexes, const Poly &polyHoldingThem);
 
@@ -82,7 +82,7 @@ private:
 	COLORREF _fNormalColor;
 	COLORREF _vNormalColor;
 	COLORREF _BBColor;//bounding box color
-
+	std::string _name;
 
 
 	//used for bounding box and fixing the starting pos

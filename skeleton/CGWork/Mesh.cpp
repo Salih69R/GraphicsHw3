@@ -1,17 +1,19 @@
 #include "Mesh.h"
 #include <algorithm>
-
+#include <string.h>
 
 //init all colors to same color
-Mesh::Mesh(COLORREF col) :
+Mesh::Mesh(COLORREF col, char* str) :
 	_polygons(),
 	_pos(0.0, 0.0, 0.0),
 	_model(),
 	_color(col),
 	_fNormalColor(col),
 	_vNormalColor(col),
-	_BBColor(col)
+	_BBColor(col),
+	_name(str)
 {
+	
 
 }
 

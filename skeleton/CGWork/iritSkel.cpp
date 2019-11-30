@@ -166,7 +166,9 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 		}
 	}
 
-	Mesh mesh(color);
+	char* str = "unnamed object";
+	if(PObj->ObjName != NULL)
+	Mesh mesh(color, PObj->ObjName);
 
 	for (PPolygon = PObj -> U.Pl; PPolygon != NULL;	PPolygon = PPolygon -> Pnext) 
 	{
