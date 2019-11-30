@@ -91,6 +91,7 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_COMMAND(ID_COLORS_BACKGROUND, &CCGWorkView::OnColorsBackground)
 	ON_COMMAND(ID_OPTIONS_MOUSESENSITIVITY, &CCGWorkView::OnOptionsMousesensitivity)
 	ON_COMMAND(ID_OPTIONS_PERSPECTIVECONTROL, &CCGWorkView::OnOptionsPerspectivecontrol)
+	ON_COMMAND(ID_OPTIONS_POLYGONFINENESSTOLERANCE, &CCGWorkView::OnOptionsPolygonfinenesstolerance)
 END_MESSAGE_MAP()
 
 
@@ -107,7 +108,8 @@ void auxSolidCone(GLdouble radius, GLdouble height) {
 
 CCGWorkView::CCGWorkView() :
 	_mouse_sensetivity_dialog(this),
-	_perspective_dialog(this)
+	_perspective_dialog(this),
+	_polygon_dialog(this)
 {
 	// Set default values
 	m_nAxis = ID_AXIS_X;
@@ -915,5 +917,14 @@ void CCGWorkView::OnOptionsPerspectivecontrol()
 		scene.setProjection(projection);
 
 		RedrawWindow();
+	}
+}
+
+
+void CCGWorkView::OnOptionsPolygonfinenesstolerance()
+{
+	if (_polygon_dialog.DoModal() == IDOK)
+	{
+		//salih code
 	}
 }

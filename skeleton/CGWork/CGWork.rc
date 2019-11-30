@@ -101,6 +101,7 @@ BEGIN
     BEGIN
         MENUITEM "Perspective Control...",      ID_OPTIONS_PERSPECTIVECONTROL
         MENUITEM "Mouse Sensitivity...",        ID_OPTIONS_MOUSESENSITIVITY
+        MENUITEM "polygon fineness tolerance...", ID_OPTIONS_POLYGONFINENESSTOLERANCE
         POPUP "colors"
         BEGIN
             MENUITEM "background",                  ID_COLORS_BACKGROUND
@@ -276,6 +277,17 @@ BEGIN
     LTEXT           "FovY:",IDC_STATIC,166,76,20,8
 END
 
+IDD_DIALOG3 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,198,155,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,155,50,14
+    EDITTEXT        IDC_EDIT1,185,76,40,14,ES_AUTOHSCROLL
+    LTEXT           "polygon fineness tolerance:",IDC_STATIC,89,79,90,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -370,6 +382,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 169
     END
+
+    IDD_DIALOG3, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -411,6 +431,11 @@ BEGIN
 END
 
 IDD_DIALOG2 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG3 AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

@@ -207,6 +207,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MouseSensetivityDialog.cpp" />
     <ClCompile Include="PerspectiveDialog.cpp" />
+    <ClCompile Include="PolygonDialog.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="PngWrapper.cpp" />
     <ClCompile Include="Poly.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MouseSensetivityDialog.h" />
     <ClInclude Include="PerspectiveDialog.h" />
+    <ClInclude Include="PolygonDialog.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="PngWrapper.h" />
     <ClInclude Include="Poly.h" />
