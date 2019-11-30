@@ -23,8 +23,7 @@ public:
 	bool isInitialized() const { return _is_initialized; }
 	Scene &setProjection(const Tmatd &projection) { _projection = projection; return *this; }
 
-	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals);//TODO: implement
-
+	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals);
 private:
 	std::vector<Mesh> _meshes;
 	Tmatd _view;
