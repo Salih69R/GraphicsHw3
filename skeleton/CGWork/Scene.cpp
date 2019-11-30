@@ -85,6 +85,8 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				else
 					p2 = _projection * _view *mesh.getModel() * polygon.getCalcFaceNormal();
 
+				p1 /= p1(3);
+				p2 /= p2(3);
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
@@ -103,6 +105,8 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				else 
 					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal/* + vers[i]._vertex*/);
 
+				p1 /= p1(3);
+				p2 /= p2(3);
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
