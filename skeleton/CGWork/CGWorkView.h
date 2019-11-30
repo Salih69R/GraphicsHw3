@@ -37,6 +37,7 @@ private:
 	int m_nAction;				// Rotate, Translate, Scale
 	int m_nView;				// Orthographic, perspective
 	bool m_bIsPerspective;			// is the view perspective
+	bool m_bShowBoundingBox;		//TODO: Add gui button
 	bool m_bShowFaceNormals;		//should it draw the face normals,
 	bool m_bShowVerNormals;		//should it draw the vertexes normals, 
 	bool m_bshowGivenFNormal;//default is false, if false && m_bShowFaceNormals is true then show calculated face normals
@@ -149,6 +150,8 @@ protected:
 	afx_msg void OnUpdateFaceNormalsCalc(CCmdUI * pCmdUI);
 	afx_msg void OnVerNormalsCalc();
 	afx_msg void OnUpdateVerNormalsCalc(CCmdUI * pCmdUI);
+	afx_msg void OnShowBoundingBox();
+	afx_msg void OnUpdateShowBoundingBox(CCmdUI * pCmdUI);
 	afx_msg void OnLightShadingFlat();
 	afx_msg void OnUpdateLightShadingFlat(CCmdUI* pCmdUI);
 	afx_msg void OnLightShadingGouraud();

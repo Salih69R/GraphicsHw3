@@ -66,7 +66,7 @@ public:
 	}
 
 	Vec4d getPos() { return Vec4d(_pos(0), _pos(1), _pos(2), 1.0); }
-	Mesh &setColor(const COLORREF &color) { _color = color; return *this; }
+
 	
 	//returns std::vector with size 12, has 12 lines (pairs of vertexes) of the bounding box
 	std::vector<std::pair<Vec4d, Vec4d>> getBoundingBoxLines();

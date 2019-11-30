@@ -69,6 +69,8 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_UPDATE_COMMAND_UI(ID_FACE_NORMALS, OnUpdateFaceNormals)
 	ON_COMMAND(ID_SHOW_VER_NORMALS, OnVerNormals)
 	ON_UPDATE_COMMAND_UI(ID_SHOW_VER_NORMALS, OnUpdateVerNormals)
+	ON_COMMAND(ID_SHOW_VER_NORMALS, OnShowBoundingBox)
+	ON_UPDATE_COMMAND_UI(ID_SHOW_VER_NORMALS, OnUpdateShowBoundingBox)
 
 	ON_COMMAND(ID_FACE_NORMALS_CALCULATED, OnFaceNormalsCalc)
 	ON_UPDATE_COMMAND_UI(ID_FACE_NORMALS_CALCULATED, OnUpdateFaceNormalsCalc)
@@ -538,7 +540,6 @@ void CCGWorkView::OnUpdateVerNormals(CCmdUI * pCmdUI)
 }
 
 
-
 //handles choosing what type of normals(faces and vertecis) should we show (doesn't handle if we show or not
 void CCGWorkView::OnFaceNormalsCalc()
 {
@@ -561,8 +562,17 @@ void CCGWorkView::OnUpdateVerNormalsCalc(CCmdUI * pCmdUI)
 	pCmdUI->SetCheck(m_bshowGivenVNormal == true);
 }
 
+//m_bShowBoundingBox
 
+void CCGWorkView::OnShowBoundingBox()
+{
+	m_bShowBoundingBox = !m_bShowBoundingBox;
+}
 
+void CCGWorkView::OnUpdateShowBoundingBox(CCmdUI * pCmdUI)
+{
+	pCmdUI->SetCheck(m_bShowBoundingBox == true);
+}
 
 
 // OPTIONS HANDLERS ///////////////////////////////////////////

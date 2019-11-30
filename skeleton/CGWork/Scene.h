@@ -25,7 +25,7 @@ public:
 	COLORREF getBackgroundColor() const { return _background_color; }
 	Scene setBackgroundColor(const COLORREF &color) { _background_color = color; return *this; }
 
-	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals);
+	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
 private:
 	std::vector<Mesh> _meshes;
 	Tmatd _view;

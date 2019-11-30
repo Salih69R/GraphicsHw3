@@ -49,11 +49,13 @@ Scene &Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 }
 
 
-void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals)
+void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
 {
 	for (auto &mesh : _meshes) {
 		for (const auto &polygon : mesh.getPolygons())
 		{
+
+			//draw the polygons
 			auto& vertexes = polygon.getVertices();
 			Vec2u first_vertex_px;
 
@@ -81,6 +83,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				}
 
 			}
+			//draw polgon normals
 			if (showFaceNormals) {
 				Vec4d p1 = _projection * _view *mesh.getModel() * polygon.getAveragePosition();
 				Vec4d p2;
@@ -97,8 +100,8 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getFNColor(), width, height);
 			}
 		}
+			//draw vertices normals code
 		if (showVerNormals) {
-			//TODO: show vertices normals code
 			std::vector<VertexAndNormal> vers = mesh.getVeritxes();
 			for (unsigned i = 0; i < vers.size(); i++) {
 				Vec4d p1 = _projection * _view *mesh.getModel() * vers[i]._vertex;
@@ -117,7 +120,35 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getVNColor(), width, height);
 			}
 		}
+		
+		
+		//draw bounding box
+		if (showBoundingBox) {
+			auto bb_lines = mesh.getBoundingBoxLines();
+			for (auto pair : bb_lines) {
+				Vec4d p1 = _projection * _view *mesh.getModel() * pair.first;
+				Vec4d p2;
+
+
+					p2 = _projection * _view *mesh.getModel() * pair.second;
+
+
+				p1 /= p1(3);
+				p2 /= p2(3);
+				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getBBColor(), width, height);
+			}
+			
 	}
+
+	}
+
+
+
+
+
 
 	if (!_is_initialized)
 	{
