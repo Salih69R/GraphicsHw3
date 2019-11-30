@@ -16,6 +16,7 @@
 
 #include "Light.h"
 #include "MouseSensetivityDialog.h"
+#include "PerspectiveDialog.h"
 
 class CCGWorkView : public CView
 {
@@ -65,6 +66,7 @@ private:
 
 	CoordinateSystem _curr_coordinate_system;
 	MouseSensetivityDialog _mouse_sensetivity_dialog;
+	PerspectiveDialog _perspective_dialog;
 
 
 // Overrides
@@ -162,6 +164,7 @@ public:
 	afx_msg void OnUpdateCoordinatesystemModel(CCmdUI *pCmdUI);
 	afx_msg void OnColorsBackground();
 	afx_msg void OnOptionsMousesensitivity();
+	afx_msg void OnOptionsPerspectivecontrol();
 };
 
 #ifndef _DEBUG  // debug version in CGWorkView.cpp

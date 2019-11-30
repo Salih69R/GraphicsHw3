@@ -10,7 +10,11 @@ Scene::Scene() :
 	_background_color(RGB(0, 0, 0))
 {
 	_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
-	//lookAt(Vec3d(0.0, 0.0, 3.0), Vec3d(0.0, 0.0, 2.0), Vec3d(0.0, 1.0, 0.0));
+
+	Vec3d pos(0.0, 0.0, 3.0);
+	Vec3d front(0.0, 0.0, -1.0);
+	Vec3d up(0.0, 1.0, 0.0);
+	lookAt(pos, pos + front, up);
 }
 
 void Scene::addMesh(const Mesh &model)

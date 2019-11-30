@@ -140,11 +140,10 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 	/* You can use IP_IS_POLYGON_OBJ(PObj) and IP_IS_POINTLIST_OBJ(PObj) 
 	   to identify the type of the object*/
 
-	COLORREF color = RGB(0, 0, 0);//default is black
+	COLORREF color = RGB(255, 255, 255);//default is white
 	if (CGSkelGetObjectColor(PObj, RGB))
 	{
-		color = RGB(RGB[0], RGB[1], RGB[2]); /* color code */
-		
+		color = RGB(255 * RGB[0], 255 * RGB[1], 255 * RGB[2]); /* color code */		
 	}
 	if (CGSkelGetObjectTransp(PObj, &Transp))
 	{

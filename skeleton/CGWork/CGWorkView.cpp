@@ -90,6 +90,7 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_UPDATE_COMMAND_UI(ID_COORDINATESYSTEM_MODEL, &CCGWorkView::OnUpdateCoordinatesystemModel)
 	ON_COMMAND(ID_COLORS_BACKGROUND, &CCGWorkView::OnColorsBackground)
 	ON_COMMAND(ID_OPTIONS_MOUSESENSITIVITY, &CCGWorkView::OnOptionsMousesensitivity)
+	ON_COMMAND(ID_OPTIONS_PERSPECTIVECONTROL, &CCGWorkView::OnOptionsPerspectivecontrol)
 END_MESSAGE_MAP()
 
 
@@ -105,7 +106,8 @@ void auxSolidCone(GLdouble radius, GLdouble height) {
 // CCGWorkView construction/destruction
 
 CCGWorkView::CCGWorkView() :
-	_mouse_sensetivity_dialog(this)
+	_mouse_sensetivity_dialog(this),
+	_perspective_dialog(this)
 {
 	// Set default values
 	m_nAxis = ID_AXIS_X;
@@ -896,5 +898,22 @@ void CCGWorkView::OnOptionsMousesensitivity()
 		m_RotationSensitivity = _mouse_sensetivity_dialog.getRotationSensetivity();
 		m_TranslationSensitivity = _mouse_sensetivity_dialog.getTranslationSensetivity();
 		m_ScaleSensitivity = _mouse_sensetivity_dialog.getScaleSensetivity();
+	}
+}
+
+
+void CCGWorkView::OnOptionsPerspectivecontrol()
+{
+	if (_perspective_dialog.DoModal() == IDOK)
+	{
+		double fov_y_deg = _perspective_dialog.getFovYDeg();
+		double near_plane = _perspective_dialog.getNear();
+		double far_plane = _perspective_dialog.getFar();
+
+		Tmatd projection = TransformationMatrix<double>::perspective(fov_y_deg, m_AspectRatio,
+			near_plane, far_plane);
+		scene.setProjection(projection);
+
+		RedrawWindow();
 	}
 }
