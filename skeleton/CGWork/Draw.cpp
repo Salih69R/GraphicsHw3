@@ -177,25 +177,13 @@ void MidPointDraw(int x1, int y1, int x2, int y2, CDC* hdc, COLORREF color, int 
 		return;
 	}
 
-//	if (y2 < 0) {
-	//	if (dy != 0)
-	//		MidPointDraw(x1, y1, x1 - y1 * (dx / dy), 0, hdc, color,  width,  height);
-	//	return;
-//	}
 	if (y1 > height - 1) {
 
 		if (dy != 0)
 			MidPointDraw( x2 + (height - y2 - 1) * (dx / dy) , height -1, x2, y2, hdc, color, width, height);
 		return;
 	}
-	//if (y2 > height) {
 
-	//	if (dy != 0)
-	//		MidPointDraw(x1, y1, x1 + (height - y1) * (dx / dy) -1 , height, hdc, color, width, height);
-	//	return;
-//	}
-
-	//TODO: implement for situations : x2>width?
 	
 
 

@@ -100,7 +100,6 @@ Mesh & Mesh::addGivenNormal(Vec4d & vertex, Vec4d & normal)
 
 Mesh & Mesh::calcVNormals()
 {
-	// TODO: insert return statement here
 	for (size_t i = 0; i < _vers.size(); i++)
 	{
 		auto ver = _vers[i];
