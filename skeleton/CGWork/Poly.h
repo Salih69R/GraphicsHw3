@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "Matrices.h"
-extern class Mesh;
+class Mesh;
 class Poly
 {
 public:
