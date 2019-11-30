@@ -101,6 +101,10 @@ BEGIN
     BEGIN
         MENUITEM "Perspective Control...",      ID_OPTIONS_PERSPECTIVECONTROL
         MENUITEM "Mouse Sensitivity...",        ID_OPTIONS_MOUSESENSITIVITY
+        POPUP "colors"
+        BEGIN
+            MENUITEM "background",                  ID_COLORS_BACKGROUND
+        END
     END
     POPUP "&Light"
     BEGIN
