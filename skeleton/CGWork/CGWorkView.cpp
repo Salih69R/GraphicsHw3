@@ -920,11 +920,13 @@ void CCGWorkView::OnOptionsPerspectivecontrol()
 	}
 }
 
-
+extern IPFreeformConvStateStruct CGSkelFFCState;
 void CCGWorkView::OnOptionsPolygonfinenesstolerance()
 {
 	if (_polygon_dialog.DoModal() == IDOK)
 	{
-		//salih code
+		CGSkelFFCState.FineNess = _polygon_dialog.getTolerance();
+		if (CGSkelFFCState.FineNess < 2)
+			CGSkelFFCState.FineNess = 2;//2 is the minimum
 	}
 }
