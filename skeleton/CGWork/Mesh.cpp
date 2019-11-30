@@ -156,14 +156,14 @@ const Tmatd Mesh::getModel() const
 std::vector<std::pair<Vec4d, Vec4d>> Mesh::getBoundingBoxLines()
 {
 
-	Vec4d p1(_maxX, _maxY, _maxZ);
-	Vec4d p2(_maxX, _maxY, _minZ);
-	Vec4d p3(_minX, _maxY, _minZ);
-	Vec4d p4(_minX, _maxY, _maxZ);
-	Vec4d p5(_maxX, _minY, _maxZ);
-	Vec4d p6(_minX, _minY, _maxZ);
-	Vec4d p7(_minX, _minY, _minZ);
-	Vec4d p8(_maxX, _minY, _minZ);
+	Vec4d p1(_maxX, _maxY, _maxZ , 1.0);
+	Vec4d p2(_maxX, _maxY, _minZ, 1.0);
+	Vec4d p3(_minX, _maxY, _minZ, 1.0);
+	Vec4d p4(_minX, _maxY, _maxZ, 1.0);
+	Vec4d p5(_maxX, _minY, _maxZ, 1.0);
+	Vec4d p6(_minX, _minY, _maxZ, 1.0);
+	Vec4d p7(_minX, _minY, _minZ, 1.0);
+	Vec4d p8(_maxX, _minY, _minZ, 1.0);
 
 
 	std::pair<Vec4d, Vec4d> l1(p1, p2), l2(p2, p3), l3(p3, p4), l4(p4, p1), l5(p5, p6), l6(p6, p7), l7(p7, p8), l8(p8, p5), l9(p1, p5), l10(p2, p8), l11(p3, p7), l12(p4, p6);
