@@ -382,6 +382,7 @@ void CCGWorkView::OnFileLoad()
 		// Open the file and read it.
 		// Your code here...
 
+		scene.setInitialized(false);
 
 		Invalidate();	// force a WM_PAINT for drawing.
 	} 
@@ -815,7 +816,10 @@ void CCGWorkView::scaleView(const double &val)
 
 void CCGWorkView::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: Add your message handler code here and/or call default
+	if (!scene.isInitialized())
+	{
+		return;
+	}
 
 	static uint last_x = 0;
 	uint curr_x = point.x;

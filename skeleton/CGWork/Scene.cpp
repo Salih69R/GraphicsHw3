@@ -5,7 +5,8 @@
 Scene::Scene() :
 	_meshes(),
 	_view(),
-	_projection()
+	_projection(),
+	_is_initialized(false)
 {
 	//_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
 	lookAt(Vec3d(0.0, 0.0, 3.0), Vec3d(0.0, 0.0, 2.0), Vec3d(0.0, 1.0, 0.0));
@@ -110,6 +111,11 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 
 
 		}
+	}
+
+	if (!_is_initialized)
+	{
+		_is_initialized = true;
 	}
 }
 
