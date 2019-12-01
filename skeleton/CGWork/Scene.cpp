@@ -110,9 +110,9 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				Vec4d p2;
 				
 				if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
-					p2 = _projection * _view *mesh.getModel() * vers[i]._givenNormal;
+					p2 = _projection * _view *mesh.getModel() * (vers[i]._givenNormal + vers[i]._vertex);
 				else 
-					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal/* + vers[i]._vertex*/);
+					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
 
 				p1 /= p1(3);
 				p2 /= p2(3);

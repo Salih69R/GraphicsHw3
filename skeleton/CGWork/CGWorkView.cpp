@@ -116,7 +116,8 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_COMMAND(ID_OPTIONS_MOUSESENSITIVITY, &CCGWorkView::OnOptionsMousesensitivity)
 	ON_COMMAND(ID_OPTIONS_PERSPECTIVECONTROL, &CCGWorkView::OnOptionsPerspectivecontrol)
 	ON_COMMAND(ID_OPTIONS_POLYGONFINENESSTOLERANCE, &CCGWorkView::OnOptionsPolygonfinenesstolerance)
-
+	ON_COMMAND(ID_ACTIVE_MESH_CONTROL ,&CCGWorkView::OnOptionsActiveMesh )
+	
 END_MESSAGE_MAP()
 
 
@@ -134,7 +135,8 @@ void auxSolidCone(GLdouble radius, GLdouble height) {
 CCGWorkView::CCGWorkView() :
 	_mouse_sensetivity_dialog(this),
 	_perspective_dialog(this),
-	_polygon_dialog(this)
+	_polygon_dialog(this),
+	_active_mesh_dialog(this)
 {
 	// Set default values
 	m_nAxis = ID_AXIS_X;
@@ -1014,5 +1016,33 @@ void CCGWorkView::OnOptionsPolygonfinenesstolerance()
 		CGSkelFFCState.FineNess = _polygon_dialog.getTolerance();
 		if (CGSkelFFCState.FineNess < 2)
 			CGSkelFFCState.FineNess = 2;//2 is the minimum
+	}
+}
+
+void CCGWorkView::OnOptionsActiveMesh()
+{
+
+	CAtlString str = _T("available options for active mesh:\n(Mesh Name) : (id)\n");
+
+
+
+
+	str.Append(_T("all : -1 \n"));
+	auto meshes = scene.getMeshes();
+	for (int i = 0; i < meshes.size(); ++i) {
+
+		CString cur;
+		cur.FormatMessage(_T("%1% : %2!d! \n"),  meshes[i].getName(), i);
+		str.Append( cur);
+	}
+
+	AfxMessageBox(str,MB_OK);
+
+
+	if (_active_mesh_dialog.DoModal() == IDOK)
+	{
+		m_nActiveMesh = _active_mesh_dialog.getActive();
+		if (m_nActiveMesh < 0 || m_nActiveMesh > meshes.size())
+			m_nActiveMesh = -1;
 	}
 }

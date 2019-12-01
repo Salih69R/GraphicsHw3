@@ -167,8 +167,9 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 	}
 
 	char* str = "unnamed object";
-	if(PObj->ObjName != NULL)
-	Mesh mesh(color, PObj->ObjName);
+	if (PObj->ObjName != NULL)
+		str = PObj->ObjName;
+	Mesh mesh(color, str);
 
 	for (PPolygon = PObj -> U.Pl; PPolygon != NULL;	PPolygon = PPolygon -> Pnext) 
 	{
@@ -230,7 +231,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 			/* Close the polygon. */	
 			polygon.CalcSetFaceNormal();
 			
-			mesh.addPolygon(polygon);		
+			mesh.addPolygon(polygon);
 	}
 	mesh.calcVNormals();
 	/* Close the object. */

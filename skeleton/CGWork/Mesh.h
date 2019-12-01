@@ -70,6 +70,8 @@ public:
 	
 	//returns std::vector with size 12, has 12 lines (pairs of vertexes) of the bounding box
 	std::vector<std::pair<Vec4d, Vec4d>> getBoundingBoxLines();
+	CString getName() { return _name; }
+
 
 	~Mesh() = default;
 
@@ -82,7 +84,7 @@ private:
 	COLORREF _fNormalColor;
 	COLORREF _vNormalColor;
 	COLORREF _BBColor;//bounding box color
-	std::string _name;
+	CString _name;
 
 
 	//used for bounding box and fixing the starting pos

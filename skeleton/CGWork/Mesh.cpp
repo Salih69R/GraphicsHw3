@@ -112,12 +112,16 @@ Mesh & Mesh::calcVNormals()
 			avg += pol._fnormal;
 		}
 		avg /= ver._polygonsTouching.size();
+
+
+		//avg.normalize();
+		//avg /= avg(3);
+
 		avg(3) = 0;
 		avg.normalize();
 		avg(3) = 1;
+
 		_vers[i]._calculatedNormal = avg;
-
-
 	}
 
 	return *this;
