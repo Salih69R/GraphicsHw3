@@ -308,68 +308,114 @@ BOOL CCGWorkView::OnEraseBkgnd(CDC* pDC)
 
 void CCGWorkView::OnDraw(CDC* pDC)
 {
-	static float theta = 0.0f;
+
 	CCGWorkDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 	    return;
+
 	CRect r;
 
 	GetClientRect(&r);
 	CDC *pDCToUse = /*m_pDC*/m_pDbDC;
-
-	pDCToUse->FillSolidRect(&r, scene.getBackgroundColor());
-
 	auto w = r.Width();
 	auto h = r.Height();
 
-	scene.draw(pDCToUse, r.Width(), r.Height(), m_bShowFaceNormals, m_bShowVerNormals, m_bshowGivenFNormal, m_bshowGivenVNormal, m_bShowBoundingBox);
+
+	HBITMAP bm = CreateCompatibleBitmap(*pDCToUse, w, h);
+	SelectObject(*pDCToUse, bm);
+	BITMAPINFO bminfo;
+	bminfo.bmiHeader.biSize = sizeof(bminfo.bmiHeader);
+	bminfo.bmiHeader.biWidth = w;
+	bminfo.bmiHeader.biHeight = h;
+	bminfo.bmiHeader.biPlanes = 1;
+	bminfo.bmiHeader.biBitCount = 32;
+	bminfo.bmiHeader.biCompression = BI_RGB;
+	bminfo.bmiHeader.biSizeImage = 0;
+	bminfo.bmiHeader.biXPelsPerMeter = 1;
+	bminfo.bmiHeader.biYPelsPerMeter = 1;
+	bminfo.bmiHeader.biClrUsed = 0;
+	bminfo.bmiHeader.biClrImportant = 0;
+	int* bits = new int[h * w];
+	
+	//notice tthat colors are stored in bits in an BGR order instead of RGB, so we replace it here
+	COLORREF bgcolor = RGBToBGR(scene.getBackgroundColor());
+	
+	for (int i = 0; i < h*w; ++i)
+		bits[i] = bgcolor;
+	
+	
+	scene.draw(bits, w, h, m_bShowFaceNormals, m_bShowVerNormals, m_bshowGivenFNormal, m_bshowGivenVNormal, m_bShowBoundingBox);
+	SetDIBits(*pDCToUse, bm, 0, h, bits, &bminfo, 0);
 	m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
+
+
+	DeleteObject(bm);
+	delete bits;
+
+
+
+	
+	/////////////////////////
+	/*
+
+	int margin;
+	int x;
+	int y;
+	int ret;
+	COLORREF color;
+	CRect rect; // Client rectangle
 	
 
 
-	/*pDCToUse->FillSolidRect(&r, RGB(255, 255, 0));
+	color = RGB(0, 0, 100);
+	margin = 10;
+
+	GetClientRect(&rect); //
+	h = rect.bottom - rect.top;
+	w = rect.right - rect.left;
+
+	CPaintDC hdc(this); // device context for painting
+
+
+
+	HDC hdcMem = CreateCompatibleDC(hdc);
+	HBITMAP bm = CreateCompatibleBitmap(hdc, w, h);
 	
-	int numLines = 100;
-	double radius = r.right / 3.0;
+	SelectObject(hdcMem, bm);
+	BITMAPINFO bminfo;
 	
-	if (r.right > r.bottom) {
-		radius = r.bottom / 3.0;
-	}
-	
-	for (int i = 0; i < numLines; ++i)
+	bminfo.bmiHeader.biSize = sizeof(bminfo.bmiHeader);
+	bminfo.bmiHeader.biWidth = w;
+	bminfo.bmiHeader.biHeight = h;
+	bminfo.bmiHeader.biPlanes = 1;
+	bminfo.bmiHeader.biBitCount = 32;
+	bminfo.bmiHeader.biCompression = BI_RGB;
+	bminfo.bmiHeader.biSizeImage = 0;
+	bminfo.bmiHeader.biXPelsPerMeter = 1;
+	bminfo.bmiHeader.biYPelsPerMeter = 1;
+	bminfo.bmiHeader.biClrUsed = 0;
+	bminfo.bmiHeader.biClrImportant = 0;
+
+	int* bits = new int[h * w];
+
+	for (x = rect.left + margin; x < rect.right - margin; x++)
 	{
-		double finalTheta = 2 * M_PI / numLines*i + theta*M_PI/180.0f;
-		
-		pDCToUse->MoveTo(r.right / 2, r.bottom / 2);
-		pDCToUse->LineTo((int)(r.right / 2 + radius*cos(finalTheta)), (int)(r.bottom / 2 + radius*sin(finalTheta)));
-	}	
-
-
-	if (pDCToUse != m_pDC) 
-	{
-		m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
-	}
-	
-	for (Model* model : Models) {
-		
-				
-		for (int i = 0; i < model->getVertexes().size() - 1; i++) {
-			Vec3d point1 = model->getVertexes()[i];
-			Vec3d point2 = model->getVertexes()[i+1];
-
-
-			//Salih: Testing stuff: x=(x+1)*w , y= (1-y)*h/2
-			//MidPointDraw(  (point1(0)+1)*r.Width()/2  , (point1(1)+1)*r.Height()/2, (point2(0) + 1)*r.Width()/2, (point2(1)+1)*r.Height() / 2, *pDCToUse , model->getColor());
+		for (y = rect.top + margin; y < rect.bottom - margin; y++)
+		{
+			bits[(x - rect.left) + (w * (y - rect.top))] = color;
 		}
-		
-
 	}
 
-	//MidPointDraw(355, 489, 355, 163, pDCToUse, RGB(0, 0, 0));
-	MidPointDraw(0, 0, 50, 50, pDCToUse, RGB(0, 0, 0));
 
-	theta += 5;	*/
+	SetDIBits(hdcMem, bm, 0, h, bits, &bminfo, 0);
+
+	ret = BitBlt(hdc, rect.left, rect.top, rect.right, rect.bottom, hdcMem, rect.left, rect.top, SRCCOPY);
+
+	DeleteDC(hdcMem);
+	DeleteObject(bm);
+	delete bits;
+	*/
 }
 
 
@@ -412,7 +458,7 @@ void CCGWorkView::OnFileLoad()
 
 	CFileDialog dlg(TRUE, _T("itd"), _T("*.itd"), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY ,szFilters);
 
-	if (dlg.DoModal () == IDOK) {
+	if (dlg.DoModal() == IDOK) {
 		m_strItdFileName = dlg.GetPathName();		// Full path and filename
 		PngWrapper p;
 		CGSkelProcessIritDataFiles(m_strItdFileName, 1);

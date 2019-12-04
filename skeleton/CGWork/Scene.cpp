@@ -51,8 +51,18 @@ Scene &Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 
 
 
-void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
+void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
 {
+
+
+
+
+
+
+
+
+
+
 	for (auto &mesh : _meshes) {
 		for (const auto &polygon : mesh.getPolygons())
 		{
@@ -77,11 +87,11 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 					first_vertex_px = px1;
 				}
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getColor(), width, height);
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits,RGBToBGR( mesh.getColor()), width, height);
 
 				if (i == vertexes.size() - 2)
 				{
-					MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), pDC, mesh.getColor(), width, height);
+					MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), bits, RGBToBGR(mesh.getColor()), width, height);
 				}
 
 			}
@@ -99,7 +109,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getFNColor(), width, height);
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(mesh.getFNColor()), width, height);
 			}
 		}
 			//draw vertices normals code
@@ -119,7 +129,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getVNColor(), width, height);
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(mesh.getVNColor()), width, height);
 			}
 		}
 		
@@ -140,7 +150,7 @@ void Scene::draw(CDC * pDC, int width, int height, bool showFaceNormals, bool sh
 				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), pDC, mesh.getBBColor(), width, height);
+				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(mesh.getBBColor()), width, height);
 			}
 			
 	}

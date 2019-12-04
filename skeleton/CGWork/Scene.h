@@ -33,7 +33,7 @@ public:
 
 
 
-	void draw(CDC * pDC, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
+	void draw(int * bits, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
 private:
 	std::vector<Mesh> _meshes;
 	Tmatd _view;
