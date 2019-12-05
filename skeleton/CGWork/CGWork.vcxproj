@@ -207,6 +207,7 @@
     <ClCompile Include="MaterialDlg.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MouseSensetivityDialog.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="PerspectiveDialog.cpp" />
     <ClCompile Include="PolygonDialog.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MouseSensetivityDialog.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="PerspectiveDialog.h" />
     <ClInclude Include="PolygonDialog.h" />
     <ClInclude Include="Scene.h" />

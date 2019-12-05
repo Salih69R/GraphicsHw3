@@ -74,19 +74,19 @@ public:
 
 
 	~Mesh() = default;
-
+	friend class Object;
 private:
 	std::vector<Poly> _polygons;
 	std::vector<VertexAndNormal> _vers;	
 	Vec3d _pos;
-	Tmatd _model;
-	COLORREF _color;
-	COLORREF _fNormalColor;
-	COLORREF _vNormalColor;
-	COLORREF _BBColor;//bounding box color
-	CString _name;
+	Tmatd _model;//in Object
+	COLORREF _color;;//in Object
+	COLORREF _fNormalColor;//in Object
+	COLORREF _vNormalColor;//in Object
+	COLORREF _BBColor;//in Object
+	CString _name;//in Object
 
-
+	//in Object
 	//used for bounding box and fixing the starting pos
 	double _maxX;
 	double _maxY;

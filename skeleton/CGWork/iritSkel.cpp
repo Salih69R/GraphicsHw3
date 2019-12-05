@@ -106,6 +106,8 @@ void CGSkelDumpOneTraversedObject(IPObjectStruct *PObj,
 	else
 		PObjs = PObj;
 
+
+	//TODO: new Object
 	for (PObj = PObjs; PObj != NULL; PObj = PObj -> Pnext)
 		if (!CGSkelStoreData(PObj)) 
 			exit(1);
