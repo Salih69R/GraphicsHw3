@@ -52,6 +52,7 @@ private:
 	bool _is_initialized;
 	COLORREF _background_color;
 	Camera _camera;
+	Tmatd _look_at;
 };
 
 

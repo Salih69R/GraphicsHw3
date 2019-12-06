@@ -131,7 +131,7 @@ TransformationMatrix<T> &TransformationMatrix<T>::translate(const Vector<T, TRAN
     TransformationMatrix<T> mat_translation;
     mat_translation.setTranslation(translation);
 
-	*this = *this * mat_translation;
+	*this = mat_translation * *this;
 
 	return *this;
 }

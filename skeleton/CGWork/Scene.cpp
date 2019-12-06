@@ -8,12 +8,15 @@ Scene::Scene() :
 	_projection(),
 	_is_initialized(false),
 	_background_color(RGB(0, 0, 0)),
-	_camera({})
+	_camera({}),
+	_look_at()
 {
 	_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
 	_camera.pos = Vec3d(0.0, 0.0, 3.0);
 	_camera.front = Vec3d(0.0, 0.0, -1.0);
 	_camera.up = Vec3d(0.0, 1.0, 0.0);
+
+	_look_at = lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
 }
 
 void Scene::addObject(const Object &object)
@@ -50,9 +53,9 @@ Tmatd Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 
 void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
 {
-	auto camera = lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
-
 	for (auto &obj : _objs) {
+
+		auto transformation = _projection * _look_at * _view * obj.getModel();
 
 		for (auto &mesh : obj.getMeshs())
 		{
@@ -65,8 +68,8 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 
 				for (unsigned i = 0; i < vertexes.size() - 1; i++)
 				{
-					Vec4d p1 = _projection * camera * _view * obj.getModel() * vertexes[i];
-					Vec4d p2 = _projection * camera * _view * obj.getModel() * vertexes[i + 1];
+					Vec4d p1 = transformation * vertexes[i];
+					Vec4d p2 = transformation * vertexes[i + 1];
 
 					p1 /= p1(3);
 					p2 /= p2(3);
@@ -89,12 +92,12 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 				}
 				//draw polgon face normals
 				if (showFaceNormals) {
-					Vec4d p1 = _projection * _view *obj.getModel() * polygon.getAveragePosition();
+					Vec4d p1 = transformation * polygon.getAveragePosition();
 					Vec4d p2;
 					if(givenFaceNormals && polygon.getGivenFaceNormal()(3)==1)//we flag _fGivenNormal(3)=0 (by default) if there isn't one
-						p2 = _projection * _view *obj.getModel() * polygon.getGivenFaceNormal();
+						p2 = transformation * polygon.getGivenFaceNormal();
 					else
-						p2 = _projection * _view *obj.getModel() * polygon.getCalcFaceNormal();
+						p2 = transformation * polygon.getCalcFaceNormal();
 
 					p1 /= p1(3);
 					p2 /= p2(3);
@@ -108,13 +111,13 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 			if (showVerNormals) {
 				std::vector<VertexAndNormal> vers = mesh.getVeritxes();
 				for (unsigned i = 0; i < vers.size(); i++) {
-					Vec4d p1 = _projection * _view *obj.getModel() * vers[i]._vertex;
+					Vec4d p1 = transformation * vers[i]._vertex;
 					Vec4d p2;
 				
 					if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
-						p2 = _projection * _view *obj.getModel() * (vers[i]._givenNormal + vers[i]._vertex);
+						p2 = transformation * (vers[i]._givenNormal + vers[i]._vertex);
 					else 
-						p2 = _projection * _view *obj.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
+						p2 = transformation * (vers[i]._calculatedNormal + vers[i]._vertex);
 
 					p1 /= p1(3);
 					p2 /= p2(3);
