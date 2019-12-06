@@ -30,40 +30,29 @@ public:
 	Mesh(COLORREF col, char* str);
 	Mesh &addVertex(const VertexAndNormal &vertex);
 	Mesh &addVertexes(const std::vector<Vec4d>& vertexes, const Poly &polyHoldingThem);
+	const std::vector<VertexAndNormal>& getVeritxes() const { return _vers; }
 
 	//if the vertex of this normal is not in the mesh yet, it adds it, it's ok because it will be added anyway with the polygon
 	//(won't make another one then, it will just add the polygon to the vertex)
 	Mesh &addGivenNormal(Vec4d& vertex, Vec4d& normal);
-
-
 	Mesh &calcVNormals();
 	Mesh &addPolygon(const Poly &polygon);
+	const std::vector<Poly>& getPolygons() const { return _polygons; }
+
 	Mesh &rotateX(const double angle_deg);
 	Mesh &rotateY(const double angle_deg);
 	Mesh &rotateZ(const double angle_deg);
 	Mesh &translate(const Vec3d &translation);
 	Mesh &scale(const Vec3d &scale);
-	const std::vector<Poly>& getPolygons() const { return _polygons; }
 	const Tmatd getModel() const;
-	const std::vector<VertexAndNormal>& getVeritxes() const { return _vers; }
+
 
 
 	const COLORREF getColor() const { return _color; }
 	Mesh& setColor(const COLORREF &color) { 
 		_color = color;  return *this;
 	}
-	const COLORREF getFNColor() const { return _fNormalColor; }
-	Mesh& setFNColor(const COLORREF &color) {
-		_fNormalColor = color;  return *this;
-	}
-	const COLORREF getVNColor() const { return _vNormalColor; }
-	Mesh& setVNColor(const COLORREF &color) {
-		_vNormalColor = color;  return *this;
-	}
-	const COLORREF getBBColor() const { return _BBColor; }	
-	Mesh& setBBColor(const COLORREF &color) {
-		_BBColor = color;  return *this;
-	}
+
 
 	Vec4d getPos() { return Vec4d(_pos(0), _pos(1), _pos(2), 1.0); }
 
@@ -81,9 +70,6 @@ private:
 	Vec3d _pos;
 	Tmatd _model;//in Object
 	COLORREF _color;;//in Object
-	COLORREF _fNormalColor;//in Object
-	COLORREF _vNormalColor;//in Object
-	COLORREF _BBColor;//in Object
 	CString _name;//in Object
 
 	//in Object

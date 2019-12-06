@@ -3,7 +3,7 @@
 #define DEF_BOUNDING_BOX_SCREEN_RATION 3
 
 Scene::Scene() :
-	_meshes(),
+	_objs(),
 	_view(),
 	_projection(),
 	_is_initialized(false),
@@ -17,9 +17,9 @@ Scene::Scene() :
 	lookAt(pos, pos + front, up);
 }
 
-void Scene::addMesh(const Mesh &model)
+void Scene::addMesh(const Object &model)
 {
-	_meshes.push_back(model);
+	_objs.push_back(model);
 }
 
 Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width, const uint &height)
@@ -55,105 +55,102 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 {
 
 
+	for (auto &obj : _objs) {
 
-
-
-
-
-
-
-
-	for (auto &mesh : _meshes) {
-		for (const auto &polygon : mesh.getPolygons())
+		for (auto &mesh : obj.getMeshs())
 		{
-
-			//draw the polygons
-			auto& vertexes = polygon.getVertices();
-			Vec2u first_vertex_px;
-
-			for (unsigned i = 0; i < vertexes.size() - 1; i++)
+			for (const auto &polygon : mesh.getPolygons())
 			{
-				Vec4d p1 = _projection * _view * mesh.getModel() * vertexes[i];
-				Vec4d p2 = _projection * _view * mesh.getModel() * vertexes[i + 1];
 
-				p1 /= p1(3);
-				p2 /= p2(3);
+				//draw the polygons
+				auto& vertexes = polygon.getVertices();
+				Vec2u first_vertex_px;
 
-				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
-
-				if (i == 0)
+				for (unsigned i = 0; i < vertexes.size() - 1; i++)
 				{
-					first_vertex_px = px1;
+					Vec4d p1 = _projection * _view * obj.getModel() * vertexes[i];
+					Vec4d p2 = _projection * _view * obj.getModel() * vertexes[i + 1];
+
+					p1 /= p1(3);
+					p2 /= p2(3);
+
+					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+					if (i == 0)
+					{
+						first_vertex_px = px1;
+					}
+
+					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits,RGBToBGR(mesh.getColor()), width, height);
+
+					if (i == vertexes.size() - 2)
+					{
+						MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), bits, RGBToBGR(mesh.getColor()), width, height);
+					}
+
 				}
+				//draw polgon face normals
+				if (showFaceNormals) {
+					Vec4d p1 = _projection * _view *obj.getModel() * polygon.getAveragePosition();
+					Vec4d p2;
+					if(givenFaceNormals && polygon.getGivenFaceNormal()(3)==1)//we flag _fGivenNormal(3)=0 (by default) if there isn't one
+						p2 = _projection * _view *obj.getModel() * polygon.getGivenFaceNormal();
+					else
+						p2 = _projection * _view *obj.getModel() * polygon.getCalcFaceNormal();
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits,RGBToBGR( mesh.getColor()), width, height);
+					p1 /= p1(3);
+					p2 /= p2(3);
+					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				if (i == vertexes.size() - 2)
-				{
-					MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), bits, RGBToBGR(mesh.getColor()), width, height);
+					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getFNColor()), width, height);
 				}
-
 			}
-			//draw polgon normals
-			if (showFaceNormals) {
-				Vec4d p1 = _projection * _view *mesh.getModel() * polygon.getAveragePosition();
-				Vec4d p2;
-				if(givenFaceNormals && polygon.getGivenFaceNormal()(3)==1)//we flag _fGivenNormal(3)=0 (by default) if there isn't one
-					p2 = _projection * _view *mesh.getModel() * polygon.getGivenFaceNormal();
-				else
-					p2 = _projection * _view *mesh.getModel() * polygon.getCalcFaceNormal();
-
-				p1 /= p1(3);
-				p2 /= p2(3);
-				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
-
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(mesh.getFNColor()), width, height);
-			}
-		}
-			//draw vertices normals code
-		if (showVerNormals) {
-			std::vector<VertexAndNormal> vers = mesh.getVeritxes();
-			for (unsigned i = 0; i < vers.size(); i++) {
-				Vec4d p1 = _projection * _view *mesh.getModel() * vers[i]._vertex;
-				Vec4d p2;
+				//draw mesh vertices normals code
+			if (showVerNormals) {
+				std::vector<VertexAndNormal> vers = mesh.getVeritxes();
+				for (unsigned i = 0; i < vers.size(); i++) {
+					Vec4d p1 = _projection * _view *obj.getModel() * vers[i]._vertex;
+					Vec4d p2;
 				
-				if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
-					p2 = _projection * _view *mesh.getModel() * (vers[i]._givenNormal + vers[i]._vertex);
-				else 
-					p2 = _projection * _view *mesh.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
+					if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
+						p2 = _projection * _view *obj.getModel() * (vers[i]._givenNormal + vers[i]._vertex);
+					else 
+						p2 = _projection * _view *obj.getModel() * (vers[i]._calculatedNormal + vers[i]._vertex);
 
-				p1 /= p1(3);
-				p2 /= p2(3);
-				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+					p1 /= p1(3);
+					p2 /= p2(3);
+					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(mesh.getVNColor()), width, height);
+					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getVNColor()), width, height);
+				}
 			}
+		
+
+
 		}
-		
-		
-		//draw bounding box
-		if (showBoundingBox) {
-			auto bb_lines = mesh.getBoundingBoxLines();
-			for (auto pair : bb_lines) {
-				Vec4d p1 = _projection * _view *mesh.getModel() * pair.first;
-				Vec4d p2;
+
+			//draw object bounding box
+			if (showBoundingBox) {
+				auto bb_lines = obj.getBoundingBoxLines();
+				for (auto pair : bb_lines) {
+					Vec4d p1 = _projection * _view * obj.getModel() * pair.first;
+					Vec4d p2;
 
 
-					p2 = _projection * _view *mesh.getModel() * pair.second;
+						p2 = _projection * _view * obj.getModel() * pair.second;
 
 
-				p1 /= p1(3);
-				p2 /= p2(3);
-				auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-				auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+					p1 /= p1(3);
+					p2 /= p2(3);
+					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-				MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(mesh.getBBColor()), width, height);
+					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getBBColor()), width, height);
+				}
 			}
-			
-	}
 
 	}
 
@@ -165,56 +162,58 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 
 
 
-
-Scene & Scene::setWireFrameColor(const COLORREF & color, int mesh_Id)
+//works on the meshes inside the objects
+Scene & Scene::setWireFrameColor(const COLORREF & color, int Id)
 {
-	if (mesh_Id == -1)
-		for (auto& mesh : _meshes)
-			mesh.setColor(color);
+	if (Id == -1)//set for all
+		for (auto& ob : _objs)
+			for(auto& mesh : ob.getMeshs())
+				mesh.setColor(color);
 	else
-		if (mesh_Id < _meshes.size())
-			_meshes[mesh_Id].setColor(color);
+		if (Id < _objs.size())
+			for (auto& mesh : _objs[Id].getMeshs())
+				mesh.setColor(color);
 
 	return *this;
 }
 
 
-Scene & Scene::setFaceNormalsColor(const COLORREF & color, int mesh_Id)
+Scene & Scene::setFaceNormalsColor(const COLORREF & color, int Id)
 {
-	if (mesh_Id == -1)
-		for (auto& mesh : _meshes)
-			mesh.setFNColor(color);
+	if (Id == -1)
+		for (auto& ob : _objs)
+			ob.setFNColor(color);
 	else
-		if (mesh_Id < _meshes.size())
-			_meshes[mesh_Id].setFNColor(color);
-
-	return *this;
-}
-
-
-
-Scene & Scene::setVerticesNormalsColor(const COLORREF & color, int mesh_Id)
-{
-	if (mesh_Id == -1)
-		for (auto& mesh : _meshes)
-			mesh.setVNColor(color);
-	else
-		if (mesh_Id < _meshes.size())
-			_meshes[mesh_Id].setVNColor(color);
+		if (Id < _objs.size())
+			_objs[Id].setFNColor(color);
 
 	return *this;
 }
 
 
 
-Scene & Scene::setBoundingBoxColor(const COLORREF & color, int mesh_Id)
+Scene & Scene::setVerticesNormalsColor(const COLORREF & color, int Id)
 {
-	if (mesh_Id == -1)
-		for (auto& mesh : _meshes)
-			mesh.setBBColor(color);
+	if (Id == -1)
+		for (auto& ob : _objs)
+			ob.setVNColor(color);
 	else
-		if (mesh_Id < _meshes.size())
-			_meshes[mesh_Id].setBBColor(color);
+		if (Id < _objs.size())
+			_objs[Id].setVNColor(color);
+
+	return *this;
+}
+
+
+
+Scene & Scene::setBoundingBoxColor(const COLORREF & color, int Id)
+{
+	if (Id == -1)
+		for (auto& ob : _objs)
+			ob.setBBColor(color);
+	else
+		if (Id < _objs.size())
+			_objs[Id].setBBColor(color);
 
 	return *this;
 }

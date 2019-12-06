@@ -6,18 +6,20 @@
 #include <vector>
 
 #include "Draw.h"
-#include "Mesh.h"
+#include "Object.h"
 #include "Matrices.h"
+
+
 
 class Scene {
 public:
 
 	Scene();
 	~Scene() = default;
-	void addMesh(const Mesh& model);
+	void addMesh(const Object& model);//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
 	Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height);
 	Scene &lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up);
-	std::vector<Mesh> &getMeshes() { return _meshes; }
+	std::vector<Object> &getMeshes() { return _objs; }//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
 	Tmatd &getView() { return _view; }
 	Scene &setInitialized(const bool &new_val) { _is_initialized = new_val; return *this; }
 	bool isInitialized() const { return _is_initialized; }
@@ -26,16 +28,17 @@ public:
 	COLORREF getBackgroundColor() const { return _background_color; }
 	Scene& setBackgroundColor(const COLORREF &color) { _background_color = color; return *this; }
 
-	Scene& setWireFrameColor(const COLORREF &color, int mesh_Id);
-	Scene& setFaceNormalsColor(const COLORREF &color, int mesh_Id);//to all the meshes if mesh_Id = -1
-	Scene& setVerticesNormalsColor(const COLORREF &color, int mesh_Id);//to all the meshes if mesh_Id = -1
-	Scene& setBoundingBoxColor(const COLORREF &color, int mesh_Id);//to all the meshes if mesh_Id = -1
+	Scene& setWireFrameColor(const COLORREF &color, int Id);
+	Scene& setFaceNormalsColor(const COLORREF &color, int Id);//to all the  if Id = -1
+	Scene& setVerticesNormalsColor(const COLORREF &color, int Id);//to all the  if Id = -1
+	Scene& setBoundingBoxColor(const COLORREF &color, int Id);//to all the  if Id = -1
 
 
 
 	void draw(int * bits, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
 private:
-	std::vector<Mesh> _meshes;
+	std::vector<Object> _objs;
+	//std::vector<Mesh> _meshes;
 	Tmatd _view;
 	Tmatd _projection;
 	bool _is_initialized;

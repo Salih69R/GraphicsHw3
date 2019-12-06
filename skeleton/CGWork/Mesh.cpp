@@ -8,9 +8,6 @@ Mesh::Mesh(COLORREF col, char* str) :
 	_pos(0.0, 0.0, 0.0),
 	_model(),
 	_color(col),
-	_fNormalColor(col),
-	_vNormalColor(col),
-	_BBColor(col),
 	_name(str)
 {
 	
@@ -136,24 +133,6 @@ Mesh &Mesh::addPolygon(const Poly &polygon)
 
 const Tmatd Mesh::getModel() const
 {
-	//Tmatd posmat;
-	//posmat.translate(_pos*-1);
-
-	////m is max dimension the mesh takes
-	//double m = (_maxX - _pos(0));
-	//if ((_maxY - _pos(1)) > m)
-	//	m = (_maxY - _pos(1));
-	//if ((_maxZ - _pos(2)) > m)
-	//	m = (_maxZ - _pos(2));
-
-	//Tmatd norm;
-	//if(m != 0)
-	//	//norm.scale(Vec3d(1 / m,1/m,1/m));
-
-
-	//Tmatd mod = _model;
-
-	//return mod /* norm */ *  posmat;
 
 	return _model;
 }

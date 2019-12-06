@@ -11,7 +11,7 @@ public:
 	ActiveMeshDialog(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~ActiveMeshDialog();
 	int getActive() const { return _active; }
-
+	void setActive(int val)  {  _active = val; }
 	// Dialog Data
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_DIALOG4 };

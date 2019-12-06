@@ -2,12 +2,8 @@
 
 
 
-Object::Object(COLORREF col, char* str) : 
+Object::Object( CString str) : 
 	_model(),
-	_color(col),
-	_fNormalColor(col),
-	_vNormalColor(col),
-	_BBColor(col),
 	_name(str)
 {
 
@@ -19,11 +15,18 @@ void Object::addMesh(const Mesh &model)
 
 	//update bounding box and position
 
-	if (_meshs.size() == 1)//first vertex
+	if (_meshs.size() == 1)//first one to add
 	{
 		_maxX = _meshs[0]._minX;
 		_maxY = _meshs[0]._minY;
 		_maxZ = _meshs[0]._minZ;
+
+		_minX = _meshs[0]._minX;
+		_minY = _meshs[0]._minY;
+		_minZ = _meshs[0]._minZ;
+
+		//set colors
+		_fNormalColor = _vNormalColor = _BBColor = _meshs[0].getColor();
 	}
 
 	for (int i = 0; i < _meshs.size(); ++i) {
@@ -45,6 +48,46 @@ void Object::addMesh(const Mesh &model)
 			_minZ = mesh._minZ;
 	}
 	_pos = Vec3d((_maxX + _minX) / 2, (_maxY + _minY) / 2, (_maxZ + _minZ) / 2);
+}
+
+Object & Object::rotateX(const double angle_deg)
+{
+	_model.rotateX(angle_deg);
+
+	return *this;
+}
+
+Object & Object::rotateY(const double angle_deg)
+{
+	_model.rotateY(angle_deg);
+
+	return *this;
+}
+
+Object & Object::rotateZ(const double angle_deg)
+{
+	_model.rotateZ(angle_deg);
+
+	return *this;
+}
+
+Object & Object::translate(const Vec3d & translation)
+{
+	_model.translate(translation);
+
+	return *this;
+}
+
+Object & Object::scale(const Vec3d & scale)
+{
+	_model.scale(scale);
+
+	return *this;
+}
+
+const Tmatd Object::getModel() const
+{
+	return _model;
 }
 
 std::vector<std::pair<Vec4d, Vec4d>> Object::getBoundingBoxLines()

@@ -49,6 +49,7 @@ BEGIN_MESSAGE_MAP(CCGWorkView, CView)
 	ON_WM_DESTROY()
 	ON_WM_SIZE()
 	ON_COMMAND(ID_FILE_LOAD, OnFileLoad)
+
 	ON_COMMAND(ID_VIEW_ORTHOGRAPHIC, OnViewOrthographic)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_ORTHOGRAPHIC, OnUpdateViewOrthographic)
 	ON_COMMAND(ID_VIEW_PERSPECTIVE, OnViewPerspective)
@@ -1071,10 +1072,8 @@ void CCGWorkView::OnOptionsActiveMesh()
 	CAtlString str = _T("available options for active mesh:\n(Mesh Name) : (id)\n");
 
 
-
-
 	str.Append(_T("all : -1 \n"));
-	auto meshes = scene.getMeshes();
+	auto meshes = scene.getMeshes();//Objects
 	for (int i = 0; i < meshes.size(); ++i) {
 
 		CString cur;
@@ -1088,7 +1087,8 @@ void CCGWorkView::OnOptionsActiveMesh()
 	if (_active_mesh_dialog.DoModal() == IDOK)
 	{
 		m_nActiveMesh = _active_mesh_dialog.getActive();
-		if (m_nActiveMesh < 0 || m_nActiveMesh > meshes.size())
+		if (m_nActiveMesh < 0 || m_nActiveMesh >= meshes.size())
 			m_nActiveMesh = -1;
 	}
+	_active_mesh_dialog.setActive(m_nActiveMesh);
 }

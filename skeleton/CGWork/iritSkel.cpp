@@ -73,8 +73,10 @@ bool CGSkelProcessIritDataFiles(CString &FileNames, int NumFiles)
 	CGSkelFFCState.LinearOnePolyFlag = TRUE;    /* Linear srf gen. one poly. */
 
 
-
-
+	CString str;
+	str = (const char * ) CStr;//data is the name of the file
+	Object obj(str);
+	scene.addMesh(obj);
 
 	/* Traverse ALL the parsed data, recursively. */
 	IPTraverseObjListHierarchy(PObjects, CrntViewMat,
@@ -108,9 +110,12 @@ void CGSkelDumpOneTraversedObject(IPObjectStruct *PObj,
 
 
 	//TODO: new Object
-	for (PObj = PObjs; PObj != NULL; PObj = PObj -> Pnext)
+	for (PObj = PObjs; PObj != NULL; PObj = PObj->Pnext) {
 		if (!CGSkelStoreData(PObj)) 
 			exit(1);
+	}
+
+		
 }
 
 /*****************************************************************************
@@ -237,7 +242,11 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 	}
 	mesh.calcVNormals();
 	/* Close the object. */
-	scene.addMesh(mesh);
+
+
+	int last_Id = scene.getMeshes().size() - 1;
+
+	scene.getMeshes()[last_Id].addMesh(mesh);//add mesh to the last object in the scene
 
 	return true;
 }
