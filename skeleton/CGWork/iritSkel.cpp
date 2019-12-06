@@ -81,6 +81,9 @@ bool CGSkelProcessIritDataFiles(CString &FileNames, int NumFiles)
 	/* Traverse ALL the parsed data, recursively. */
 	IPTraverseObjListHierarchy(PObjects, CrntViewMat,
         CGSkelDumpOneTraversedObject);
+
+	int last_Id = scene.getMeshes().size() - 1;
+	scene.getMeshes()[last_Id].translate(-scene.getMeshes()[last_Id].getPos());
 	return true;
 }
 
@@ -247,7 +250,7 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 	int last_Id = scene.getMeshes().size() - 1;
 
 	scene.getMeshes()[last_Id].addMesh(mesh);//add mesh to the last object in the scene
-
+	
 	return true;
 }
 

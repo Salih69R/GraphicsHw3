@@ -38,6 +38,7 @@ public:
 	Object& setBBColor(const COLORREF &color) {
 		_BBColor = color;  return *this;
 	}
+	Vec3d getPos()const { return _pos; }
 
 
 
