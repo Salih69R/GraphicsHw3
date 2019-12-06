@@ -76,14 +76,14 @@ bool CGSkelProcessIritDataFiles(CString &FileNames, int NumFiles)
 	CString str;
 	str = (const char * ) CStr;//data is the name of the file
 	Object obj(str);
-	scene.addMesh(obj);
+	scene.addObject(obj);
 
 	/* Traverse ALL the parsed data, recursively. */
 	IPTraverseObjListHierarchy(PObjects, CrntViewMat,
         CGSkelDumpOneTraversedObject);
 
-	int last_Id = scene.getMeshes().size() - 1;
-	scene.getMeshes()[last_Id].translate(-scene.getMeshes()[last_Id].getPos());
+	int last_Id = scene.getObjects().size() - 1;
+	scene.getObjects()[last_Id].translate(-scene.getObjects()[last_Id].getPos());
 	return true;
 }
 
@@ -247,9 +247,9 @@ bool CGSkelStoreData(IPObjectStruct *PObj)
 	/* Close the object. */
 
 
-	int last_Id = scene.getMeshes().size() - 1;
+	int last_Id = scene.getObjects().size() - 1;
 
-	scene.getMeshes()[last_Id].addMesh(mesh);//add mesh to the last object in the scene
+	scene.getObjects()[last_Id].addMesh(mesh);//add mesh to the last object in the scene
 	
 	return true;
 }

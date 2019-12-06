@@ -756,42 +756,42 @@ void CCGWorkView::scale(const int &scaling)
 
 void CCGWorkView::rotateModel(const double &val)
 {
-	auto& meshs = scene.getMeshes();
+	auto& objects = scene.getObjects();
 	if (m_nAxis == ID_AXIS_X)
 	{
 		if (m_nActiveMesh == -1)//do it for all meshs
-			for (size_t i = 0; i < meshs.size(); i++)
+			for (size_t i = 0; i < objects.size(); i++)
 			{
-				meshs[i].rotateX(val);
+				objects[i].rotateX(val);
 			}
 
 		else {
-			meshs[m_nActiveMesh].rotateX(val);
+			objects[m_nActiveMesh].rotateX(val);
 		}
 
 	}
 	else if (m_nAxis == ID_AXIS_Y)
 	{
 		if (m_nActiveMesh == -1)//do it for all meshs
-			for (size_t i = 0; i < meshs.size(); i++)
+			for (size_t i = 0; i < objects.size(); i++)
 			{
-				meshs[i].rotateY(val);
+				objects[i].rotateY(val);
 			}
 
 		else {
-			meshs[m_nActiveMesh].rotateY(val);
+			objects[m_nActiveMesh].rotateY(val);
 		}
 	}
 	else if (m_nAxis == ID_AXIS_Z)
 	{
 		if (m_nActiveMesh == -1)//do it for all meshs
-			for (size_t i = 0; i < meshs.size(); i++)
+			for (size_t i = 0; i < objects.size(); i++)
 			{
-				meshs[i].rotateZ(val);
+				objects[i].rotateZ(val);
 			}
 
 		else {
-			meshs[m_nActiveMesh].rotateZ(val);
+			objects[m_nActiveMesh].rotateZ(val);
 		}
 
 	}
@@ -800,43 +800,43 @@ void CCGWorkView::rotateModel(const double &val)
 	void CCGWorkView::translateModel(const double &val) {
 
 
-	auto& meshs = scene.getMeshes();
+	auto& objects = scene.getObjects();
 
 	if (m_nAxis == ID_AXIS_X)
 	{
 		if (m_nActiveMesh == -1)//do it for all meshs
-			for (size_t i = 0; i < meshs.size(); i++)
+			for (size_t i = 0; i < objects.size(); i++)
 			{
-				meshs[i].translate(Vec3d(val, 0.0, 0.0));
+				objects[i].translate(Vec3d(val, 0.0, 0.0));
 			}
 
 		else {
-			meshs[m_nActiveMesh].translate(Vec3d(val, 0.0, 0.0));
+			objects[m_nActiveMesh].translate(Vec3d(val, 0.0, 0.0));
 		}
 	}
 	else if (m_nAxis == ID_AXIS_Y)
 	{
 
 		if (m_nActiveMesh == -1)//do it for all meshs
-			for (size_t i = 0; i < meshs.size(); i++)
+			for (size_t i = 0; i < objects.size(); i++)
 			{
-				meshs[i].translate(Vec3d(0.0, val, 0.0));
+				objects[i].translate(Vec3d(0.0, val, 0.0));
 			}
 
 		else {
-			meshs[m_nActiveMesh].translate(Vec3d(0.0, val, 0.0));
+			objects[m_nActiveMesh].translate(Vec3d(0.0, val, 0.0));
 		}
 	}
 	else if (m_nAxis == ID_AXIS_Z)
 	{
 		if (m_nActiveMesh == -1)//do it for all meshs
-			for (size_t i = 0; i < meshs.size(); i++)
+			for (size_t i = 0; i < objects.size(); i++)
 			{
-				meshs[i].translate(Vec3d(0.0, 0.0, val));
+				objects[i].translate(Vec3d(0.0, 0.0, val));
 			}
 
 		else {
-			meshs[m_nActiveMesh].translate(Vec3d(0.0, 0.0, val));
+			objects[m_nActiveMesh].translate(Vec3d(0.0, 0.0, val));
 		}
 	}
 
@@ -846,15 +846,15 @@ void CCGWorkView::scaleModel(const double &val)
 {
 	if (m_nAxis == ID_AXIS_X)
 	{
-		scene.getMeshes()[0].scale(Vec3d(val, 1.0, 1.0));
+		scene.getObjects()[0].scale(Vec3d(val, 1.0, 1.0));
 	}
 	else if (m_nAxis == ID_AXIS_Y)
 	{
-		scene.getMeshes()[0].scale(Vec3d(1.0, val, 1.0));
+		scene.getObjects()[0].scale(Vec3d(1.0, val, 1.0));
 	}
 	else if (m_nAxis == ID_AXIS_Z)
 	{
-		scene.getMeshes()[0].scale(Vec3d(1.0, 1.0, val));
+		scene.getObjects()[0].scale(Vec3d(1.0, 1.0, val));
 	}
 }
 
@@ -1073,11 +1073,11 @@ void CCGWorkView::OnOptionsActiveMesh()
 
 
 	str.Append(_T("all : -1 \n"));
-	auto meshes = scene.getMeshes();//Objects
-	for (int i = 0; i < meshes.size(); ++i) {
+	auto objects = scene.getObjects();
+	for (int i = 0; i < objects.size(); ++i) {
 
 		CString cur;
-		cur.FormatMessage(_T("%1% : %2!d! \n"),  meshes[i].getName(), i);
+		cur.FormatMessage(_T("%1% : %2!d! \n"), objects[i].getName(), i);
 		str.Append( cur);
 	}
 
@@ -1087,7 +1087,7 @@ void CCGWorkView::OnOptionsActiveMesh()
 	if (_active_mesh_dialog.DoModal() == IDOK)
 	{
 		m_nActiveMesh = _active_mesh_dialog.getActive();
-		if (m_nActiveMesh < 0 || m_nActiveMesh >= meshes.size())
+		if (m_nActiveMesh < 0 || m_nActiveMesh >= objects.size())
 			m_nActiveMesh = -1;
 	}
 	_active_mesh_dialog.setActive(m_nActiveMesh);

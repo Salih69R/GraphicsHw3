@@ -16,10 +16,10 @@ public:
 
 	Scene();
 	~Scene() = default;
-	void addMesh(const Object& model);//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
+	void addObject(const Object& object);//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
 	Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height);
 	Scene &lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up);
-	std::vector<Object> &getMeshes() { return _objs; }//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
+	std::vector<Object> &getObjects() { return _objs; }//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
 	Tmatd &getView() { return _view; }
 	Scene &setInitialized(const bool &new_val) { _is_initialized = new_val; return *this; }
 	bool isInitialized() const { return _is_initialized; }

@@ -17,9 +17,9 @@ Scene::Scene() :
 	lookAt(pos, pos + front, up);
 }
 
-void Scene::addMesh(const Object &model)
+void Scene::addObject(const Object &object)
 {
-	_objs.push_back(model);
+	_objs.push_back(object);
 }
 
 Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width, const uint &height)
