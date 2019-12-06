@@ -7,14 +7,13 @@ Scene::Scene() :
 	_view(),
 	_projection(),
 	_is_initialized(false),
-	_background_color(RGB(0, 0, 0))
+	_background_color(RGB(0, 0, 0)),
+	_camera({})
 {
 	_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
-
-	Vec3d pos(0.0, 0.0, 3.0);
-	Vec3d front(0.0, 0.0, -1.0);
-	Vec3d up(0.0, 1.0, 0.0);
-	lookAt(pos, pos + front, up);
+	_camera.pos = Vec3d(0.0, 0.0, 3.0);
+	_camera.front = Vec3d(0.0, 0.0, -1.0);
+	_camera.up = Vec3d(0.0, 1.0, 0.0);
 }
 
 void Scene::addObject(const Object &object)
@@ -34,18 +33,16 @@ Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width,
 	return Vec2u(x_res, y_res);
 }
 
-Scene &Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
+Tmatd Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 {
 	Vec3d n = (eye - at).normalize();
 	Vec3d u = up.cross(n).normalize();
 	Vec3d v = n.cross(u).normalize();
 
-	_view = Tmatd(u(0), v(0), n(0), -eye(0),
+	return Tmatd(u(0), v(0), n(0), -eye(0),
 		u(1), v(1), n(1), -eye(1),
 		u(2), v(2), n(2), -eye(2),
 		0, 0, 0, 1);
-
-	return *this;
 }
 
 
@@ -53,7 +50,7 @@ Scene &Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 
 void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
 {
-
+	auto camera = lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
 
 	for (auto &obj : _objs) {
 
@@ -68,8 +65,8 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 
 				for (unsigned i = 0; i < vertexes.size() - 1; i++)
 				{
-					Vec4d p1 = _projection * _view * obj.getModel() * vertexes[i];
-					Vec4d p2 = _projection * _view * obj.getModel() * vertexes[i + 1];
+					Vec4d p1 = _projection * camera * _view * obj.getModel() * vertexes[i];
+					Vec4d p2 = _projection * camera * _view * obj.getModel() * vertexes[i + 1];
 
 					p1 /= p1(3);
 					p2 /= p2(3);
