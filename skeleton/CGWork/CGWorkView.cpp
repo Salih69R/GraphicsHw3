@@ -459,6 +459,8 @@ void CCGWorkView::OnFileLoad()
 
 	CFileDialog dlg(TRUE, _T("itd"), _T("*.itd"), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY ,szFilters);
 
+	scene.reset();
+
 	if (dlg.DoModal() == IDOK) {
 		m_strItdFileName = dlg.GetPathName();		// Full path and filename
 		PngWrapper p;
@@ -466,6 +468,7 @@ void CCGWorkView::OnFileLoad()
 		// Open the file and read it.
 		// Your code here...
 
+		
 		scene.setInitialized(false);
 
 		Invalidate();	// force a WM_PAINT for drawing.
@@ -500,7 +503,8 @@ void CCGWorkView::OnViewPerspective()
 {
 	m_nView = ID_VIEW_PERSPECTIVE;
 	m_bIsPerspective = true;
-	Tmatd projection = TransformationMatrix<double>::perspective(45, m_AspectRatio, 0.1, 100);
+	Tmatd projection = TransformationMatrix<double>::perspective(Scene::FOV, m_AspectRatio, 
+		Scene::NEAR_PLANE, Scene::FAR_PLANE);
 	scene.setProjection(projection);
 	Invalidate();
 }

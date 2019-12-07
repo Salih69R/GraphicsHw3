@@ -19,6 +19,21 @@ Scene::Scene() :
 	_look_at = lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
 }
 
+Scene &Scene::reset()
+{
+	_objs.clear();
+	_view = Tmatd();
+	_projection = TransformationMatrix<double>::ortho(-10.0, 10.0, -5.0, 5.0, -5.0, 5.0);
+	_is_initialized = false;
+	_background_color = RGB(0, 0, 0);
+	_camera.pos = Vec3d(0.0, 0.0, 3.0);
+	_camera.front = Vec3d(0.0, 0.0, -1.0);
+	_camera.up = Vec3d(0.0, 1.0, 0.0);
+	_look_at = lookAt(_camera.pos, _camera.pos + _camera.front, _camera.up);
+
+	return *this;
+}
+
 void Scene::addObject(const Object &object)
 {
 	_objs.push_back(object);
@@ -70,6 +85,9 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 				{
 					Vec4d p1 = transformation * vertexes[i];
 					Vec4d p2 = transformation * vertexes[i + 1];
+
+					if (p1(3) < NEAR_PLANE) p1(3) = NEAR_PLANE;
+					if (p2(3) < NEAR_PLANE) p2(3) = NEAR_PLANE;
 
 					p1 /= p1(3);
 					p2 /= p2(3);

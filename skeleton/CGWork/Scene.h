@@ -14,6 +14,10 @@
 class Scene {
 public:
 
+	static constexpr double FOV = 45.0;
+	static constexpr double NEAR_PLANE = 0.1;
+	static constexpr double FAR_PLANE = 20.0;
+
 	Scene();
 	~Scene() = default;
 	void addObject(const Object& object);//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
@@ -24,6 +28,7 @@ public:
 	Scene &setInitialized(const bool &new_val) { _is_initialized = new_val; return *this; }
 	bool isInitialized() const { return _is_initialized; }
 	Scene &setProjection(const Tmatd &projection) { _projection = projection; return *this; }
+	Scene &reset();
 
 	COLORREF getBackgroundColor() const { return _background_color; }
 	Scene& setBackgroundColor(const COLORREF &color) { _background_color = color; return *this; }
