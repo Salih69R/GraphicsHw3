@@ -52,21 +52,24 @@ void Object::addMesh(const Mesh &model)
 
 Object & Object::rotateX(const double angle_deg)
 {
-	_model.rotateX(angle_deg);
+	auto translation = _pos;
+	_model.translate(-translation).rotateX(angle_deg).translate(translation);
 
 	return *this;
 }
 
 Object & Object::rotateY(const double angle_deg)
 {
-	_model.rotateY(angle_deg);
+	auto translation = _pos;
+	_model.translate(-translation).rotateZ(angle_deg).translate(translation);
 
 	return *this;
 }
 
 Object & Object::rotateZ(const double angle_deg)
 {
-	_model.rotateZ(angle_deg);
+	auto translation = _pos;
+	_model.translate(-translation).rotateZ(angle_deg).translate(translation);
 
 	return *this;
 }
@@ -74,6 +77,7 @@ Object & Object::rotateZ(const double angle_deg)
 Object & Object::translate(const Vec3d & translation)
 {
 	_model.translate(translation);
+	_pos = _model.getTranslation();
 
 	return *this;
 }
