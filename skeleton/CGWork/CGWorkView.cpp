@@ -459,8 +459,6 @@ void CCGWorkView::OnFileLoad()
 
 	CFileDialog dlg(TRUE, _T("itd"), _T("*.itd"), OFN_FILEMUSTEXIST | OFN_HIDEREADONLY ,szFilters);
 
-	scene.reset();
-
 	if (dlg.DoModal() == IDOK) {
 		m_strItdFileName = dlg.GetPathName();		// Full path and filename
 		PngWrapper p;
