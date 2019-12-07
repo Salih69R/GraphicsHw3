@@ -53,6 +53,9 @@ private:
 	COLORREF _background_color;
 	Camera _camera;
 	Tmatd _look_at;
+
+
+
 };
 
 

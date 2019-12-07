@@ -136,11 +136,11 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 			if (showBoundingBox) {
 				auto bb_lines = obj.getBoundingBoxLines();
 				for (auto pair : bb_lines) {
-					Vec4d p1 = _projection * _view * obj.getModel() * pair.first;
+					Vec4d p1 = transformation * pair.first;
 					Vec4d p2;
 
 
-						p2 = _projection * _view * obj.getModel() * pair.second;
+						p2 = transformation * pair.second;
 
 
 					p1 /= p1(3);
