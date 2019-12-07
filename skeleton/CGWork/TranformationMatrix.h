@@ -269,6 +269,9 @@ TransformationMatrix<T> TransformationMatrix<T>::ortho(const T &left, const T &r
 		0, 0, 0, 1);
 }
 
+
+
+
 template<typename T>
 TransformationMatrix<T> TransformationMatrix<T>::perspective(const T &fov_angle, const T &aspect_ratio,
 	const T &near_plane, const T &far_plane)
@@ -277,13 +280,18 @@ TransformationMatrix<T> TransformationMatrix<T>::perspective(const T &fov_angle,
 	//TODO: fix near <= 0 (salih's guess: using tan(angle) makes it mirror when the near_plane is <= 0, causes X lines bug at the moment of mirroring
 	T half_fov_Angle = fov_angle / T(2);
 	T top = tan(half_fov_Angle * consts::PI / 180.0) * near_plane;
+
 	T bottom = -top;
 	T right = top * aspect_ratio;
 	T left = -right;
+
+
 
 	return TransformationMatrix<T>((T(2) * near_plane) / (right - left), 0, 0, near_plane * (right + left) / (left - right),
 		0, (T(2) * near_plane) / (top - bottom), 0, near_plane * (top + bottom) / (bottom - top),
 		0, 0, (far_plane + near_plane) / (near_plane - far_plane), (T(2) * far_plane * near_plane) / (near_plane - far_plane),
 		0, 0, -1, 0);
+
 }
+
 #endif // TRANFORMATIONMATRIX_H
