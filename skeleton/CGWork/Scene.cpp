@@ -131,11 +131,13 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 				for (unsigned i = 0; i < vers.size(); i++) {
 					Vec4d p1 = transformation * vers[i]._vertex;
 					Vec4d p2;
-				
-					if(givenVertexNormals && vers[i]._givenNormal(3)==1)//we flag _givenNormal(3)=0 (by default) if there isn't one
-						p2 = transformation * (vers[i]._givenNormal + vers[i]._vertex);
+					Tmatd pos;
+					pos.translate(vers[i]._vertex(0), vers[i]._vertex(1), vers[i]._vertex(2));
+
+					if (givenVertexNormals && vers[i]._givenNormal(3) == 1)//we flag _givenNormal(3)=0 (by default) if there isn't one
+						p2 = transformation * pos *(vers[i]._givenNormal);
 					else 
-						p2 = transformation * (vers[i]._calculatedNormal + vers[i]._vertex);
+						p2 = transformation * pos * (vers[i]._calculatedNormal);
 
 					p1 /= p1(3);
 					p2 /= p2(3);
