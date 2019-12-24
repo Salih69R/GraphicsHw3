@@ -331,8 +331,8 @@ struct Line {
 		if (!isDxInfinity) this means isMZero = true, so the equation is y = constant
 		this means isDxInfinityy = true && isMZero == true,, so thge equation is x = constant, for this situation dont use the b and m
 	*/
-	int m, b;
-	bool isDxInfinity, isMZero;
+	double m, b;
+	bool isDxZero, isMZero;
 
 	Line(Vec2u p1, Vec2u p2) : p1(p1), p2(p2)  {
 		minY = p1(1) < p2(1) ? p1(1) : p2(1);
@@ -341,22 +341,28 @@ struct Line {
 		maxX = p1(0) > p2(0) ? p1(0) : p2(0);
 
 
-		isDxInfinity = isMZero = false;
+		isDxZero = isMZero = false;
 		if (p2(0) - p1(0) == 0) 
-			isDxInfinity = true;
+			isDxZero = true;
 		if (p2(1) - p1(1) == 0) 
 			isMZero = true;
 		
 			
-		if(!isDxInfinity && !isMZero)
+		if(!isDxZero && !isMZero)
 		{
 			m = (p2(1) - p1(1)) / (p2(0) - p1(0));//=dy/dx
 			b = p1(1) - m * p1(0);//=y1-m*x1
 			
 		}
-		else {
+		else if(isMZero) {
 			m = 0;
 			b = p1(1);
+		}
+		else { // Dx is zero, M isn't
+			   
+			//in this case, m and b don't matter, won't be used
+			m = 1;
+			b = 1;
 		}
 		
 	}
@@ -368,13 +374,13 @@ struct Line {
 		if (isMZero || m == 0) //equation is y = constant(b), and the y line doesn't touch this line (we ignor the situation where this line is a pointif b == y also dont draw this since we ignore coloring the wireframs
 			throw (-1);
 
-		if (isDxInfinity) {
+		if (isDxZero) {
 			return Vec2u(p1(0), y);
 		}
 
 
 		//find the x of intersection
-		int x = (y - b) / m;
+		int x =(int) (double (y - b)) / m;
 		if (x < minX || x > maxX)
 			throw (-1);
 		return Vec2u(x, y);
@@ -445,9 +451,10 @@ void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, 
 	std::vector<Line> relevantLines = std::vector<Line>();
 	for (int y = 0; y < height; ++y)
 	{
-		//add all lines with minY <= y that haven't been checked yet (maxY > y)
+		
 		for (size_t i = 0; i < sortedlines.size(); i++)
 		{
+			//add all lines with minY <= y that haven't been checked yet (maxY > y)
 			if (sortedlines[i].minY >= y)
 				break;
 			auto& it = std::find(relevantLines.begin(), relevantLines.end(), sortedlines[i]);
@@ -480,7 +487,8 @@ void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, 
 
 		//TODO: understand and fix the problem of deciding wether to draw the first line or not in the scan conversion (from 0 to point1 or from p1 to p2)
 		
-		for (int i = 0; i < (int) Intersections.size() - 1; i += 2) {
+		for(int i = 0; i <(int) Intersections.size()- 1; i += 2) 
+		{
 			//actually drawing the lines using midpoint
 			MidPointDraw(Intersections[i](0), Intersections[i](1), Intersections[i + 1](0), Intersections[i + 1](1), bits, RGBToBGR(color), width, height);
 		}
