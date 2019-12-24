@@ -2,6 +2,28 @@
 #include "Draw.h"
 
 
+
+Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height)
+{
+	double width_d = static_cast<double>(width);
+	double height_d = static_cast<double>(height);
+
+	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
+	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
+
+
+	return Vec2u(x_res, y_res);
+}
+
+
+
+
+
+
+
+
+
+
 bool isOutOfBount(int x, int y, int w, int h) {
 
 	return x < 0 || y < 0 || x >= w || y >= h;
@@ -216,6 +238,8 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 
 }
 
+
+
 //color must be in BGR format not RGB
 void MidPointDraw(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int width, int height) {
 
@@ -274,6 +298,31 @@ void MidPointDraw(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int
 COLORREF RGBToBGR(COLORREF col) {
 	return RGB(GetBValue(col), GetGValue(col), GetRValue(col));
 }
+
+
+//code for scane conversion
+
+
+
+
+
+
+
+
+
+
+void ScaneConvert(Poly & poly)
+{
+
+
+}
+
+
+
+
+
+
+
 
 
 

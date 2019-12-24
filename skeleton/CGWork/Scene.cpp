@@ -39,17 +39,6 @@ void Scene::addObject(const Object &object)
 	_objs.push_back(object);
 }
 
-Vec2u Scene::coordsToPixels(const double &x, const double &y, const uint &width, const uint &height)
-{
-	double width_d = static_cast<double>(width);
-	double height_d = static_cast<double>(height);
-
-	uint x_res = static_cast<uint>((width_d / 2.0) * (x + 1.0));
-	uint y_res = static_cast<uint>((height_d / 2.0) * (1.0 - y));
-
-
-	return Vec2u(x_res, y_res);
-}
 
 Tmatd Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 {
@@ -66,6 +55,104 @@ Tmatd Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 
 
 
+void Scene::drawPoly(const Poly& polygon,Tmatd& transformation, int* bits, int width, int height, bool showFaceNormals, bool givenFaceNormals, COLORREF color, COLORREF faceNormalsColor)
+{
+
+	//draw the polygons
+	auto& vertexes = polygon.getVertices();
+	Vec2u first_vertex_px;
+
+	for (unsigned i = 0; i < vertexes.size() - 1; i++)
+	{
+		Vec4d p1 = transformation * vertexes[i];
+		Vec4d p2 = transformation * vertexes[i + 1];
+
+		if (p1(3) < NEAR_PLANE) p1(3) = NEAR_PLANE;
+		if (p2(3) < NEAR_PLANE) p2(3) = NEAR_PLANE;
+
+		p1 /= p1(3);
+		p2 /= p2(3);
+
+		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+		if (i == 0)
+		{
+			first_vertex_px = px1;
+		}
+
+		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(color), width, height);
+
+		if (i == vertexes.size() - 2)
+		{
+			MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), bits, RGBToBGR(color), width, height);
+		}
+
+	}
+	//draw polgon face normals
+	if (showFaceNormals) {
+		Vec4d p1 = transformation * polygon.getAveragePosition();
+		Vec4d p2;
+		if (givenFaceNormals && polygon.getGivenFaceNormal()(3) == 1)//we flag _fGivenNormal(3)=0 (by default) if there isn't one
+			p2 = transformation * polygon.getGivenFaceNormal();
+		else
+			p2 = transformation * polygon.getCalcFaceNormal();
+
+		p1 /= p1(3);
+		p2 /= p2(3);
+		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(faceNormalsColor), width, height);
+	}
+}
+
+void Scene::drawMeshVerticeNormals(Mesh& mesh,Tmatd& transformation, int* bits, int width, int height ,bool givenVertexNormals, COLORREF verticesNormalColor)
+{
+	std::vector<VertexAndNormal> vers = mesh.getVeritxes();
+	for (unsigned i = 0; i < vers.size(); i++) {
+		Vec4d p1 = transformation * vers[i]._vertex;
+		Vec4d p2;
+		Tmatd pos;
+		pos.translate(vers[i]._vertex(0), vers[i]._vertex(1), vers[i]._vertex(2));
+
+		if (givenVertexNormals && vers[i]._givenNormal(3) == 1)//we flag _givenNormal(3)=0 (by default) if there isn't one
+			p2 = transformation * pos *(vers[i]._givenNormal);
+		else
+			p2 = transformation * pos * (vers[i]._calculatedNormal);
+
+		p1 /= p1(3);
+		p2 /= p2(3);
+		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(verticesNormalColor), width, height);
+	}
+}
+
+
+
+void Scene::drawObjectBoundingBox(Object& obj,Tmatd& transformation, int* bits, int width, int height)
+{
+	auto bb_lines = obj.getBoundingBoxLines();
+	for (auto pair : bb_lines) {
+		Vec4d p1 = transformation * pair.first;
+		Vec4d p2;
+
+
+		p2 = transformation * pair.second;
+
+
+		p1 /= p1(3);
+		p2 /= p2(3);
+		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getBBColor()), width, height);
+	}
+}
+
+
 void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
 {
 	for (auto &obj : _objs) {
@@ -76,100 +163,18 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 		{
 			for (const auto &polygon : mesh.getPolygons())
 			{
-
 				//draw the polygons
-				auto& vertexes = polygon.getVertices();
-				Vec2u first_vertex_px;
-
-				for (unsigned i = 0; i < vertexes.size() - 1; i++)
-				{
-					Vec4d p1 = transformation * vertexes[i];
-					Vec4d p2 = transformation * vertexes[i + 1];
-
-					if (p1(3) < NEAR_PLANE) p1(3) = NEAR_PLANE;
-					if (p2(3) < NEAR_PLANE) p2(3) = NEAR_PLANE;
-
-					p1 /= p1(3);
-					p2 /= p2(3);
-
-					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
-
-					if (i == 0)
-					{
-						first_vertex_px = px1;
-					}
-
-					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits,RGBToBGR(mesh.getColor()), width, height);
-
-					if (i == vertexes.size() - 2)
-					{
-						MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), bits, RGBToBGR(mesh.getColor()), width, height);
-					}
-
-				}
-				//draw polgon face normals
-				if (showFaceNormals) {
-					Vec4d p1 = transformation * polygon.getAveragePosition();
-					Vec4d p2;
-					if(givenFaceNormals && polygon.getGivenFaceNormal()(3)==1)//we flag _fGivenNormal(3)=0 (by default) if there isn't one
-						p2 = transformation * polygon.getGivenFaceNormal();
-					else
-						p2 = transformation * polygon.getCalcFaceNormal();
-
-					p1 /= p1(3);
-					p2 /= p2(3);
-					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
-
-					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getFNColor()), width, height);
-				}
+				drawPoly(polygon, transformation, bits, width, height, showFaceNormals, givenFaceNormals, mesh.getColor(), obj.getFNColor());
 			}
 				//draw mesh vertices normals code
 			if (showVerNormals) {
-				std::vector<VertexAndNormal> vers = mesh.getVeritxes();
-				for (unsigned i = 0; i < vers.size(); i++) {
-					Vec4d p1 = transformation * vers[i]._vertex;
-					Vec4d p2;
-					Tmatd pos;
-					pos.translate(vers[i]._vertex(0), vers[i]._vertex(1), vers[i]._vertex(2));
-
-					if (givenVertexNormals && vers[i]._givenNormal(3) == 1)//we flag _givenNormal(3)=0 (by default) if there isn't one
-						p2 = transformation * pos *(vers[i]._givenNormal);
-					else 
-						p2 = transformation * pos * (vers[i]._calculatedNormal);
-
-					p1 /= p1(3);
-					p2 /= p2(3);
-					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
-
-					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getVNColor()), width, height);
-				}
+				drawMeshVerticeNormals(mesh, transformation, bits, width, height, givenVertexNormals, obj.getVNColor());
 			}
-		
-
-
 		}
 
 			//draw object bounding box
 			if (showBoundingBox) {
-				auto bb_lines = obj.getBoundingBoxLines();
-				for (auto pair : bb_lines) {
-					Vec4d p1 = transformation * pair.first;
-					Vec4d p2;
-
-
-						p2 = transformation * pair.second;
-
-
-					p1 /= p1(3);
-					p2 /= p2(3);
-					auto px1 = coordsToPixels(p1(0), p1(1), width, height);
-					auto px2 = coordsToPixels(p2(0), p2(1), width, height);
-
-					MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getBBColor()), width, height);
-				}
+				drawObjectBoundingBox(obj, transformation, bits, width, height);
 			}
 
 	}

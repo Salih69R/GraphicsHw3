@@ -21,7 +21,6 @@ public:
 	Scene();
 	~Scene() = default;
 	void addObject(const Object& object);//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
-	Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const uint &height);
 	Tmatd lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up);
 	std::vector<Object> &getObjects() { return _objs; }//mesh is the theoritical name, but here it object, mesh is a part of the object (cow object has meshes: face, tail...)
 	Tmatd &getView() { return _view; }
@@ -40,9 +39,21 @@ public:
 
 
 
+	
+
+	
+
 	void draw(int * bits, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
+
+
 private:
 
+	void drawObjectBoundingBox(Object & obj, Tmatd & transformation, int * bits, int width, int height);
+	void drawPoly(const Poly & polygon, Tmatd & transformation, int * bits, int width, int height, bool showFaceNormals, bool givenFaceNormals, COLORREF color, COLORREF faceNormalsColor);
+
+	void drawMeshVerticeNormals(Mesh & mesh, Tmatd& transformation, int * bits, int width, int height, bool givenVertexNormals, COLORREF verticesNormalColor);
+	
+	
 	struct Camera
 	{
 		Vec3d pos;
