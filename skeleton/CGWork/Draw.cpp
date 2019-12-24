@@ -1,5 +1,10 @@
 
 #include "Draw.h"
+#include <functional>
+#include <array>
+#include <set>
+
+
 
 
 
@@ -14,11 +19,6 @@ Vec2u coordsToPixels(const double &x, const double &y, const uint &width, const 
 
 	return Vec2u(x_res, y_res);
 }
-
-
-
-
-
 
 
 
@@ -300,7 +300,6 @@ COLORREF RGBToBGR(COLORREF col) {
 }
 
 
-//code for scane conversion
 
 
 
@@ -311,10 +310,183 @@ COLORREF RGBToBGR(COLORREF col) {
 
 
 
-void ScaneConvert(Poly & poly)
+
+
+
+
+
+
+//***********************code for scane conversion*****************************************
+
+
+
+
+struct Line {
+
+	Vec2u p1, p2;
+	int minY, minX, maxY, maxX;
+	/*
+		line equation params ( y = mx +b )
+		if (isMZero && isDxInfinity) the line is just one point
+		if (!isDxInfinity) this means isMZero = true, so the equation is y = constant
+		this means isDxInfinityy = true && isMZero == true,, so thge equation is x = constant, for this situation dont use the b and m
+	*/
+	int m, b;
+	bool isDxInfinity, isMZero;
+
+	Line(Vec2u p1, Vec2u p2) : p1(p1), p2(p2)  {
+		minY = p1(1) < p2(1) ? p1(1) : p2(1);
+		maxY = p1(1) > p2(1) ? p1(1) : p2(1);
+		minX = p1(0) < p2(0) ? p1(0) : p2(0);
+		maxX = p1(0) > p2(0) ? p1(0) : p2(0);
+
+
+		isDxInfinity = isMZero = false;
+		if (p2(0) - p1(0) == 0) 
+			isDxInfinity = true;
+		if (p2(1) - p1(1) == 0) 
+			isMZero = true;
+		
+			
+		if(!isDxInfinity && !isMZero)
+		{
+			m = (p2(1) - p1(1)) / (p2(0) - p1(0));//=dy/dx
+			b = p1(1) - m * p1(0);//=y1-m*x1
+			
+		}
+		else {
+			m = 0;
+			b = p1(1);
+		}
+		
+	}
+
+	Line(const Line& line) = default;
+	
+	Vec2u intersectWithY(int y) const {
+
+		if (isMZero || m == 0) //equation is y = constant(b), and the y line doesn't touch this line (we ignor the situation where this line is a pointif b == y also dont draw this since we ignore coloring the wireframs
+			throw (-1);
+
+		if (isDxInfinity) {
+			return Vec2u(p1(0), y);
+		}
+
+
+		//find the x of intersection
+		int x = (y - b) / m;
+		if (x < minX || x > maxX)
+			throw (-1);
+		return Vec2u(x, y);
+	}
+
+	//compare by minY
+	friend bool operator<(const Line& a, const Line& b) {
+		return a.minY < b.minY;
+	}
+
+	friend bool operator==(const Line& a,const Line& b) {
+
+		return ( a.minX == b.minX && a.minY == b.minY && a.maxX==b.maxX && a.maxY == b.maxY);
+	}
+};
+
+
+
+
+
+void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, COLORREF color, double NEAR_PLANE)
 {
+	
+	auto vers = poly.getVertices();
+	std::vector<Line> sortedlines;
+	Vec2u first_vertex_px;
+
+	for (unsigned i = 0; i < vers.size() - 1; i++)
+	{
+		Vec4d p1 = transf * vers[i];
+		Vec4d p2 = transf * vers[i + 1];
+
+		if (p1(3) < NEAR_PLANE) p1(3) = NEAR_PLANE;
+		if (p2(3) < NEAR_PLANE) p2(3) = NEAR_PLANE;
+
+		p1 /= p1(3);
+		p2 /= p2(3);
+
+		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
+		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
+
+		if (i == 0)
+		{
+			first_vertex_px = px1;
+		}
+
+		Line line = Line(px1,px2);
+		sortedlines.push_back(line);
+
+		if (i == vers.size() - 2)
+		{
+			Line line = Line(px2, first_vertex_px);
+			sortedlines.push_back(line);
+		}
+	}
+
+	
+
+	//sort by Ymin (accending order)
+	std::sort(sortedlines.begin(), sortedlines.end(),
+            [](const Line& a, const Line& b)
+            {
+                return a.minY < b.minY;
+            });
 
 
+	//scan convert alg
+	std::vector<Line> relevantLines = std::vector<Line>();
+	for (int y = 0; y < height; ++y)
+	{
+		//add all lines with minY <= y that haven't been checked yet (maxY > y)
+		for (size_t i = 0; i < sortedlines.size(); i++)
+		{
+			if (sortedlines[i].minY >= y)
+				break;
+			auto& it = std::find(relevantLines.begin(), relevantLines.end(), sortedlines[i]);
+			
+			if (sortedlines[i].maxY < y && it != relevantLines.end())//remove all lines with maxY < y
+				relevantLines.erase(it);
+			else if (sortedlines[i].maxY >= y && it == relevantLines.end())
+				relevantLines.push_back(sortedlines[i]);
+		}
+		 
+		//get all points of intersection for this y with all the relevant lines
+		std::vector<Vec2u> Intersections = std::vector<Vec2u>();
+		for (auto &curLine : relevantLines) {
+
+			//no need to fill a horizental line that will be drawn as a wirefram
+			try {
+				Intersections.push_back(curLine.intersectWithY(y));
+			}
+			catch (int a) {
+				//do nothing, just don't draw it and chill
+				continue;
+			}
+		}
+		//sort in ascneding X order
+		std::sort(Intersections.begin(), Intersections.end(),
+			[](const Vec2u& a, const Vec2u& b)
+		{
+			return a(0) < b(0);
+		});
+
+		//TODO: understand and fix the problem of deciding wether to draw the first line or not in the scan conversion (from 0 to point1 or from p1 to p2)
+		
+		for (int i = 0; i < (int) Intersections.size() - 1; i += 2) {
+			//actually drawing the lines using midpoint
+			MidPointDraw(Intersections[i](0), Intersections[i](1), Intersections[i + 1](0), Intersections[i + 1](1), bits, RGBToBGR(color), width, height);
+		}
+		
+	}
+	
 }
 
 

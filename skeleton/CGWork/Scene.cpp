@@ -62,6 +62,11 @@ void Scene::drawPoly(const Poly& polygon,Tmatd& transformation, int* bits, int w
 	auto& vertexes = polygon.getVertices();
 	Vec2u first_vertex_px;
 
+	Poly p = polygon;
+//	ScaneConvert(p, transformation, bits, width, height, color, NEAR_PLANE);
+
+
+
 	for (unsigned i = 0; i < vertexes.size() - 1; i++)
 	{
 		Vec4d p1 = transformation * vertexes[i];

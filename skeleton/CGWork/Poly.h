@@ -10,6 +10,8 @@ public:
 	Poly();
 	Poly &addVertex(const Vec4d &vertex);
 
+	const int getNumOfVertices() const { return _vertices.size(); }
+
 	void SetGivenFaceNormal(double x, double y, double z);
 	void CalcSetFaceNormal();
 	const Vec4d getAveragePosition() const;
@@ -17,6 +19,8 @@ public:
 	const Vec4d getGivenFaceNormal() const;
 	const std::vector<Vec4d> getVertices() const { return _vertices; }
 	~Poly() = default;
+
+
 
 
 	friend class Mesh;//because why not
