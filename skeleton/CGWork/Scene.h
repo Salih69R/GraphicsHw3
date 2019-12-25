@@ -16,7 +16,7 @@ public:
 
 	static constexpr double FOV = 45.0;
 	static constexpr double NEAR_PLANE = 0.1;
-	static constexpr double FAR_PLANE = 20.0;
+	static constexpr double FAR_PLANE = 30.0;
 
 	Scene();
 	~Scene() = default;
@@ -43,15 +43,15 @@ public:
 
 	
 
-	void draw(int * bits, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
+	void draw(int * bits,double* zdepth, int width, int height, bool showFaceNormals, bool showVecNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox) ;
 
 
 private:
 
-	void drawObjectBoundingBox(Object & obj, Tmatd & transformation, int * bits, int width, int height);
-	void drawPoly(const Poly & polygon, Tmatd & transformation, int * bits, int width, int height, bool showFaceNormals, bool givenFaceNormals, COLORREF color, COLORREF faceNormalsColor);
+	void drawObjectBoundingBox(Object & obj, Tmatd & transformation, int * bits, double* zdepth, int width, int height);
+	void drawPoly(const Poly & polygon, Tmatd & transformation, int * bits, double* zdepth, int width, int height, bool showFaceNormals, bool givenFaceNormals, COLORREF color, COLORREF faceNormalsColor);
 
-	void drawMeshVerticeNormals(Mesh & mesh, Tmatd& transformation, int * bits, int width, int height, bool givenVertexNormals, COLORREF verticesNormalColor);
+	void drawMeshVerticeNormals(Mesh & mesh, Tmatd& transformation, int * bits, double* zdepth, int width, int height, bool givenVertexNormals, COLORREF verticesNormalColor);
 	
 	
 	struct Camera

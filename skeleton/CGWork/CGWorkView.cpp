@@ -338,6 +338,7 @@ void CCGWorkView::OnDraw(CDC* pDC)
 	bminfo.bmiHeader.biClrUsed = 0;
 	bminfo.bmiHeader.biClrImportant = 0;
 	int* bits = new int[h * w];
+	double* zdepth = new double[h*w];
 	
 	//notice tthat colors are stored in bits in an BGR order instead of RGB, so we replace it here
 	COLORREF bgcolor = RGBToBGR(scene.getBackgroundColor());
@@ -346,13 +347,14 @@ void CCGWorkView::OnDraw(CDC* pDC)
 		bits[i] = bgcolor;
 	
 	
-	scene.draw(bits, w, h, m_bShowFaceNormals, m_bShowVerNormals, m_bshowGivenFNormal, m_bshowGivenVNormal, m_bShowBoundingBox);
+	scene.draw(bits, zdepth, w, h, m_bShowFaceNormals, m_bShowVerNormals, m_bshowGivenFNormal, m_bshowGivenVNormal, m_bShowBoundingBox);
 	SetDIBits(*pDCToUse, bm, 0, h, bits, &bminfo, 0);
 	m_pDC->BitBlt(r.left, r.top, r.Width(), r.Height(), pDCToUse, r.left, r.top, SRCCOPY);
 
 
 	DeleteObject(bm);
 	delete bits;
+	delete zdepth;
 
 
 

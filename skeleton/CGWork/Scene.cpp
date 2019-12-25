@@ -55,15 +55,26 @@ Tmatd Scene::lookAt(const Vec3d &eye, const Vec3d &at, const Vec3d &up)
 
 
 
-void Scene::drawPoly(const Poly& polygon,Tmatd& transformation, int* bits, int width, int height, bool showFaceNormals, bool givenFaceNormals, COLORREF color, COLORREF faceNormalsColor)
+void Scene::drawPoly(const Poly& polygon,Tmatd& transformation, int* bits,double* zdepth, int width, int height, bool showFaceNormals, bool givenFaceNormals, COLORREF color, COLORREF faceNormalsColor)
 {
+
+
+	for (unsigned i = 0; i < height*width; ++i) {
+
+		zdepth[i] = FAR_PLANE;
+	}
 
 	//draw the polygons
 	auto& vertexes = polygon.getVertices();
 	Vec2u first_vertex_px;
+	double first_vertex_zdepth;
+
 
 	Poly p = polygon;
-	ScaneConvert(p, transformation, bits, width, height, color, NEAR_PLANE);
+
+
+
+	ScaneConvert(p, transformation, bits,zdepth, width, height, color, NEAR_PLANE);
 
 
 
@@ -81,16 +92,19 @@ void Scene::drawPoly(const Poly& polygon,Tmatd& transformation, int* bits, int w
 		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
+
+
 		if (i == 0)
 		{
 			first_vertex_px = px1;
+			first_vertex_zdepth = p1(2);
 		}
 
-		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(color), width, height);
+		MidPointDraw(px1(0), px1(1),p1(2), px2(0), px2(1),p2(2), bits, zdepth, RGBToBGR(color), width, height);
 
 		if (i == vertexes.size() - 2)
 		{
-			MidPointDraw(first_vertex_px(0), first_vertex_px(1), px2(0), px2(1), bits, RGBToBGR(color), width, height);
+			MidPointDraw(first_vertex_px(0), first_vertex_px(1), first_vertex_zdepth, px2(0), px2(1),p2(2) , bits, zdepth, RGBToBGR(color), width, height);
 		}
 
 	}
@@ -108,11 +122,11 @@ void Scene::drawPoly(const Poly& polygon,Tmatd& transformation, int* bits, int w
 		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(faceNormalsColor), width, height);
+		MidPointDraw(px1(0), px1(1), p1(2), px2(0), px2(1), p2(2), bits, zdepth, RGBToBGR(faceNormalsColor), width, height);
 	}
 }
 
-void Scene::drawMeshVerticeNormals(Mesh& mesh,Tmatd& transformation, int* bits, int width, int height ,bool givenVertexNormals, COLORREF verticesNormalColor)
+void Scene::drawMeshVerticeNormals(Mesh& mesh,Tmatd& transformation, int* bits, double* zdepth, int width, int height ,bool givenVertexNormals, COLORREF verticesNormalColor)
 {
 	std::vector<VertexAndNormal> vers = mesh.getVeritxes();
 	for (unsigned i = 0; i < vers.size(); i++) {
@@ -131,13 +145,13 @@ void Scene::drawMeshVerticeNormals(Mesh& mesh,Tmatd& transformation, int* bits, 
 		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(verticesNormalColor), width, height);
+		MidPointDraw(px1(0), px1(1),p1(2), px2(0), px2(1),p1(2), bits,zdepth, RGBToBGR(verticesNormalColor), width, height);
 	}
 }
 
 
 
-void Scene::drawObjectBoundingBox(Object& obj,Tmatd& transformation, int* bits, int width, int height)
+void Scene::drawObjectBoundingBox(Object& obj,Tmatd& transformation, int* bits, double* zdepth, int width, int height)
 {
 	auto bb_lines = obj.getBoundingBoxLines();
 	for (auto pair : bb_lines) {
@@ -153,13 +167,14 @@ void Scene::drawObjectBoundingBox(Object& obj,Tmatd& transformation, int* bits, 
 		auto px1 = coordsToPixels(p1(0), p1(1), width, height);
 		auto px2 = coordsToPixels(p2(0), p2(1), width, height);
 
-		MidPointDraw(px1(0), px1(1), px2(0), px2(1), bits, RGBToBGR(obj.getBBColor()), width, height);
+		MidPointDraw(px1(0), px1(1),p1(2), px2(0), px2(1), p2(2), bits, zdepth, RGBToBGR(obj.getBBColor()), width, height);
 	}
 }
 
 
-void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
+void Scene::draw(int* bits, double* zdepth, int width, int height, bool showFaceNormals, bool showVerNormals, bool givenFaceNormals, bool givenVertexNormals, bool showBoundingBox)
 {
+	
 	for (auto &obj : _objs) {
 
 		auto transformation = _projection * _look_at * _view * obj.getModel();
@@ -169,17 +184,17 @@ void Scene::draw(int* bits, int width, int height, bool showFaceNormals, bool sh
 			for (const auto &polygon : mesh.getPolygons())
 			{
 				//draw the polygons
-				drawPoly(polygon, transformation, bits, width, height, showFaceNormals, givenFaceNormals, mesh.getColor(), obj.getFNColor());
+				drawPoly(polygon, transformation, bits, zdepth, width, height, showFaceNormals, givenFaceNormals, mesh.getColor(), obj.getFNColor());
 			}
 				//draw mesh vertices normals code
 			if (showVerNormals) {
-				drawMeshVerticeNormals(mesh, transformation, bits, width, height, givenVertexNormals, obj.getVNColor());
+				drawMeshVerticeNormals(mesh, transformation, bits, zdepth, width, height, givenVertexNormals, obj.getVNColor());
 			}
 		}
 
 			//draw object bounding box
 			if (showBoundingBox) {
-				drawObjectBoundingBox(obj, transformation, bits, width, height);
+				drawObjectBoundingBox(obj, transformation, bits, zdepth, width, height);
 			}
 
 	}

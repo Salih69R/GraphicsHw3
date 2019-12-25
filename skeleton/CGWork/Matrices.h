@@ -20,6 +20,7 @@ using Tmatf = TransformationMatrix<float>;
 
 using Vec2d = Vector<double, 2>;
 using Vec2u = Vector<uint, 2>;
+using Vec3i = Vector<int, 3>;
 using Vec3d = Vector<double, 3>;
 using Vec4d = Vector<double, 4>;
 using Vec2f = Vector<float, 2>;

@@ -29,7 +29,7 @@ bool isOutOfBount(int x, int y, int w, int h) {
 	return x < 0 || y < 0 || x >= w || y >= h;
 }
 //assumes x1 < x2, y1 < y2,  0 < dy <= dx , assume x1 and y1 are inBound
-void basicMidPointDraw1(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int w, int h) {
+void basicMidPointDraw1(int x1, int y1, double z1, int x2, int y2, double z2, int* bits, double* zdepth, COLORREF color, int w, int h) {
 
 	int firstX = -1, firstY = -1;
 	int dx = x2 - x1, dy = y2 - y1;
@@ -50,7 +50,8 @@ void basicMidPointDraw1(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 
 	while (x < x2) {
 
-
+		double t = (x - x1) / dx;
+		double z = (1 - t)*z1 + t * z2;
 		if (d < 0) {
 			d += E;
 			++x;
@@ -61,11 +62,14 @@ void basicMidPointDraw1(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 			++y;
 		}
 		if (!isOutOfBount(x, y, w, h)) {
-			if (firstX > -1 && firstY > -1)
+			if (firstX > -1 && firstY > -1 && zdepth[x+w*y] > z) {
+
+				zdepth[x + w * y] = z;
 				bits[x + w * y] = color;
-				//cpyPixel(hdc, hdc, x, y, firstX, firstY);
-			else
+			}
+			else if(zdepth[x + w * y] > z)
 			{
+				zdepth[x + w * y] = z;
 				bits[x + w * y] = color;
 				//SetPixel(*hdc, x, y, color);
 				firstX = x;
@@ -76,7 +80,7 @@ void basicMidPointDraw1(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 }
 
 //assumes x1 < x2, y1 < y2,           dy  > dx  >= 0 , assume x1 and y1 are inBound
-void basicMidPointDraw2(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int w, int h) {
+void basicMidPointDraw2(int x1, int y1, double z1, int x2, int y2, double z2, int* bits, double* zdepth, COLORREF color, int w, int h) {
 
 	int firstX = -1, firstY = -1;
 	int dx = x2 - x1, dy = y2 - y1;
@@ -98,6 +102,9 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 
 	while (y < y2) {
 
+		double t = (y - y1) / dy;
+		double z = (1 - t)*z1 + t * z2;
+
 
 		if (d < 0) {
 			d += N;
@@ -109,11 +116,16 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 			++y;
 		}
 		if (!isOutOfBount(x, y, w, h)) {
-			if (firstX > -1 && firstY > -1)
+			if (firstX > -1 && firstY > -1 && zdepth[x + w * y] > z) {
+
+				zdepth[x + w * y] = z;
 				bits[x + w * y] = color;
+			}
+				
 				//cpyPixel(hdc, hdc, x, y, firstX, firstY);
-			else
+			else if(zdepth[x + w * y] > z)
 			{
+				zdepth[x + w * y] = z;
 				bits[x + w * y] = color;
 				//SetPixel(*hdc, x, y, color);
 				firstX = x;
@@ -129,7 +141,7 @@ void basicMidPointDraw2(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 
 
 //assumes x1 < x2, y1 > y2,       -dx < dy < 0 < dx  , assume x1 and y1 are inBound
-void basicMidPointDraw3(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int w, int h) {
+void basicMidPointDraw3(int x1, int y1, double z1, int x2, int y2, double z2, int* bits, double* zdepth, COLORREF color, int w, int h) {
 
 	int firstX = -1, firstY = -1;
 	int dx = x2 - x1, dy = y2 - y1;
@@ -154,6 +166,8 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 
 	while (x < x2) {
 
+		double t = (x - x1) / dx;
+		double z = (1 - t)*z1 + t * z2;
 
 		if (d > 0) {//so i've just used the complimntary condition
 			d += E;
@@ -165,10 +179,14 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 			--y;
 		}
 		if (!isOutOfBount(x, y, w, h)) {
-			if (firstX > -1 && firstY > -1)
+			if (firstX > -1 && firstY > -1 && zdepth[x + w * y] > z) {
+
+				zdepth[x + w * y] = z;
 				bits[x + w * y] = color;
+			}
+				
 				//cpyPixel(hdc, hdc, x, y, firstX, firstY);
-			else
+			else if(zdepth[x + w * y] > z)
 			{
 				bits[x + w * y] = color;
 				//SetPixel(*hdc, x, y, color);
@@ -183,9 +201,8 @@ void basicMidPointDraw3(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 
 
 
-
 //assumes x1 < x2, y1 > y2,           dy < -dx < 0 < dx < -dy , assume x1 and y1 are inBound
-void basicMidPointDraw4(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int w, int h) {
+void basicMidPointDraw4(int x1, int y1, double z1, int x2, int y2, double z2, int* bits, double* zdepth, COLORREF color, int w, int h) {
 
 	int firstX = -1, firstY = -1;
 	int dx = x2 - x1, dy = y2 - y1;
@@ -212,6 +229,9 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 	while (y > y2) {
 
 
+		double t = (y - y1) / dy;
+		double z = (1 - t)*z1 + t * z2;
+
 		if (d < 0) {
 			d += S;
 			--y;
@@ -222,12 +242,16 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 			--y;
 		}		
 		if (!isOutOfBount(x, y, w, h)) {
-			if (firstX > -1 && firstY > -1)
+			if (firstX > -1 && firstY > -1 && zdepth[x + w * y] > z) {
+
+				zdepth[x + w * y] = z;
 				bits[x + w * y] = color;
-				//cpyPixel(hdc, hdc, x, y, firstX, firstY);
-			else
+			}
+
+			//cpyPixel(hdc, hdc, x, y, firstX, firstY);
+			else if (zdepth[x + w * y] > z)
 			{
-				bits[x + w * y] = color; 
+				bits[x + w * y] = color;
 				//SetPixel(*hdc, x, y, color);
 				firstX = x;
 				firstY = y;
@@ -241,37 +265,37 @@ void basicMidPointDraw4(int x1, int y1, int x2, int y2, int* bits, COLORREF colo
 
 
 //color must be in BGR format not RGB
-void MidPointDraw(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int width, int height) {
+void MidPointDraw(int x1, int y1,double z1, int x2, int y2, double z2, int* bits, double* zdepth, COLORREF color, int width, int height) {
 
 	if (x2 < x1) // make sure that x1 <= x2, the == situation is ok
 	{
-		MidPointDraw(x2, y2, x1, y1, bits, color, width, height);
+		MidPointDraw(x2, y2,z2, x1, y1,z1, bits, zdepth, color, width, height);
 		return;
 	}
 	//now  x1 <= x2
 	if ((x1 < 0 && x2 < 0) || (y1 < 0 && y2 < 0) || (x1 > width && x2 >width) || (y1 > height && y2 >height) )
 		return;
 
-
+	//TODO: fix the interpolation of z if we cut(similar to the x and y)
 	//take care of cases the are going out of screen bound
 	double dx = x2 - x1, dy = y2 - y1;
 	if (x1 < 0)
 	{
 		if(dx!=0)
-			MidPointDraw(0, y2 - (x2 * (dy / dx)), x2, y2, bits, color, width, height);
+			MidPointDraw(0, y2 - (x2 * (dy / dx)),z1, x2, y2,z2, bits, zdepth, color, width, height);
 		return;
 	}
 	if (y1 < 0) {
 
 		if (dy != 0)
-			MidPointDraw(x2 - (y2*(dx / dy)), 0, x2, y2, bits, color,  width,  height);
+			MidPointDraw(x2 - (y2*(dx / dy)), 0,z1, x2, y2,z2, bits, zdepth, color,  width,  height);
 		return;
 	}
 
 	if (y1 > height - 1) {
 
 		if (dy != 0)
-			MidPointDraw( x2 + (height - y2 - 1) * (dx / dy) , height -1, x2, y2, bits, color, width, height);
+			MidPointDraw( x2 + (height - y2 - 1) * (dx / dy) , height -1,z1, x2, y2,z2, bits, zdepth, color, width, height);
 		return;
 	}
 	
@@ -280,18 +304,18 @@ void MidPointDraw(int x1, int y1, int x2, int y2, int* bits, COLORREF color, int
 
 	if (y1 <= y2) {
 		if (y2 - y1 <= x2 - x1)
-			basicMidPointDraw1(x1, y1, x2, y2, bits, color, width , height);
+			basicMidPointDraw1(x1, y1,z1, x2, y2,z2, bits, zdepth, color, width , height);
 		else
-			basicMidPointDraw2(x1, y1, x2, y2, bits, color, width, height);
+			basicMidPointDraw2(x1, y1,z1, x2, y2,z2, bits, zdepth, color, width, height);
 		return;
 	}
 
 	//now  x1 <= x2 && y1 > y2
 
 	if (x1 - x2 < y2 - y1)
-		basicMidPointDraw3(x1, y1, x2, y2, bits, color, width, height); //-dx < dy < 0 < dx
+		basicMidPointDraw3(x1, y1, z1, x2, y2, z2, bits, zdepth, color, width, height); //-dx < dy < 0 < dx
 	else
-		basicMidPointDraw4(x1, y1, x2, y2, bits, color, width, height); //dy < -dx < 0 < dx < -dy
+		basicMidPointDraw4(x1, y1, z1 ,x2, y2, z2, bits, zdepth, color, width, height); //dy < -dx < 0 < dx < -dy
 	return;
 }
 
@@ -322,43 +346,54 @@ COLORREF RGBToBGR(COLORREF col) {
 
 
 struct Line {
+	typedef enum {
+		Equation, ConstantX, ConstantY,Point
+	} LineType;
 
 	Vec2u p1, p2;
+	double z1, z2;
+	double m, b;
+	LineType type;
+	
 	int minY, minX, maxY, maxX;
+
+
+
 	/*
 		line equation params ( y = mx +b )
 		if (isMZero && isDxInfinity) the line is just one point
 		if (!isDxInfinity) this means isMZero = true, so the equation is y = constant
 		this means isDxInfinityy = true && isMZero == true,, so thge equation is x = constant, for this situation dont use the b and m
 	*/
-	double m, b;
-	bool isDxZero, isMZero;
+	
 
-	Line(Vec2u p1, Vec2u p2) : p1(p1), p2(p2)  {
+
+	Line(Vec2u p1,double z1, Vec2u p2, double z2) : p1(p1), p2(p2) , z1(z1), z2(z2) {
 		minY = p1(1) < p2(1) ? p1(1) : p2(1);
 		maxY = p1(1) > p2(1) ? p1(1) : p2(1);
 		minX = p1(0) < p2(0) ? p1(0) : p2(0);
 		maxX = p1(0) > p2(0) ? p1(0) : p2(0);
 
-
-		isDxZero = isMZero = false;
-		if (p2(0) - p1(0) == 0) 
-			isDxZero = true;
-		if (p2(1) - p1(1) == 0) 
-			isMZero = true;
+		type = Equation;
+		if (p2(0) == p1(0))
+			type = ConstantY;
+		if (p2(1) == p1(1))
+			type = ConstantX;
+		if (p2(0) == p1(0) && p2(1) == p1(1))
+			type = Point;
 		
 			
-		if(!isDxZero && !isMZero)
+		if(type == Equation)
 		{
 			m = (double) (p2(1) - p1(1)) / (int) (p2(0) - p1(0));//=dy/dx
 			b = p1(1) - m * p1(0);//=y1-m*x1
 			
 		}
-		else if(isMZero) {
+		else if(type == ConstantY) {
 			m = 0;
 			b = p1(1);
 		}
-		else { // Dx is zero, M isn't
+		else { // POINT or Constant X
 			   
 			//in this case, m and b don't matter, won't be used
 			m = 1;
@@ -369,21 +404,30 @@ struct Line {
 
 	Line(const Line& line) = default;
 	
-	Vec2u intersectWithY(int y) const {
+	std::pair<Vec2u,double> intersectWithY(int y) const {
 
-		if (isMZero || m == 0) //equation is y = constant(b), and the y line doesn't touch this line (we ignor the situation where this line is a pointif b == y also dont draw this since we ignore coloring the wireframs
+		if (type == ConstantY || m == 0 || type == Point) //equation is y = constant(b), and the y line doesn't touch this line (we ignor the situation where this line is a pointif b == y also dont draw this since we ignore coloring the wireframs
 			throw (-1);
 
-		if (isDxZero) {
-			return Vec2u(p1(0), y);
-		}
 
+		if (type == ConstantX && (y < minY || y > maxY))
+			throw (-1);
+		
+		int x;
+		if (type == ConstantX)
+			x = minX;
 
-		//find the x of intersection
-		int x =(int)( (double (y - b)) / m + 0.5);//added 0.5 in order to round evenly when turning it to an int
+		else//find the x of intersection
+			x =(int)( (double (y - b)) / m + 0.5);//added 0.5 in order to round evenly when turning it to an int
+		
 		if (x < minX || x > maxX)
 			throw (-1);
-		return Vec2u(x, y);
+
+
+		double t = (y - p1(1)) / (p2(1) - p1(1) );
+		double z = (1 - t)*z1 + t * z2;
+
+		return std::pair<Vec2u,double>(Vec2u(x, y),z);
 	}
 
 	//compare by minY
@@ -401,13 +445,13 @@ struct Line {
 
 
 
-void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, COLORREF color, double NEAR_PLANE)
+void ScaneConvert(Poly & poly, Tmatd& transf,int* bits, double* zdepth,  int width, int height, COLORREF color, double NEAR_PLANE)
 {
 	
 	auto vers = poly.getVertices();
 	std::vector<Line> sortedlines;
 	Vec2u first_vertex_px;
-
+	double first_vetex_zdepth;
 	for (unsigned i = 0; i < vers.size() - 1; i++)
 	{
 		Vec4d p1 = transf * vers[i];
@@ -425,14 +469,15 @@ void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, 
 		if (i == 0)
 		{
 			first_vertex_px = px1;
+			first_vetex_zdepth = p1(2);
 		}
 
-		Line line = Line(px1,px2);
+		Line line = Line(px1,p1(2),px2,p2(2));
 		sortedlines.push_back(line);
 
 		if (i == vers.size() - 2)
 		{
-			Line line = Line(px2, first_vertex_px);
+			Line line = Line(px2 , p2(2), first_vertex_px, first_vetex_zdepth);
 			sortedlines.push_back(line);
 		}
 	}
@@ -451,7 +496,6 @@ void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, 
 	std::vector<Line> relevantLines = std::vector<Line>();
 	for (int y = 0; y < height; ++y)
 	{
-		
 		for (size_t i = 0; i < sortedlines.size(); i++)
 		{
 			//add all lines with minY <= y that haven't been checked yet (maxY > y)
@@ -466,12 +510,15 @@ void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, 
 		}
 		 
 		//get all points of intersection for this y with all the relevant lines
-		std::vector<Vec2u> Intersections = std::vector<Vec2u>();
+		std::vector< std::pair<Vec2u , double>> Intersections = std::vector< std::pair<Vec2u, double>>();
+
 		for (auto &curLine : relevantLines) {
 
 			//no need to fill a horizental line that will be drawn as a wirefram
 			try {
-				Intersections.push_back(curLine.intersectWithY(y));
+				auto tmp = curLine.intersectWithY(y);
+
+				Intersections.push_back(  tmp  );
 			}
 			catch (int a) {
 				//do nothing, just don't draw it and chill
@@ -480,9 +527,9 @@ void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, 
 		}
 		//sort in ascneding X order
 		std::sort(Intersections.begin(), Intersections.end(),
-			[](const Vec2u& a, const Vec2u& b)
+			[](const std::pair<Vec2u,double>& a, const std::pair<Vec2u, double>& b)
 		{
-			return a(0) < b(0);
+			return a.first(0) < b.first(0);
 		});
 
 		//TODO: understand and fix the problem of deciding wether to draw the first line or not in the scan conversion (from 0 to point1 or from p1 to p2)
@@ -490,7 +537,9 @@ void ScaneConvert(Poly & poly, Tmatd& transf,int* bits,  int width, int height, 
 		for(int i = 0; i <(int) Intersections.size()- 1; i += 2) 
 		{
 			//actually drawing the lines using midpoint
-			MidPointDraw(Intersections[i](0), Intersections[i](1), Intersections[i + 1](0), Intersections[i + 1](1), bits, RGBToBGR(color), width, height);
+			MidPointDraw(Intersections[i].first(0), Intersections[i].first(1) , Intersections[i].second,
+				Intersections[i + 1].first(0), Intersections[i + 1].first(1), Intersections[i+1].second ,
+				bits, zdepth, RGBToBGR(color), width, height);
 		}
 		
 	}
