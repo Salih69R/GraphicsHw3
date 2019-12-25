@@ -63,7 +63,7 @@ void Scene::drawPoly(const Poly& polygon,Tmatd& transformation, int* bits, int w
 	Vec2u first_vertex_px;
 
 	Poly p = polygon;
-//	ScaneConvert(p, transformation, bits, width, height, color, NEAR_PLANE);
+	ScaneConvert(p, transformation, bits, width, height, color, NEAR_PLANE);
 
 
 

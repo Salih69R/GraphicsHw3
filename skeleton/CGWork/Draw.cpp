@@ -350,7 +350,7 @@ struct Line {
 			
 		if(!isDxZero && !isMZero)
 		{
-			m = (p2(1) - p1(1)) / (p2(0) - p1(0));//=dy/dx
+			m = (double) (p2(1) - p1(1)) / (int) (p2(0) - p1(0));//=dy/dx
 			b = p1(1) - m * p1(0);//=y1-m*x1
 			
 		}
@@ -380,7 +380,7 @@ struct Line {
 
 
 		//find the x of intersection
-		int x =(int) (double (y - b)) / m;
+		int x =(int)( (double (y - b)) / m + 0.5);//added 0.5 in order to round evenly when turning it to an int
 		if (x < minX || x > maxX)
 			throw (-1);
 		return Vec2u(x, y);
